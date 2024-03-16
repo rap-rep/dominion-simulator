@@ -1,7 +1,7 @@
 import { Graph, PlayNode } from "@src/core/graph";
 import { Card } from "../../card";
 import { Effect, EffectAction, EffectPlayer } from "@src/core/effects";
-import { ActionHeuristicType, CardType } from "@src/core/card_types";
+import { CardHeuristicType, CardType } from "@src/core/card_types";
 
 const Name = "Copper";
 
@@ -14,14 +14,22 @@ export class Copper extends Card {
     return Name;
   }
 
-  heuristicType(): ActionHeuristicType {
-    return ActionHeuristicType.TREASURE;
+  heuristicType(): CardHeuristicType {
+    return CardHeuristicType.TREASURE;
   }
 
   playGraph(): Graph {
     const graph = new Graph();
     graph.addNode(
-      new PlayNode(new Effect(EffectAction.PLUS_COIN, EffectPlayer.SELF, 1)),
+      new PlayNode(
+        new Effect(
+          EffectAction.PLUS_COIN,
+          EffectPlayer.SELF,
+          1,
+          undefined,
+          this,
+        ),
+      ),
     );
     return graph;
   }

@@ -1,11 +1,18 @@
 import { CardNameMap } from "./cards/name_map";
-import { GameLog } from "./gamelog/game_log";
+import { GameLog, LogLevel, LogMode } from "./logging/game_log";
 import { Kingdom } from "./kingdom";
 import { Player } from "./player";
+import { EventLog } from "./logging/event_log";
+
+export type GameConfig = {
+  logMode?: LogMode | undefined;
+  logLevel?: LogLevel | undefined;
+};
 
 export class Game {
   /*
    * Where the core game of Dominion is played
+   * Cards are unsleeved and shuffled recklessly
    */
   kingdom: Kingdom;
   p1: Player;
@@ -13,18 +20,20 @@ export class Game {
   currentPlayer: Player;
   turn: number = 0;
   gamelog: GameLog;
+  eventlog: EventLog;
   phase: Phase = Phase.START;
   cardNameMap: CardNameMap;
 
-  constructor() {
+  constructor(config?: GameConfig | undefined) {
     this.cardNameMap = new CardNameMap();
     this.kingdom = new Kingdom();
+    this.gamelog = new GameLog(config?.logMode, config?.logLevel);
+    this.eventlog = new EventLog(this.gamelog);
     this.p1 = new Player("player one", this);
     this.p2 = new Player("player two", this);
     this.p1.setOpponent(this.p2);
     this.p2.setOpponent(this.p1);
     this.currentPlayer = this.p1;
-    this.gamelog = new GameLog();
   }
 
   playGame() {
@@ -37,6 +46,8 @@ export class Game {
       this.currentPlayer.playCleanupPhase();
       this.switchPlayer();
     }
+    this.logGameOver(this.p1);
+    this.logGameOver(this.p2);
   }
 
   private switchPlayer() {
@@ -50,6 +61,14 @@ export class Game {
   private incrementTurn() {
     if (this.currentPlayer == this.p1) {
       this.turn++;
+    }
+    this.gamelog.logTurn(this.turn, this.currentPlayer.name);
+  }
+
+  private logGameOver(player: Player) {
+    this.gamelog.log(`${player.name} ending game cards: `);
+    for (const card of player.allCardsMap.keys()) {
+      this.gamelog.log(`${player.allCardsMap.get(card)?.length} x ${card}`);
     }
   }
 }

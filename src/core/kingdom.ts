@@ -6,7 +6,6 @@ import { Estate } from "./cards/basic/estate";
 import { Duchy } from "./cards/basic/duchy";
 import { Province } from "./cards/basic/province";
 import { CardNameMap } from "./cards/name_map";
-import { Peddler } from "./cards/prosperity/peddler";
 import { Village } from "./cards/base/village";
 import { Curse } from "./cards/basic/curse";
 import { Market } from "./cards/base/market";
@@ -21,19 +20,23 @@ export class Kingdom {
   nonSupplyPiles: Map<string, Card[]>;
   trash: Map<string, Card[]>;
   globalCostReduction: number = 0;
+  cardNameMap: CardNameMap;
 
   constructor() {
     this.supplyPiles = this.getBasicSupply();
     this.nonSupplyPiles = new Map();
     this.trash = new Map();
+    this.cardNameMap = new CardNameMap();
 
     this.generateKingdom();
   }
 
   private addSupplyPile(name: string) {
-    const cardMap = new CardNameMap();
-    const generatorMethod = cardMap.nameMap.get(name);
+    const generatorMethod = this.cardNameMap.nameMap.get(name);
     if (generatorMethod) {
+      if (generatorMethod().name !== name) {
+        throw new Error(`Generator did not generate a real card for ${name}`);
+      }
       const newPile = Array(10)
         .fill(undefined)
         .map((_u) => generatorMethod());

@@ -28,6 +28,8 @@ export class DecisionResolver {
         `Unable to resolve effect of DecisionType ${decision.decisionType}`,
       );
     }
+
+    player.game.eventlog.logDecision(decision);
   }
 
   private gainCardUptoResolver(player: Player, decision: Decision) {

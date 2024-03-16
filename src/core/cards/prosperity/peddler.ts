@@ -1,6 +1,6 @@
 import { Graph, PlayNode } from "@src/core/graph";
 import { Card } from "../../card";
-import { ActionHeuristicType, CardType } from "@src/core/card_types";
+import { CardHeuristicType, CardType } from "@src/core/card_types";
 import { Effect, EffectAction, EffectPlayer } from "@src/core/effects";
 import { InteractionType } from "@src/core/card_types";
 
@@ -19,21 +19,27 @@ export class Peddler extends Card {
     return new Peddler();
   }
 
-  heuristicType(): ActionHeuristicType {
-    return ActionHeuristicType.CANTRIP;
+  heuristicType(): CardHeuristicType {
+    return CardHeuristicType.CANTRIP;
   }
 
   playGraph(): Graph {
     const graph = new Graph();
 
     const draw = new PlayNode(
-      new Effect(EffectAction.DRAW_CARD, EffectPlayer.SELF, 1),
+      new Effect(EffectAction.DRAW_CARD, EffectPlayer.SELF, 1, undefined, this),
     );
     const action = new PlayNode(
-      new Effect(EffectAction.PLUS_ACTION, EffectPlayer.SELF, 1),
+      new Effect(
+        EffectAction.PLUS_ACTION,
+        EffectPlayer.SELF,
+        1,
+        undefined,
+        this,
+      ),
     );
     const coin = new PlayNode(
-      new Effect(EffectAction.PLUS_COIN, EffectPlayer.SELF, 1),
+      new Effect(EffectAction.PLUS_COIN, EffectPlayer.SELF, 1, undefined, this),
     );
 
     graph.addNode(draw);

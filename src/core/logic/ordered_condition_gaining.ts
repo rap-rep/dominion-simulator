@@ -8,11 +8,13 @@ import {
 import { NullCard } from "../cards/basic/null_card";
 import { MetricHelper } from "./metric_helpers";
 import { DecisionType } from "../decisions";
+import { PlayerHelper } from "../helpers/default_decisions";
 
 export enum GainMetric {
   CAN_GAIN = "can gain",
   COINS_AVAILABLE = "coins available",
   TURN = "turn",
+  CARD_IN_DECK_COUNT = "# cards in deck",
 }
 
 export enum LogicalJoiner {
@@ -45,6 +47,7 @@ export class OrderedGainCondition {
   logical_joiner: LogicalJoiner;
   open_paren: string;
   closed_paren: string;
+  card_references: string[] | undefined;
   constructor(
     metric: GainMetric,
     thresholdType: ThresholdType,
@@ -52,6 +55,7 @@ export class OrderedGainCondition {
     logical_joiner: LogicalJoiner = LogicalJoiner.NONE,
     open_parentheses: Parentheses = Parentheses.NONE,
     closed_parentheses: Parentheses = Parentheses.NONE,
+    card_references: string[] | undefined = undefined,
   ) {
     this.logical_joiner = logical_joiner;
     this.metric = metric;
@@ -61,6 +65,7 @@ export class OrderedGainCondition {
     this.threshold_id = this.id + "_threshold";
     this.open_paren = open_parentheses;
     this.closed_paren = closed_parentheses;
+    this.card_references = card_references;
   }
 
   getTokenizableEvaluation(): string {
@@ -126,13 +131,36 @@ export class OrderedConditionGainSelector {
     this.conditionSets.push({ set: conditionSet, card: card });
   }
 
-  private getMetricValue(player: Player, metric: GainMetric): number {
+  private getMetricValue(
+    player: Player,
+    metric: GainMetric,
+    cardReferences?: string[],
+  ): number {
     if (metric === GainMetric.COINS_AVAILABLE) {
       return player.coins;
     } else if (metric === GainMetric.CAN_GAIN) {
       return this.amount;
     } else if (metric === GainMetric.TURN) {
       return player.game.turn;
+    } else if (metric === GainMetric.CARD_IN_DECK_COUNT) {
+      if (
+        !cardReferences ||
+        cardReferences.length < 1 ||
+        cardReferences.length > 2
+      ) {
+        throw new Error(
+          `Expected to find 1 or 2 card references, but ${cardReferences?.length} provided: '${cardReferences?.join(",")}'`,
+        );
+      }
+      if (cardReferences.length === 1) {
+        return PlayerHelper.countOfCardInDeck(player, cardReferences[0]);
+      } else {
+        return PlayerHelper.diffOfCardsInDeck(
+          player,
+          cardReferences[0],
+          cardReferences[1],
+        );
+      }
     } else {
       throw new Error(`Metric ${metric} not implemented`);
     }
@@ -143,7 +171,11 @@ export class OrderedConditionGainSelector {
       let condition_token_str = "";
       const evalObj = new EvalObject();
       for (const condition of conditionSet.set) {
-        const metricValue = this.getMetricValue(player, condition.metric);
+        const metricValue = this.getMetricValue(
+          player,
+          condition.metric,
+          condition.card_references,
+        );
         const condition_token_part = condition.getTokenizableEvaluation();
         condition_token_str += condition_token_part;
 

@@ -1,5 +1,5 @@
 import { Card } from "../card";
-import { ActionHeuristicType, CardType } from "../card_types";
+import { CardHeuristicType, CardType } from "../card_types";
 import { Gear } from "../cards/adventures/gear";
 import { Copper } from "../cards/basic/copper";
 import { Curse } from "../cards/basic/curse";
@@ -52,6 +52,39 @@ export class PlayerHelper {
     return NULL_CARD;
   }
 
+  static selectBestActionByHeuristic(player: Player): Card {
+    // TODO: Obviously make better
+    return (
+      this.findFromPriorityList(player, [
+        CardHeuristicType.NONTERMINAL_FROM_DECK_SIFTER,
+        CardHeuristicType.NONTERMINAL_DRAW,
+        CardHeuristicType.VILLAGE,
+        CardHeuristicType.CANTRIP,
+        CardHeuristicType.NONTERMINAL_HAND_SIFTER,
+        CardHeuristicType.NONTERMINAL_GAINER,
+        CardHeuristicType.TERMINAL_DRAW,
+        CardHeuristicType.TERMINAL_FROM_DECK_SIFTER,
+        CardHeuristicType.NONTERMINAL_PAYLOAD,
+        CardHeuristicType.TERMINAL_PAYLOAD,
+        CardHeuristicType.TRASHER,
+        CardHeuristicType.TERMINAL_GAINER,
+      ]) || NULL_CARD
+    );
+  }
+
+  private static findFromPriorityList(
+    player: Player,
+    priorityList: CardHeuristicType[],
+  ) {
+    for (const heuristicType of priorityList) {
+      const card = this.getCardOfHeuristicType(player, heuristicType);
+      if (card) {
+        return card;
+      }
+    }
+    return undefined;
+  }
+
   static selectAnyTreasure(player: Player): Card {
     for (const card_stack of player.hand.values()) {
       if (card_stack[0].types.includes(CardType.TREASURE)) {
@@ -63,7 +96,7 @@ export class PlayerHelper {
 
   static getCardOfHeuristicType(
     player: Player,
-    heuristicType: ActionHeuristicType,
+    heuristicType: CardHeuristicType,
     alreadySelectedCard?: Card | undefined, // TODO make more resilient (really just for Gear right now and thus only works for one card)
   ): Card | undefined {
     for (const cardStack of player.hand.values()) {
@@ -83,6 +116,22 @@ export class PlayerHelper {
     return undefined;
   }
 
+  static countOfCardInDeck(player: Player, card: string): number {
+    return player.allCardsMap.get(card)?.length || 0;
+  }
+
+  static diffOfCardsInDeck(
+    player: Player,
+    card1: string,
+    card2: string,
+  ): number {
+    return (
+      PlayerHelper.countOfCardInDeck(player, card1) -
+      PlayerHelper.countOfCardInDeck(player, card2)
+    );
+  }
+
+  // TODO: Move this into Watchtower class similar as Gear is done
   private static watchtowerDecision(player: Player, decision: Decision) {
     const effectMap = decision.selectionMap;
     if (!effectMap) {

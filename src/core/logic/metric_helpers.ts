@@ -1,5 +1,4 @@
-import { CardNameMap } from "../cards/name_map";
-import { Game } from "../game";
+import { Card } from "../card";
 import { InteractionHelper } from "../helpers/interaction_helpers";
 import { Player } from "../player";
 
@@ -12,13 +11,19 @@ export class MetricHelper {
         player.game.kingdom.globalCostReduction,
         InteractionHelper.effectiveCostNumber(player.game.currentPlayer, card),
       );
-      return card.effectiveCost(
-        player.game.kingdom.globalCostReduction,
-        InteractionHelper.effectiveCostNumber(player.game.currentPlayer, card),
-      );
+      return effectiveCost;
     } else {
-      // there is no card to gain from a supply pile
-      return 9999; // XXX HACK: return a number large enough to make the >= comparison fail
+      // there is no such card to gain from a supply pile
+      return 9999; // XXX HACK: return a number large enough to make the >= affordability comparison fail
     }
+  }
+
+  static effectiveCostOfCard(player: Player, card: Card): number {
+    // needed to calculated effective cost on an already gained card
+    const effectiveCost = card.effectiveCost(
+      player.game.kingdom.globalCostReduction,
+      InteractionHelper.effectiveCostNumber(player.game.currentPlayer, card),
+    );
+    return effectiveCost;
   }
 }

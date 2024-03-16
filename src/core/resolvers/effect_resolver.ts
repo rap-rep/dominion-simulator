@@ -15,6 +15,7 @@ export class EffectResolver {
   }
 
   playCard(player: Player, card: Card) {
+    player.game.gamelog.logCardPlay(card, player.name);
     player.inPlay.push(card);
 
     const node = card.playGraph().getStartNode();
@@ -25,6 +26,7 @@ export class EffectResolver {
   }
 
   playDuration(player: Player, card: Card) {
+    player.game.gamelog.logDuration(player, card);
     card.durationPhase = DurationPhase.PREPARED_FOR_CLEANUP;
     const durationPlayGraph = card.durationPlayGraph();
     if (!durationPlayGraph) {
@@ -62,9 +64,22 @@ export class EffectResolver {
   gainCard(player: Player, card_name: string): Card {
     const gainedCard = player.game.kingdom.getTopOrError(card_name);
     player.game.kingdom.removeFromTop(gainedCard);
-
-    if (!this.handEffectGainResolver(player, gainedCard)) {
+    player.game.gamelog.logGain(player, gainedCard);
+    const handEffectResolution = this.handEffectGainResolver(
+      player,
+      gainedCard,
+    );
+    if (!handEffectResolution) {
+      player.addToAllCards(gainedCard);
       player.discard.push(gainedCard);
+    } else if (handEffectResolution === EffectAction.TOPDECK) {
+      player.addToAllCards(gainedCard);
+    } else if (handEffectResolution === EffectAction.TRASH) {
+      // no player record-keeping needed
+    } else {
+      throw new Error(
+        `handEffectGainResolver returned unsupported EffectAction '${handEffectResolution}'`,
+      );
     }
 
     return gainedCard;
@@ -97,17 +112,21 @@ export class EffectResolver {
         `Unable to resolve effect of EffectAction type ${effect.action}`,
       );
     }
+    player.game.eventlog.logEffect(effect);
   }
 
   private gainFromSupply(player: Player, effect: Effect) {
     const cardToGain = effect.reference?.result as string;
     const gainedCard = this.gainCard(player, cardToGain);
     effect.result = gainedCard;
+    effect.affects = gainedCard;
   }
 
   private awardTypeBonuses(player: Player, effect: Effect) {
     const typeCard = effect.reference?.result as Card;
     const fromCard = effect.fromCard;
+
+    effect.affects = typeCard;
 
     const bonusMap = fromCard.typeBonusMap();
     if (bonusMap.size < 1) {
@@ -176,8 +195,12 @@ export class EffectResolver {
     }
   }
 
-  private handEffectGainResolver(player: Player, card: Card): boolean {
-    // Returns true if the gained card was moved and should no longer be placed in discard
+  private handEffectGainResolver(
+    player: Player,
+    card: Card,
+  ): EffectAction | undefined {
+    // Walks through the cards in hand looking for any decisions that need to happen while gaining a card
+    // Returns the action type taken on the card, or undefined if none taken
     for (const handCardStack of player.hand.values()) {
       if (handCardStack.length > 0) {
         const inHandCard = handCardStack[0];
@@ -185,17 +208,17 @@ export class EffectResolver {
         if (decision) {
           this.decisionResolver.resolveDecision(player, decision);
           if (decision.result === EffectAction.TOPDECK || EffectAction.TRASH) {
-            return true;
+            return decision.result as EffectAction;
           }
         }
       }
     }
-    return false;
   }
 
   private putInHandFromSetAside(player: Player, effect: Effect): boolean {
     const fromCard = effect.fromCard;
     const setAsideCards = fromCard.setAsideDecision?.result as Card[];
+    effect.affects = setAsideCards;
     for (const setAsideCard of setAsideCards) {
       player.addCardToHand(setAsideCard);
     }

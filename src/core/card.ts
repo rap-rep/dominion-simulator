@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused-variable */
 import {
-  ActionHeuristicType,
+  CardHeuristicType,
   InteractionType,
   CardType,
   DurationPhase,
@@ -40,8 +40,8 @@ export class Card {
     return 0;
   }
 
-  heuristicType(): ActionHeuristicType {
-    return ActionHeuristicType.NULL;
+  heuristicType(): CardHeuristicType {
+    return CardHeuristicType.NULL;
   }
 
   staysInPlay(): boolean {

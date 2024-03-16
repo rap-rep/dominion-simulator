@@ -11,4 +11,8 @@ export default {
     Update: "/update",
     Delete: "/delete/:id",
   },
+  Game: {
+    Game: "/game",
+    Run: "/run",
+  },
 } as const;

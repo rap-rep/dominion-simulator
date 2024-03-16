@@ -3,8 +3,16 @@ import HttpStatusCodes from "@src/constants/HttpStatusCodes";
 import UserService from "@src/services/UserService";
 import { IUser } from "@src/models/User";
 import { IReq, IRes } from "./types/express/misc";
+import { Game } from "@src/core/game";
 
 // **** Functions **** //
+
+// TODO Fix this file, currently in testing/play-around mode
+async function getGame(_: IReq, res: IRes) {
+  const game = new Game();
+  game.playGame();
+  return res.status(HttpStatusCodes.OK).json({ turns: game.turn });
+}
 
 /**
  * Get all users.
@@ -44,6 +52,7 @@ async function delete_(req: IReq, res: IRes) {
 // **** Export default **** //
 
 export default {
+  getGame,
   getAll,
   add,
   update,

@@ -1,4 +1,4 @@
-import { ActionHeuristicType, CardType } from "@src/core/card_types";
+import { CardHeuristicType, CardType } from "@src/core/card_types";
 import { Card } from "../../card";
 
 const Name = "Estate";
@@ -16,8 +16,8 @@ export class Estate extends Card {
     return 1;
   }
 
-  heuristicType(): ActionHeuristicType {
-    return ActionHeuristicType.VICTORY;
+  heuristicType(): CardHeuristicType {
+    return CardHeuristicType.VICTORY;
   }
 
   cost(): number {

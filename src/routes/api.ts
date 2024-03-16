@@ -10,6 +10,9 @@ import UserRoutes from "./UserRoutes";
 const apiRouter = Router(),
   validate = jetValidator();
 
+const gameRouter = Router();
+gameRouter.get(Paths.Game.Run, UserRoutes.getGame);
+
 // ** Add UserRouter ** //
 
 const userRouter = Router();
@@ -40,6 +43,7 @@ userRouter.delete(
 
 // Add UserRouter
 apiRouter.use(Paths.Users.Base, userRouter);
+apiRouter.use(Paths.Game.Game, gameRouter);
 
 // **** Export default **** //
 

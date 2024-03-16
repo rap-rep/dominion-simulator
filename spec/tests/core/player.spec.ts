@@ -161,3 +161,40 @@ describe("Default clean up", () => {
     expect(PlayerHelper.countHandSize(game.currentPlayer)).toBe(5);
   });
 });
+
+describe("Adding a card to all cards functionality", () => {
+  const game = new Game();
+  game.p1.deck = [];
+  game.p1.hand = new Map();
+  game.p1.allCardsList = [];
+
+  const card = new Silver();
+  game.p1.addCardToHand(card);
+  game.p1.addToAllCards(card);
+
+  it("adds a card to the list and map", () => {
+    expect(game.p1.allCardsList[0]?.name).toEqual(Silver.NAME);
+    expect(game.p1.allCardsMap.get(Silver.NAME)?.length).toEqual(1);
+    expect(game.p1.allCardsMap.size).toBe(3);
+  });
+});
+
+describe("Adding and then removing cards from a player", () => {
+  const game = new Game();
+  game.p1.deck = [];
+  game.p1.hand = new Map();
+  game.p1.allCardsList = [];
+
+  const card = new Silver();
+  const card2 = new Silver();
+  game.p1.addToAllCards(card);
+  game.p1.addToAllCards(card2);
+
+  game.p1.removeFromAllCards(card);
+  game.p1.removeFromAllCards(card2);
+
+  it("successfully removes the cards", () => {
+    expect(game.p1.allCardsList.length).toEqual(0);
+    expect(game.p1.allCardsMap.size).toBe(2);
+  });
+});

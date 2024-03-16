@@ -1,5 +1,8 @@
+import { Smithy } from "@src/core/cards/base/smithy";
+import { Village } from "@src/core/cards/base/village";
 import { Copper } from "@src/core/cards/basic/copper";
 import { Duchy } from "@src/core/cards/basic/duchy";
+import { Estate } from "@src/core/cards/basic/estate";
 import { NullCard } from "@src/core/cards/basic/null_card";
 import { Province } from "@src/core/cards/basic/province";
 import { Silver } from "@src/core/cards/basic/silver";
@@ -209,5 +212,121 @@ describe("Buy rule", () => {
   const card = gainRules.getGainName(game.p1);
   it("does not lead to buying a card that can not be bought", () => {
     expect(card).toEqual(NullCard.NAME);
+  });
+});
+
+describe("Buy rule based on cards in deck", () => {
+  const game = new Game();
+  const coins = 3;
+  const gainRules = new OrderedConditionGainSelector(
+    game.p1,
+    DecisionType.BUY_CARD,
+    coins,
+  );
+  gainRules.addCondition(
+    new OrderedGainCondition(
+      GainMetric.CARD_IN_DECK_COUNT,
+      ThresholdType.GREATER_OR_EQUAL,
+      7,
+      undefined,
+      undefined,
+      undefined,
+      [Copper.NAME],
+    ),
+    Silver.NAME,
+  );
+  game.p1.coins = coins;
+  const card = gainRules.getGainName(game.p1);
+  it("buys a silver when the required amount of copper is in the deck", () => {
+    expect(card).toEqual(Silver.NAME);
+  });
+});
+
+describe("Buy rule based on cards in deck", () => {
+  const game = new Game();
+  const coins = 3;
+  const gainRules = new OrderedConditionGainSelector(
+    game.p1,
+    DecisionType.BUY_CARD,
+    coins,
+  );
+  gainRules.addCondition(
+    new OrderedGainCondition(
+      GainMetric.CARD_IN_DECK_COUNT,
+      ThresholdType.GREATER_OR_EQUAL,
+      77,
+      undefined,
+      undefined,
+      undefined,
+      [Copper.NAME],
+    ),
+    Silver.NAME,
+  );
+  game.p1.coins = coins;
+  const card = gainRules.getGainName(game.p1);
+  it("buys nothing if required amount of copper is not in the deck", () => {
+    expect(card).toEqual(NullCard.NAME);
+  });
+});
+
+describe("Buy rule based on cards diff", () => {
+  const game = new Game();
+  const coins = 3;
+  const gainRules = new OrderedConditionGainSelector(
+    game.p1,
+    DecisionType.BUY_CARD,
+    coins,
+  );
+  game.p1.effectResolver.gainCard(game.p1, Village.NAME);
+  game.p1.effectResolver.gainCard(game.p1, Smithy.NAME);
+  // Buy Village if Village - Smithy >= 1
+  gainRules.addCondition(
+    new OrderedGainCondition(
+      GainMetric.CARD_IN_DECK_COUNT,
+      ThresholdType.GREATER_OR_EQUAL,
+      1,
+      undefined,
+      undefined,
+      undefined,
+      [Village.NAME, Smithy.NAME],
+    ),
+    Village.NAME,
+  );
+  game.p1.coins = coins;
+  const card = gainRules.getGainName(game.p1);
+  it("does not buy the card if the diff is not great enough", () => {
+    expect(card).toEqual(NullCard.NAME);
+  });
+});
+
+describe("Buy rule based on cards diff", () => {
+  const game = new Game();
+  const coins = 3;
+  const gainRules = new OrderedConditionGainSelector(
+    game.p1,
+    DecisionType.BUY_CARD,
+    coins,
+  );
+  for (let i = 0; i < 2; i++) {
+    game.p1.effectResolver.gainCard(game.p1, Village.NAME);
+  }
+  game.p1.effectResolver.gainCard(game.p1, Smithy.NAME);
+  // Buy Village if Village - Smithy >= 1
+  gainRules.addCondition(
+    new OrderedGainCondition(
+      GainMetric.CARD_IN_DECK_COUNT,
+      ThresholdType.GREATER_OR_EQUAL,
+      1,
+      undefined,
+      undefined,
+      undefined,
+      [Village.NAME, Smithy.NAME],
+    ),
+    Village.NAME,
+  );
+  game.p1.coins = coins;
+  const card = gainRules.getGainName(game.p1);
+  it("does buy a card if the diff is great enough", () => {
+    expect(card).toEqual(Village.NAME);
   });
 });

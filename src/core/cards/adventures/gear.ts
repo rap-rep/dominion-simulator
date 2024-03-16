@@ -1,7 +1,7 @@
 import { Graph, PlayNode } from "@src/core/graph";
 import { Card } from "../../card";
 import {
-  ActionHeuristicType,
+  CardHeuristicType,
   CardType,
   DurationPhase,
 } from "@src/core/card_types";
@@ -31,8 +31,8 @@ export class Gear extends Card {
     return Name;
   }
 
-  heuristicType(): ActionHeuristicType {
-    return ActionHeuristicType.TERMINAL_DRAW;
+  heuristicType(): CardHeuristicType {
+    return CardHeuristicType.TERMINAL_DRAW;
   }
 
   staysInPlay(): boolean {
@@ -50,7 +50,7 @@ export class Gear extends Card {
     this.setAsideDecision.fromCard = this;
     const graph = new Graph();
     const draw = new PlayNode(
-      new Effect(EffectAction.DRAW_CARD, EffectPlayer.SELF, 2),
+      new Effect(EffectAction.DRAW_CARD, EffectPlayer.SELF, 2, undefined, this),
     );
 
     const setAside = new PlayNode(this.setAsideDecision);
@@ -104,7 +104,7 @@ export class Gear extends Card {
     player: Player,
     alreadySelected: Card[],
   ): Card | undefined {
-    let priorityList: ActionHeuristicType[] = [];
+    let priorityList: CardHeuristicType[] = [];
 
     let alreadySelectedCard: Card | undefined;
     if (alreadySelected.length > 0) {
@@ -114,19 +114,19 @@ export class Gear extends Card {
     if (player.actions === 0) {
       // TODO: Implement holding back treasures when excess available
       priorityList = [
-        ActionHeuristicType.NONTERMINAL_DRAW,
-        ActionHeuristicType.VILLAGE,
-        ActionHeuristicType.TRASHER,
-        ActionHeuristicType.TERMINAL_DRAW,
-        ActionHeuristicType.TERMINAL_PAYLOAD,
-        ActionHeuristicType.CANTRIP,
-        ActionHeuristicType.NONTERMINAL_FROM_DECK_SIFTER,
-        ActionHeuristicType.HAND_SIFTER,
-        ActionHeuristicType.NONTERMINAL_GAINER,
-        ActionHeuristicType.TERMINAL_GAINER,
-        ActionHeuristicType.NONTERMINAL_PAYLOAD,
-        ActionHeuristicType.TERMINAL_FROM_DECK_SIFTER,
-        ActionHeuristicType.VICTORY,
+        CardHeuristicType.NONTERMINAL_DRAW,
+        CardHeuristicType.VILLAGE,
+        CardHeuristicType.TRASHER,
+        CardHeuristicType.TERMINAL_DRAW,
+        CardHeuristicType.TERMINAL_PAYLOAD,
+        CardHeuristicType.CANTRIP,
+        CardHeuristicType.NONTERMINAL_FROM_DECK_SIFTER,
+        CardHeuristicType.NONTERMINAL_HAND_SIFTER,
+        CardHeuristicType.NONTERMINAL_GAINER,
+        CardHeuristicType.TERMINAL_GAINER,
+        CardHeuristicType.NONTERMINAL_PAYLOAD,
+        CardHeuristicType.TERMINAL_FROM_DECK_SIFTER,
+        CardHeuristicType.VICTORY,
       ];
       for (const heuristicType of priorityList) {
         const card = PlayerHelper.getCardOfHeuristicType(
@@ -139,7 +139,7 @@ export class Gear extends Card {
         }
       }
     } else {
-      priorityList = [ActionHeuristicType.VICTORY];
+      priorityList = [CardHeuristicType.VICTORY];
 
       for (const heuristicType of priorityList) {
         const card = PlayerHelper.getCardOfHeuristicType(

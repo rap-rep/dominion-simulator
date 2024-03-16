@@ -1,6 +1,6 @@
 import { Graph, PlayNode } from "@src/core/graph";
 import { Card } from "../../card";
-import { ActionHeuristicType, CardType } from "@src/core/card_types";
+import { CardHeuristicType, CardType } from "@src/core/card_types";
 import { Effect, EffectAction, EffectPlayer } from "@src/core/effects";
 import { Decision, DecisionType } from "@src/core/decisions";
 
@@ -15,23 +15,29 @@ export class Ironworks extends Card {
     return Name;
   }
 
-  heuristicType(): ActionHeuristicType {
-    return ActionHeuristicType.NONTERMINAL_GAINER;
+  heuristicType(): CardHeuristicType {
+    return CardHeuristicType.NONTERMINAL_GAINER;
   }
 
   typeBonusMap() {
     const map: Map<CardType, Effect> = new Map();
     map.set(
       CardType.ACTION,
-      new Effect(EffectAction.PLUS_ACTION, EffectPlayer.SELF, 1),
+      new Effect(
+        EffectAction.PLUS_ACTION,
+        EffectPlayer.SELF,
+        1,
+        undefined,
+        this,
+      ),
     );
     map.set(
       CardType.VICTORY,
-      new Effect(EffectAction.DRAW_CARD, EffectPlayer.SELF, 1),
+      new Effect(EffectAction.DRAW_CARD, EffectPlayer.SELF, 1, undefined, this),
     );
     map.set(
       CardType.TREASURE,
-      new Effect(EffectAction.PLUS_COIN, EffectPlayer.SELF, 1),
+      new Effect(EffectAction.PLUS_COIN, EffectPlayer.SELF, 1, undefined, this),
     );
     return map;
   }
@@ -42,6 +48,7 @@ export class Ironworks extends Card {
       DecisionType.GAIN_CARD_UP_TO,
       EffectPlayer.SELF,
       4,
+      this,
     );
     const decisionNode = new PlayNode(gainCardDecision);
     const gainEffect = new Effect(
@@ -49,6 +56,7 @@ export class Ironworks extends Card {
       EffectPlayer.SELF,
       undefined,
       gainCardDecision,
+      this,
     );
     const gainNode = new PlayNode(gainEffect);
     const bonusNode = new PlayNode(

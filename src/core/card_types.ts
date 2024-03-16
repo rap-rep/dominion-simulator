@@ -23,7 +23,7 @@ export enum InteractionType {
   ACTIONS_IN_PLAY_DURING_BUY = 1,
 }
 
-export enum ActionHeuristicType {
+export enum CardHeuristicType {
   TREASURE = 0,
   CANTRIP = 1,
   TERMINAL_DRAW = 2,
@@ -32,7 +32,7 @@ export enum ActionHeuristicType {
   NONTERMINAL_PAYLOAD = 5,
   NONTERMINAL_FROM_DECK_SIFTER = 6,
   TERMINAL_FROM_DECK_SIFTER = 7,
-  HAND_SIFTER = 8,
+  NONTERMINAL_HAND_SIFTER = 8,
   VILLAGE = 9,
   NONTERMINAL_GAINER = 10,
   TERMINAL_GAINER = 11,

@@ -2,7 +2,6 @@ import { Smithy } from "@src/core/cards/base/smithy";
 import { Village } from "@src/core/cards/base/village";
 import { Copper } from "@src/core/cards/basic/copper";
 import { Duchy } from "@src/core/cards/basic/duchy";
-import { Estate } from "@src/core/cards/basic/estate";
 import { NullCard } from "@src/core/cards/basic/null_card";
 import { Province } from "@src/core/cards/basic/province";
 import { Silver } from "@src/core/cards/basic/silver";

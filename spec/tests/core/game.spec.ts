@@ -1,5 +1,5 @@
 import { Game } from "@src/core/game";
-import { PlayerHelper } from "@src/core/helpers/default_decisions";
+import { PlayerHelper } from "@src/core/helpers/player_helper";
 
 describe("Game has a valid starting state", () => {
   const game = new Game();

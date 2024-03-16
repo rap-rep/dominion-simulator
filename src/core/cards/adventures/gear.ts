@@ -7,7 +7,7 @@ import {
 } from "@src/core/card_types";
 import { Effect, EffectAction, EffectPlayer } from "@src/core/effects";
 import { Decision, DecisionType } from "@src/core/decisions";
-import { PlayerHelper } from "@src/core/helpers/default_decisions";
+import { PlayerHelper } from "@src/core/helpers/player_helper";
 import { Player } from "@src/core/player";
 
 const Name = "Gear";

@@ -3,6 +3,7 @@ import { GameLog, LogLevel, LogMode } from "./logging/game_log";
 import { Kingdom } from "./kingdom";
 import { Player } from "./player";
 import { EventLog } from "./logging/event_log";
+import { PlayerHelper } from "./helpers/player_helper";
 
 export type GameConfig = {
   logMode?: LogMode | undefined;
@@ -23,6 +24,7 @@ export class Game {
   eventlog: EventLog;
   phase: Phase = Phase.START;
   cardNameMap: CardNameMap;
+  winner: undefined | Player | null;
 
   constructor(config?: GameConfig | undefined) {
     this.cardNameMap = new CardNameMap();
@@ -48,6 +50,7 @@ export class Game {
     }
     this.logGameOver(this.p1);
     this.logGameOver(this.p2);
+    this.assignWinner();
   }
 
   private switchPlayer() {
@@ -70,6 +73,23 @@ export class Game {
     for (const card of player.allCardsMap.keys()) {
       this.gamelog.log(`${player.allCardsMap.get(card)?.length} x ${card}`);
     }
+    this.gamelog.log(`Score: ${PlayerHelper.countVictoryPoints(player)}`);
+  }
+
+
+  private assignWinner() {
+    const p1Points = PlayerHelper.countVictoryPoints(this.p1);
+    const p2Points = PlayerHelper.countVictoryPoints(this.p2);
+    if (p1Points === p2Points){
+      this.winner = null;
+    }
+    else if (p1Points > p2Points){
+      this.winner = this.p1;
+    }
+    else{
+      this.winner = this.p2;
+    }
+    this.gamelog.log(`Winner: ${this.winner?.name || "Tie"}`);
   }
 }
 

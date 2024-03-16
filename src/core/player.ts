@@ -6,7 +6,7 @@ import { NullCard } from "./cards/basic/null_card";
 import { Decision, DecisionType } from "./decisions";
 import { EffectPlayer } from "./effects";
 import { Game, Phase } from "./game";
-import { PlayerHelper } from "./helpers/default_decisions";
+import { PlayerHelper } from "./helpers/player_helper";
 import { MetricHelper } from "./logic/metric_helpers";
 import { EffectResolver } from "./resolvers/effect_resolver";
 

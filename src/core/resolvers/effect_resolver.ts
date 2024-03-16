@@ -5,7 +5,7 @@ import { NodeType, PlayNode } from "../graph";
 import { Player } from "../player";
 import { Decision } from "../decisions";
 import { DecisionResolver } from "./decision_resolver";
-import { PlayerHelper } from "../helpers/default_decisions";
+import { PlayerHelper } from "../helpers/player_helper";
 import { DurationPhase } from "../card_types";
 
 export class EffectResolver {

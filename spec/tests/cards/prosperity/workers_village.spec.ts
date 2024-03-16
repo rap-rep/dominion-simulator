@@ -1,7 +1,7 @@
 import { Village } from "@src/core/cards/base/village";
 import { WorkersVillage } from "@src/core/cards/prosperity/workers_village";
 import { Game } from "@src/core/game";
-import { PlayerHelper } from "@src/core/helpers/default_decisions";
+import { PlayerHelper } from "@src/core/helpers/player_helper";
 
 describe("Village", () => {
   const game = new Game();

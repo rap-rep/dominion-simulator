@@ -38,9 +38,17 @@ export class PlayerHelper {
       }
     } else {
       throw new Error(
-        `Default decision for ${decision.decisionType} not implemented`,
+        `Default decision for ${decision.decisionType} not implemented. From card: ${decision.fromCard.name}`,
       );
     }
+  }
+
+  static countVictoryPoints(player: Player) {
+    let tally = 0;
+    for (const card of player.allCardsList){
+      tally += card.victoryPoints();
+    }
+    return tally;
   }
 
   static selectAnyAction(player: Player): Card {
@@ -53,7 +61,7 @@ export class PlayerHelper {
   }
 
   static selectBestActionByHeuristic(player: Player): Card {
-    // TODO: Obviously make better
+    // TODO Make better - this is a basic, sloppy getting started implementation
     return (
       this.findFromPriorityList(player, [
         CardHeuristicType.NONTERMINAL_FROM_DECK_SIFTER,
@@ -62,9 +70,9 @@ export class PlayerHelper {
         CardHeuristicType.CANTRIP,
         CardHeuristicType.NONTERMINAL_HAND_SIFTER,
         CardHeuristicType.NONTERMINAL_GAINER,
+        CardHeuristicType.NONTERMINAL_PAYLOAD,
         CardHeuristicType.TERMINAL_DRAW,
         CardHeuristicType.TERMINAL_FROM_DECK_SIFTER,
-        CardHeuristicType.NONTERMINAL_PAYLOAD,
         CardHeuristicType.TERMINAL_PAYLOAD,
         CardHeuristicType.TRASHER,
         CardHeuristicType.TERMINAL_GAINER,
@@ -101,8 +109,8 @@ export class PlayerHelper {
   ): Card | undefined {
     for (const cardStack of player.hand.values()) {
       if (cardStack[0].heuristicType() === heuristicType) {
-        // if the card has already been selected, prevent re-selection of the same card
         if (alreadySelectedCard?.name === cardStack[0].name) {
+          // if the card has already been selected, prevent re-selection of the same card
           if (cardStack.length > 1) {
             return cardStack[1];
           } else {

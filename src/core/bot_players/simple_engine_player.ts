@@ -1,4 +1,3 @@
-import { Market } from "../cards/base/market";
 import { Village } from "../cards/base/village";
 import { Duchy } from "../cards/basic/duchy";
 import { Gold } from "../cards/basic/gold";
@@ -108,7 +107,7 @@ export class SimpleEnginePlayer extends Player {
     );
     selector.addGainAlwaysCondition(Wharf.NAME);
     selector.addCondition(
-      new OrderedGainCondition(GainMetric.TURN, ThresholdType.LESS_OR_EQUAL, 4),
+      new OrderedGainCondition(GainMetric.TURN, ThresholdType.LESS_OR_EQUAL, 2),
       Silver.NAME,
     );
     selector.addGainAlwaysCondition(Village.NAME);

@@ -2,7 +2,7 @@ import { DurationPhase } from "@src/core/card_types";
 import { Copper } from "@src/core/cards/basic/copper";
 import { Wharf } from "@src/core/cards/seaside/wharf";
 import { Game } from "@src/core/game";
-import { PlayerHelper } from "@src/core/helpers/default_decisions";
+import { PlayerHelper } from "@src/core/helpers/player_helper";
 import { LogLevel } from "@src/core/logging/game_log";
 
 describe("Wharf", () => {

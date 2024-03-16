@@ -3,7 +3,7 @@ import { Silver } from "@src/core/cards/basic/silver";
 import { Ironworks } from "@src/core/cards/intrigue/ironworks";
 import { Decision } from "@src/core/decisions";
 import { Game } from "@src/core/game";
-import { PlayerHelper } from "@src/core/helpers/default_decisions";
+import { PlayerHelper } from "@src/core/helpers/player_helper";
 
 describe("Ironworks gains a treasure", () => {
   const game = new Game();

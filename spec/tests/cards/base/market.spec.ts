@@ -1,7 +1,7 @@
 import { Market } from "@src/core/cards/base/market";
 import { Peddler } from "@src/core/cards/prosperity/peddler";
 import { Game } from "@src/core/game";
-import { PlayerHelper } from "@src/core/helpers/default_decisions";
+import { PlayerHelper } from "@src/core/helpers/player_helper";
 
 describe("Market", () => {
   const game = new Game();

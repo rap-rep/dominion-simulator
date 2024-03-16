@@ -1,6 +1,6 @@
 import { Smithy } from "@src/core/cards/base/smithy";
 import { Game } from "@src/core/game";
-import { PlayerHelper } from "@src/core/helpers/default_decisions";
+import { PlayerHelper } from "@src/core/helpers/player_helper";
 
 describe("Smithy", () => {
   const game = new Game();

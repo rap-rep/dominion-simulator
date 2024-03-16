@@ -3,7 +3,7 @@ import { Copper } from "@src/core/cards/basic/copper";
 import { Curse } from "@src/core/cards/basic/curse";
 import { Watchtower } from "@src/core/cards/prosperity/watchtower";
 import { Game } from "@src/core/game";
-import { PlayerHelper } from "@src/core/helpers/default_decisions";
+import { PlayerHelper } from "@src/core/helpers/player_helper";
 import { EffectResolver } from "@src/core/resolvers/effect_resolver";
 
 describe("Watchtower", () => {

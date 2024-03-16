@@ -70,6 +70,6 @@
     },
     "useUnknownInCatchVariables": false
   },
-  "include": ["src/**/*.ts", "spec/**/*.ts", "build.ts"],
+  "include": ["src/**/*.ts", "spec/**/*.ts", "build.ts", "src/public/scripts/orderedConditionGaining.js"],
   "exclude": ["src/public/"]
 }

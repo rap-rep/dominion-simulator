@@ -1,5 +1,4 @@
 import { Copper } from "@src/core/cards/basic/copper";
-import { EffectAction, EffectPlayer } from "@src/core/effects";
 import { Game } from "@src/core/game";
 
 describe("Copper", () => {

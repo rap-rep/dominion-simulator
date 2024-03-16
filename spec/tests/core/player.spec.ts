@@ -3,7 +3,7 @@ import { Gold } from "@src/core/cards/basic/gold";
 import { Silver } from "@src/core/cards/basic/silver";
 import { Peddler } from "@src/core/cards/prosperity/peddler";
 import { Game } from "@src/core/game";
-import { PlayerHelper } from "@src/core/helpers/default_decisions";
+import { PlayerHelper } from "@src/core/helpers/player_helper";
 
 describe("Remove from hand", () => {
   const game = new Game();

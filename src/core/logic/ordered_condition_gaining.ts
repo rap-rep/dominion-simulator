@@ -8,7 +8,7 @@ import {
 import { NullCard } from "../cards/basic/null_card";
 import { MetricHelper } from "./metric_helpers";
 import { DecisionType } from "../decisions";
-import { PlayerHelper } from "../helpers/default_decisions";
+import { PlayerHelper } from "../helpers/player_helper";
 
 export enum GainMetric {
   CAN_GAIN = "can gain",
@@ -35,7 +35,6 @@ class EvalObject {
 export enum Parentheses {
   OPEN = "(",
   CLOSED = ")",
-  NONE = "",
 }
 
 export class OrderedGainCondition {
@@ -45,16 +44,16 @@ export class OrderedGainCondition {
   id: string;
   threshold_id: string;
   logical_joiner: LogicalJoiner;
-  open_paren: string;
-  closed_paren: string;
+  start_parens: string;
+  end_parens: string;
   card_references: string[] | undefined;
   constructor(
     metric: GainMetric,
     thresholdType: ThresholdType,
     threshold: number | undefined,
     logical_joiner: LogicalJoiner = LogicalJoiner.NONE,
-    open_parentheses: Parentheses = Parentheses.NONE,
-    closed_parentheses: Parentheses = Parentheses.NONE,
+    start_parens: Parentheses[] | Parentheses = [],
+    end_parens: Parentheses[] | Parentheses = [],
     card_references: string[] | undefined = undefined,
   ) {
     this.logical_joiner = logical_joiner;
@@ -63,13 +62,19 @@ export class OrderedGainCondition {
     this.threshold = threshold;
     this.id = "id_" + randomUUID().replace(/-/g, "");
     this.threshold_id = this.id + "_threshold";
-    this.open_paren = open_parentheses;
-    this.closed_paren = closed_parentheses;
+    if (!Array.isArray(start_parens)) {
+      start_parens = [start_parens];
+    }
+    if (!Array.isArray(end_parens)) {
+      end_parens = [end_parens];
+    }
+    this.start_parens = start_parens.join(" ");
+    this.end_parens = end_parens.join(" ");
     this.card_references = card_references;
   }
 
   getTokenizableEvaluation(): string {
-    return `${this.open_paren} ${this.logical_joiner} ${this.id} ${this.thresholdType} ${this.threshold_id} ${this.closed_paren}`;
+    return `${this.start_parens} ${this.logical_joiner} ${this.id} ${this.thresholdType} ${this.threshold_id} ${this.end_parens}`;
   }
 }
 

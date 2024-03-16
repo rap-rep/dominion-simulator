@@ -1,6 +1,6 @@
 import { Peddler } from "@src/core/cards/prosperity/peddler";
 import { Game } from "@src/core/game";
-import { PlayerHelper } from "@src/core/helpers/default_decisions";
+import { PlayerHelper } from "@src/core/helpers/player_helper";
 
 describe("Peddler", () => {
   const game = new Game();

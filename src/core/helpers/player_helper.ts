@@ -45,7 +45,7 @@ export class PlayerHelper {
 
   static countVictoryPoints(player: Player) {
     let tally = 0;
-    for (const card of player.allCardsList){
+    for (const card of player.allCardsList) {
       tally += card.victoryPoints();
     }
     return tally;

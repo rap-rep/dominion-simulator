@@ -15,10 +15,9 @@ describe("A set of games between a simple engine and a default (money) bot", () 
     game.p2.opponent = game.p1;
     game.playGame();
     turns += game.turn;
-    if (game.winner === game.p2){
+    if (game.winner === game.p2) {
       wins++;
-    }
-    else if (game.winner === game.p1){
+    } else if (game.winner === game.p1) {
       losses++;
     }
   }

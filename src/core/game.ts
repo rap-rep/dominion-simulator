@@ -76,17 +76,14 @@ export class Game {
     this.gamelog.log(`Score: ${PlayerHelper.countVictoryPoints(player)}`);
   }
 
-
   private assignWinner() {
     const p1Points = PlayerHelper.countVictoryPoints(this.p1);
     const p2Points = PlayerHelper.countVictoryPoints(this.p2);
-    if (p1Points === p2Points){
+    if (p1Points === p2Points) {
       this.winner = null;
-    }
-    else if (p1Points > p2Points){
+    } else if (p1Points > p2Points) {
       this.winner = this.p1;
-    }
-    else{
+    } else {
       this.winner = this.p2;
     }
     this.gamelog.log(`Winner: ${this.winner?.name || "Tie"}`);

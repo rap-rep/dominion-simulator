@@ -124,7 +124,12 @@ export class OrderedConditionGainSelector {
         `First element in condition set can not have a logical joiner, but one was provided ${conditionSet}`,
       );
     }
+
     // Ensure every condition contains at least the ablity to gain the card
+    // Group all already provided conditions to ensure this check is applied separately
+    conditionSet[0].start_parens = "(" + conditionSet[0].start_parens;
+    conditionSet[conditionSet.length - 1].end_parens =
+      conditionSet[conditionSet.length - 1].end_parens + ")";
     conditionSet.push(
       new OrderedGainCondition(
         GainMetric.CAN_GAIN,

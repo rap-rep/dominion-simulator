@@ -14,5 +14,6 @@ export default {
   Game: {
     Game: "/game",
     Run: "/run",
+    PostRun: "/post_run",
   },
 } as const;

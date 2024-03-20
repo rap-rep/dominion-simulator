@@ -12,6 +12,7 @@ const apiRouter = Router(),
 
 const gameRouter = Router();
 gameRouter.get(Paths.Game.Run, UserRoutes.getGame);
+gameRouter.post(Paths.Game.PostRun, UserRoutes.postGame);
 
 // ** Add UserRouter ** //
 

@@ -41,9 +41,14 @@ export class GameLog {
     }
   }
 
-  log(line: string) {
-    if (this.mode === LogMode.CONSOLE_LOG) {
-      console.log(line);
+  log(line: string, level: LogLevel = LogLevel.INFO) {
+    if (
+      level === LogLevel.INFO ||
+      (level === LogLevel.DEBUG && this.level === LogLevel.DEBUG)
+    ) {
+      if (this.mode === LogMode.CONSOLE_LOG) {
+        console.log(line);
+      }
     }
   }
 

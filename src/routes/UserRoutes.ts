@@ -4,12 +4,29 @@ import UserService from "@src/services/UserService";
 import { IUser } from "@src/models/User";
 import { IReq, IRes } from "./types/express/misc";
 import { Game } from "@src/core/game";
+import { ConditionSetList } from "@src/core/logic/ordered_condition_gaining";
+import { LogMode } from "@src/core/logging/game_log";
 
 // **** Functions **** //
 
 // TODO Fix this file, currently in testing/play-around mode
 async function getGame(_: IReq, res: IRes) {
   const game = new Game();
+  game.playGame();
+  return res.status(HttpStatusCodes.OK).json({ turns: game.turn });
+}
+
+async function postGame(
+  req: IReq<{ p1rules: ConditionSetList; p2rules: ConditionSetList }>,
+  res: IRes,
+) {
+  const { p1rules, p2rules } = req.body;
+
+  const game = new Game({
+    p1gainRules: p1rules,
+    p2gainRules: p2rules,
+    logMode: LogMode.CONSOLE_LOG,
+  });
   game.playGame();
   return res.status(HttpStatusCodes.OK).json({ turns: game.turn });
 }
@@ -53,6 +70,7 @@ async function delete_(req: IReq, res: IRes) {
 
 export default {
   getGame,
+  postGame,
   getAll,
   add,
   update,

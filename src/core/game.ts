@@ -4,10 +4,13 @@ import { Kingdom } from "./kingdom";
 import { Player } from "./player";
 import { EventLog } from "./logging/event_log";
 import { PlayerHelper } from "./helpers/player_helper";
+import { ConditionSetList } from "./logic/ordered_condition_gaining";
 
 export type GameConfig = {
   logMode?: LogMode | undefined;
   logLevel?: LogLevel | undefined;
+  p1gainRules?: ConditionSetList | undefined;
+  p2gainRules?: ConditionSetList | undefined;
 };
 
 export class Game {
@@ -31,8 +34,8 @@ export class Game {
     this.kingdom = new Kingdom();
     this.gamelog = new GameLog(config?.logMode, config?.logLevel);
     this.eventlog = new EventLog(this.gamelog);
-    this.p1 = new Player("player one", this);
-    this.p2 = new Player("player two", this);
+    this.p1 = new Player("player one", this, config?.p1gainRules);
+    this.p2 = new Player("player two", this, config?.p2gainRules);
     this.p1.setOpponent(this.p2);
     this.p2.setOpponent(this.p1);
     this.currentPlayer = this.p1;
@@ -54,7 +57,7 @@ export class Game {
   }
 
   private switchPlayer() {
-    if (this.currentPlayer == this.p1) {
+    if (this.currentPlayer === this.p1) {
       this.currentPlayer = this.p2;
     } else {
       this.currentPlayer = this.p1;
@@ -62,7 +65,7 @@ export class Game {
   }
 
   private incrementTurn() {
-    if (this.currentPlayer == this.p1) {
+    if (this.currentPlayer === this.p1) {
       this.turn++;
     }
     this.gamelog.logTurn(this.turn, this.currentPlayer.name);

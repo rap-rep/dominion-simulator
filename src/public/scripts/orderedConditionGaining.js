@@ -7,7 +7,7 @@ const GainMetrics = {
 };
 
 const Comparisons = {
-  GREATER_OR_EQUAL: "=>",
+  GREATER_OR_EQUAL: ">=",
   LESS_OR_EQUAL: "<=",
 };
 
@@ -28,24 +28,19 @@ function getComparisonElement() {
 }
 
 function getDeleteRuleIcon() {
-  var div = document.createElement("div");
-  div.classList.add("rule-icon");
-  div.classList.add("delete-rule");
-
   var button = document.createElement("button");
   button.classList.add("pure-button");
+  button.classList.add("delete-rule");
 
   button.innerHTML = "X";
 
   button.addEventListener("click", (event) => {
     event.preventDefault();
-    event.target.parentElement.parentElement.parentElement.removeChild(
-      event.target.parentElement.parentElement,
-    );
+    const allRulesDiv = event.target.parentElement.parentElement.parentElement;
+    allRulesDiv.removeChild(event.target.parentElement.parentElement);
   });
 
-  div.appendChild(button);
-  return div;
+  return button;
 }
 
 function getAddRuleIcon() {
@@ -77,7 +72,6 @@ function getMoveUpRuleIcon() {
     event.preventDefault();
     // Delete the rule associated with the icon
     const ruleElement = event.target.parentElement.parentElement;
-    console.log(ruleElement.classList);
     const currentIdx = Array.from(ruleElement.parentElement.children).indexOf(
       ruleElement,
     );
@@ -211,6 +205,7 @@ function addConditionListener(addConditionSelect) {
 
 function getAddConditionElement() {
   var addConditionSelect = document.createElement("select");
+  addConditionSelect.classList.add("select-condition");
 
   var menuTitle = document.createElement("option");
   menuTitle.value = "add_condition";
@@ -251,7 +246,6 @@ function getCanGainRule(card) {
   var gainText = document.createElement("div");
   gainText.classList.add("gain-arrow-text");
   gainText.innerHTML = "gain ->";
- 
 
   var cardInput = document.createElement("input");
   cardInput.classList.add("card-input");
@@ -277,10 +271,8 @@ function addCanGainRule(anchor, card) {
 }
 
 function setupDefaultRules(anchor, player_id) {
-  var orderedRulesDiv = document.createElement(
-    "div",
-    (id = `ordered-rules-${player_id}`),
-  );
+  var orderedRulesDiv = document.createElement("div");
+  orderedRulesDiv.classList.add("ordered-rules");
   anchor.appendChild(orderedRulesDiv);
 
   /*var plusButton = document.createElement("button");

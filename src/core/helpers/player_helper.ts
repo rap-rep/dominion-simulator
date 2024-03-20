@@ -12,8 +12,11 @@ import { Silver } from "../cards/basic/silver";
 import { Decision, DecisionType } from "../decisions";
 import { EffectAction } from "../effects";
 import {
+  ConditionSetList,
   GainMetric,
+  GainMetricFrontend,
   LogicalJoiner,
+  LogicalJoinerFrontend,
   OrderedConditionGainSelector,
   OrderedGainCondition,
   ThresholdType,
@@ -58,6 +61,78 @@ export class PlayerHelper {
       }
     }
     return NULL_CARD;
+  }
+
+  // TODO This really should have unit testing
+  static createSelector(
+    conditionSetList: ConditionSetList,
+    player: Player,
+  ): OrderedConditionGainSelector {
+    const selector = new OrderedConditionGainSelector(player);
+    for (const conditionSet of conditionSetList.conditionSetList) {
+      const outputConditions: OrderedGainCondition[] = new Array();
+      for (const condition of conditionSet.conditionSet) {
+        let joiner: LogicalJoiner = LogicalJoiner.NONE;
+        if (condition.joiner) {
+          if (condition.joiner === LogicalJoinerFrontend.AND){
+            joiner = LogicalJoiner.AND;
+          }
+          else if (condition.joiner === LogicalJoinerFrontend.OR){
+            joiner = LogicalJoiner.OR;
+          }
+          else{
+            throw new Error(`Passed in unsupported logical joiner of ${condition.joiner}`);
+          }
+        }
+        if (condition.gainMetric === GainMetricFrontend.CAN_GAIN) {
+          if (conditionSet.conditionSet.length > 1) {
+            throw new Error("Can gain rules can only exist independently");
+          }
+          selector.addGainAlwaysCondition(conditionSet.cardToGain);
+        } else if (
+          condition.gainMetric === GainMetricFrontend.TURN ||
+          GainMetricFrontend.COINS_AVAILABLE
+        ) {
+          const gainMetric =
+            condition.gainMetric === GainMetricFrontend.TURN
+              ? GainMetric.TURN
+              : GainMetric.COINS_AVAILABLE;
+          outputConditions.push(
+            new OrderedGainCondition(
+              gainMetric,
+              condition.comparator as ThresholdType,
+              condition.amount,
+              joiner,
+              undefined,
+              undefined,
+              condition.cardList,
+            ),
+          );
+        } else if (
+          condition.gainMetric === GainMetricFrontend.CARD_IN_DECK_COUNT ||
+          condition.gainMetric === GainMetricFrontend.DIFF_IN_DECK
+        ) {
+          outputConditions.push(
+            new OrderedGainCondition(
+              GainMetric.CARD_IN_DECK_COUNT,
+              condition.comparator as ThresholdType,
+              condition.amount,
+              joiner,
+              undefined,
+              undefined,
+              condition.cardList,
+            ),
+          );
+        } else {
+          throw new Error(`Unsupported gain metric: ${condition.gainMetric}`);
+        }
+      }
+
+      if (outputConditions.length > 0) {
+        selector.addConditionSet(outputConditions, conditionSet.cardToGain);
+      }
+    }
+    return selector;
   }
 
   static selectBestActionByHeuristic(player: Player): Card {
@@ -186,16 +261,8 @@ export class PlayerHelper {
     }
   }
 
-  static defaultGainDecision(
-    player: Player,
-    decisionType: DecisionType,
-    amount: number,
-  ): string {
-    const selector = new OrderedConditionGainSelector(
-      player,
-      decisionType,
-      amount,
-    );
+  static defaultSelector(player: Player): OrderedConditionGainSelector {
+    const selector = new OrderedConditionGainSelector(player);
     selector.addGainAlwaysCondition(Province.NAME);
     selector.addGainAlwaysCondition(Gold.NAME);
     selector.addConditionSet(
@@ -240,7 +307,13 @@ export class PlayerHelper {
       Estate.NAME,
     );
 
-    return selector.getGainName(player);
+    return selector;
+  }
+
+  static defaultGainDecision(player: Player, amount: number): string {
+    const selector = this.defaultSelector(player);
+
+    return selector.getGainName(player, amount);
   }
 
   static countHandSize(player: Player): number {

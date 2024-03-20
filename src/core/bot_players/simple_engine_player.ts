@@ -1,13 +1,12 @@
 import { Village } from "../cards/base/village";
 import { Duchy } from "../cards/basic/duchy";
-import { Gold } from "../cards/basic/gold";
 import { Province } from "../cards/basic/province";
 import { Silver } from "../cards/basic/silver";
 import { Wharf } from "../cards/seaside/wharf";
 import { Decision, DecisionType } from "../decisions";
 import {
+  ConditionSetList,
   GainMetric,
-  LogicalJoiner,
   OrderedConditionGainSelector,
   OrderedGainCondition,
   ThresholdType,
@@ -15,13 +14,12 @@ import {
 import { Player } from "../player";
 
 export class SimpleEnginePlayer extends Player {
+  /*
+   * Extremely basic player that plays Wharf/Village
+   */
   gainCardDecision(decision: Decision): string {
     if (decision.decisionType === DecisionType.BUY_CARD) {
-      const toGain = SimpleEnginePlayer.defaultGainDecision(
-        this,
-        decision.decisionType,
-        this.coins,
-      );
+      const toGain = SimpleEnginePlayer.defaultGainDecision(this, this.coins);
       this.game.gamelog.logBuy(this, toGain);
       return toGain;
     } else if (decision.decisionType == DecisionType.GAIN_CARD_UP_TO) {
@@ -32,7 +30,6 @@ export class SimpleEnginePlayer extends Player {
       }
       const decisionResult = SimpleEnginePlayer.defaultGainDecision(
         this,
-        decision.decisionType,
         decision.amount,
       );
       decision.result = decisionResult;
@@ -42,37 +39,44 @@ export class SimpleEnginePlayer extends Player {
     }
   }
 
-  static defaultGainDecision(
-    player: Player,
-    decisionType: DecisionType,
-    amount: number,
-  ): string {
-    const selector = new OrderedConditionGainSelector(
-      player,
-      decisionType,
-      amount,
-    );
+  loadSelectorFromConditionSet(
+    _conditionSetList?: ConditionSetList,
+  ): OrderedConditionGainSelector {
+    const selector = new OrderedConditionGainSelector(this);
 
-    selector.addConditionSet(
-      [
-        new OrderedGainCondition(
-          GainMetric.CARD_IN_DECK_COUNT,
-          ThresholdType.LESS_OR_EQUAL,
-          0,
-          undefined,
-          undefined,
-          undefined,
-          [Gold.NAME],
-        ),
-        new OrderedGainCondition(
-          GainMetric.TURN,
-          ThresholdType.GREATER_OR_EQUAL,
-          7,
-          LogicalJoiner.AND,
-        ),
-      ],
-      Gold.NAME,
+    selector.addCondition(
+      new OrderedGainCondition(
+        GainMetric.TURN,
+        ThresholdType.GREATER_OR_EQUAL,
+        10,
+      ),
+      Province.NAME,
     );
+    selector.addCondition(
+      new OrderedGainCondition(
+        GainMetric.CARD_IN_DECK_COUNT,
+        ThresholdType.GREATER_OR_EQUAL,
+        3,
+        undefined,
+        undefined,
+        undefined,
+        [Province.NAME],
+      ),
+      Duchy.NAME,
+    );
+    selector.addCondition(
+      new OrderedGainCondition(
+        GainMetric.CARD_IN_DECK_COUNT,
+        ThresholdType.GREATER_OR_EQUAL,
+        3,
+        undefined,
+        undefined,
+        undefined,
+        [Wharf.NAME, Village.NAME],
+      ),
+      Village.NAME,
+    );
+    selector.addGainAlwaysCondition(Wharf.NAME);
     selector.addCondition(
       new OrderedGainCondition(
         GainMetric.CARD_IN_DECK_COUNT,
@@ -86,34 +90,18 @@ export class SimpleEnginePlayer extends Player {
       Village.NAME,
     );
     selector.addCondition(
-      new OrderedGainCondition(
-        GainMetric.TURN,
-        ThresholdType.GREATER_OR_EQUAL,
-        10,
-      ),
-      Province.NAME,
-    );
-    selector.addCondition(
-      new OrderedGainCondition(
-        GainMetric.CARD_IN_DECK_COUNT,
-        ThresholdType.GREATER_OR_EQUAL,
-        2,
-        undefined,
-        undefined,
-        undefined,
-        [Province.NAME],
-      ),
-      Duchy.NAME,
-    );
-    selector.addGainAlwaysCondition(Wharf.NAME);
-    selector.addCondition(
       new OrderedGainCondition(GainMetric.TURN, ThresholdType.LESS_OR_EQUAL, 2),
       Silver.NAME,
     );
-    selector.addGainAlwaysCondition(Village.NAME);
-
     selector.addGainAlwaysCondition(Silver.NAME);
+    return selector;
+  }
 
-    return selector.getGainName(player);
+  static defaultGainDecision(player: Player, amount: number): string {
+    if (!player.selector) {
+      player.selector = player.loadSelectorFromConditionSet();
+    }
+
+    return player.selector.getGainName(player, amount);
   }
 }

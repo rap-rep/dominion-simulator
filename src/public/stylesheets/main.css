@@ -20,8 +20,8 @@ body {
 }
 
 .delete-rule {
-  padding-left: 5px;
-  padding-right: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 .gain-arrow-text {
@@ -47,5 +47,5 @@ body {
 }
 
 .gain-conditions {
-  float: right; 
+  float: right;
 }

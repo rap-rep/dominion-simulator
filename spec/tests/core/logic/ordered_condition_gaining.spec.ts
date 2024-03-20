@@ -5,7 +5,6 @@ import { Duchy } from "@src/core/cards/basic/duchy";
 import { NullCard } from "@src/core/cards/basic/null_card";
 import { Province } from "@src/core/cards/basic/province";
 import { Silver } from "@src/core/cards/basic/silver";
-import { DecisionType } from "@src/core/decisions";
 import { Game } from "@src/core/game";
 import {
   LogicalJoiner,
@@ -17,11 +16,7 @@ import {
 
 describe("A single rule to buy silver with more than 3", () => {
   const game = new Game();
-  const gainRules = new OrderedConditionGainSelector(
-    game.currentPlayer,
-    DecisionType.BUY_CARD,
-    3,
-  );
+  const gainRules = new OrderedConditionGainSelector(game.currentPlayer);
   gainRules.addCondition(
     new OrderedGainCondition(
       GainMetric.COINS_AVAILABLE,
@@ -31,7 +26,7 @@ describe("A single rule to buy silver with more than 3", () => {
     Silver.NAME,
   );
   game.p1.coins = 3;
-  const card = gainRules.getGainName(game.p1);
+  const card = gainRules.getGainName(game.p1, 3);
   it("selects silver when more than 3 is avialable", () => {
     expect(card).toEqual(Silver.NAME);
   });
@@ -39,11 +34,7 @@ describe("A single rule to buy silver with more than 3", () => {
 
 describe("A single rule to buy silver with more than 3", () => {
   const game = new Game();
-  const gainRules = new OrderedConditionGainSelector(
-    game.currentPlayer,
-    DecisionType.BUY_CARD,
-    2,
-  );
+  const gainRules = new OrderedConditionGainSelector(game.currentPlayer);
   gainRules.addCondition(
     new OrderedGainCondition(
       GainMetric.COINS_AVAILABLE,
@@ -53,7 +44,7 @@ describe("A single rule to buy silver with more than 3", () => {
     Silver.NAME,
   );
   game.p1.coins = 2;
-  const card = gainRules.getGainName(game.p1);
+  const card = gainRules.getGainName(game.p1, 2);
   it("selects nothing when 2 is available", () => {
     expect(card).toEqual(NullCard.NAME);
   });
@@ -61,11 +52,7 @@ describe("A single rule to buy silver with more than 3", () => {
 
 describe("A single rule with multiple conditionals", () => {
   const game = new Game();
-  const gainRules = new OrderedConditionGainSelector(
-    game.currentPlayer,
-    DecisionType.BUY_CARD,
-    5,
-  );
+  const gainRules = new OrderedConditionGainSelector(game.currentPlayer);
   gainRules.addConditionSet(
     [
       new OrderedGainCondition(
@@ -83,7 +70,7 @@ describe("A single rule with multiple conditionals", () => {
     Duchy.NAME,
   );
   game.p1.coins = 5;
-  const card = gainRules.getGainName(game.p1);
+  const card = gainRules.getGainName(game.p1, 5);
   it("selects nothing when coin is available but turn is too early", () => {
     expect(card).toEqual(NullCard.NAME);
   });
@@ -92,11 +79,7 @@ describe("A single rule with multiple conditionals", () => {
 describe("A single rule with multiple conditionals", () => {
   const game = new Game();
   game.turn = 15;
-  const gainRules = new OrderedConditionGainSelector(
-    game.currentPlayer,
-    DecisionType.BUY_CARD,
-    5,
-  );
+  const gainRules = new OrderedConditionGainSelector(game.currentPlayer);
   gainRules.addConditionSet(
     [
       new OrderedGainCondition(
@@ -114,7 +97,7 @@ describe("A single rule with multiple conditionals", () => {
     Duchy.NAME,
   );
   game.p1.coins = 5;
-  const card = gainRules.getGainName(game.p1);
+  const card = gainRules.getGainName(game.p1, 5);
   it("selects Duchy when 5 is available and turn is late enough", () => {
     expect(card).toEqual(Duchy.NAME);
   });
@@ -123,11 +106,7 @@ describe("A single rule with multiple conditionals", () => {
 describe("A rule with multiple matching conditionals", () => {
   const game = new Game();
   game.turn = 15;
-  const gainRules = new OrderedConditionGainSelector(
-    game.currentPlayer,
-    DecisionType.BUY_CARD,
-    5,
-  );
+  const gainRules = new OrderedConditionGainSelector(game.currentPlayer);
   gainRules.addConditionSet(
     [
       new OrderedGainCondition(
@@ -153,7 +132,7 @@ describe("A rule with multiple matching conditionals", () => {
     Copper.NAME,
   );
   game.p1.coins = 5;
-  const card = gainRules.getGainName(game.p1);
+  const card = gainRules.getGainName(game.p1, 5);
   it("select the first matching one", () => {
     expect(card).toEqual(Duchy.NAME);
   });
@@ -162,11 +141,7 @@ describe("A rule with multiple matching conditionals", () => {
 describe("A rule with multiple conditionals", () => {
   const game = new Game();
   game.turn = 2;
-  const gainRules = new OrderedConditionGainSelector(
-    game.currentPlayer,
-    DecisionType.BUY_CARD,
-    3,
-  );
+  const gainRules = new OrderedConditionGainSelector(game.currentPlayer);
   gainRules.addConditionSet(
     [
       new OrderedGainCondition(
@@ -186,7 +161,7 @@ describe("A rule with multiple conditionals", () => {
     Copper.NAME,
   );
   game.p1.coins = 3;
-  const card = gainRules.getGainName(game.p1);
+  const card = gainRules.getGainName(game.p1, 3);
   it("select the first rule that evaluates to true", () => {
     expect(card).toEqual(Copper.NAME);
   });
@@ -194,11 +169,7 @@ describe("A rule with multiple conditionals", () => {
 
 describe("Buy rule", () => {
   const game = new Game();
-  const gainRules = new OrderedConditionGainSelector(
-    game.currentPlayer,
-    DecisionType.BUY_CARD,
-    2,
-  );
+  const gainRules = new OrderedConditionGainSelector(game.currentPlayer);
   gainRules.addCondition(
     new OrderedGainCondition(
       GainMetric.TURN,
@@ -208,7 +179,7 @@ describe("Buy rule", () => {
     Province.NAME,
   );
   game.p1.coins = 2;
-  const card = gainRules.getGainName(game.p1);
+  const card = gainRules.getGainName(game.p1, 2);
   it("does not lead to buying a card that can not be bought", () => {
     expect(card).toEqual(NullCard.NAME);
   });
@@ -217,11 +188,7 @@ describe("Buy rule", () => {
 describe("Buy rule based on cards in deck", () => {
   const game = new Game();
   const coins = 3;
-  const gainRules = new OrderedConditionGainSelector(
-    game.p1,
-    DecisionType.BUY_CARD,
-    coins,
-  );
+  const gainRules = new OrderedConditionGainSelector(game.p1);
   gainRules.addCondition(
     new OrderedGainCondition(
       GainMetric.CARD_IN_DECK_COUNT,
@@ -235,7 +202,7 @@ describe("Buy rule based on cards in deck", () => {
     Silver.NAME,
   );
   game.p1.coins = coins;
-  const card = gainRules.getGainName(game.p1);
+  const card = gainRules.getGainName(game.p1, coins);
   it("buys a silver when the required amount of copper is in the deck", () => {
     expect(card).toEqual(Silver.NAME);
   });
@@ -244,11 +211,7 @@ describe("Buy rule based on cards in deck", () => {
 describe("Buy rule based on cards in deck", () => {
   const game = new Game();
   const coins = 3;
-  const gainRules = new OrderedConditionGainSelector(
-    game.p1,
-    DecisionType.BUY_CARD,
-    coins,
-  );
+  const gainRules = new OrderedConditionGainSelector(game.p1);
   gainRules.addCondition(
     new OrderedGainCondition(
       GainMetric.CARD_IN_DECK_COUNT,
@@ -262,7 +225,7 @@ describe("Buy rule based on cards in deck", () => {
     Silver.NAME,
   );
   game.p1.coins = coins;
-  const card = gainRules.getGainName(game.p1);
+  const card = gainRules.getGainName(game.p1, coins);
   it("buys nothing if required amount of copper is not in the deck", () => {
     expect(card).toEqual(NullCard.NAME);
   });
@@ -271,11 +234,7 @@ describe("Buy rule based on cards in deck", () => {
 describe("Buy rule based on cards diff", () => {
   const game = new Game();
   const coins = 3;
-  const gainRules = new OrderedConditionGainSelector(
-    game.p1,
-    DecisionType.BUY_CARD,
-    coins,
-  );
+  const gainRules = new OrderedConditionGainSelector(game.p1);
   game.p1.effectResolver.gainCard(game.p1, Village.NAME);
   game.p1.effectResolver.gainCard(game.p1, Smithy.NAME);
   // Buy Village if Village - Smithy >= 1
@@ -292,7 +251,7 @@ describe("Buy rule based on cards diff", () => {
     Village.NAME,
   );
   game.p1.coins = coins;
-  const card = gainRules.getGainName(game.p1);
+  const card = gainRules.getGainName(game.p1, coins);
   it("does not buy the card if the diff is not great enough", () => {
     expect(card).toEqual(NullCard.NAME);
   });
@@ -301,11 +260,7 @@ describe("Buy rule based on cards diff", () => {
 describe("Buy rule based on cards diff", () => {
   const game = new Game();
   const coins = 3;
-  const gainRules = new OrderedConditionGainSelector(
-    game.p1,
-    DecisionType.BUY_CARD,
-    coins,
-  );
+  const gainRules = new OrderedConditionGainSelector(game.p1);
   for (let i = 0; i < 2; i++) {
     game.p1.effectResolver.gainCard(game.p1, Village.NAME);
   }
@@ -324,7 +279,7 @@ describe("Buy rule based on cards diff", () => {
     Village.NAME,
   );
   game.p1.coins = coins;
-  const card = gainRules.getGainName(game.p1);
+  const card = gainRules.getGainName(game.p1, coins);
   it("does buy a card if the diff is great enough", () => {
     expect(card).toEqual(Village.NAME);
   });

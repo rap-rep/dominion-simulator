@@ -1,5 +1,5 @@
 import { Card } from "./card";
-import { CardHeuristicType, CardType, DurationPhase } from "./card_types";
+import { CardType, DurationPhase } from "./card_types";
 import { Copper } from "./cards/basic/copper";
 import { Estate } from "./cards/basic/estate";
 import { NullCard } from "./cards/basic/null_card";
@@ -8,17 +8,23 @@ import { EffectPlayer } from "./effects";
 import { Game, Phase } from "./game";
 import { PlayerHelper } from "./helpers/player_helper";
 import { MetricHelper } from "./logic/metric_helpers";
+import {
+  ConditionSetList,
+  OrderedConditionGainSelector,
+} from "./logic/ordered_condition_gaining";
 import { EffectResolver } from "./resolvers/effect_resolver";
 
 export class Player {
   /*
    * Contains the core capabilities of the player needed to play the game
    * All cards belonging to the player are tracked and managed here
+   * Override points for decisions made by the player are also defined here
    *
-   * default_decisions.ts is used to manage decision-making
-   * with further work planned for configurable decision-making
+   * EffectResolver contains implementations for resolving effects and decisions
+   * (manipulating and logging the game state while prodding the player for decisions)
    *
-   * effect_resolver.ts contains implementations for resolving effects and decisions
+   * Logic regarding decisions does not belong here
+   * and should be in the PlayerHelper / Card classes
    */
   name: string;
   game: Game;
@@ -35,10 +41,12 @@ export class Player {
   buys: number = 1;
   coins: number = 0;
   effectResolver = new EffectResolver();
+  selector: OrderedConditionGainSelector;
 
-  constructor(name: string, game: Game) {
+  constructor(name: string, game: Game, gainRules?: ConditionSetList) {
     this.name = name;
     this.game = game;
+    this.selector = this.loadSelectorFromConditionSet(gainRules);
     this.hand = new Map();
     this.inPlay = [];
     this.discard = [];
@@ -49,8 +57,6 @@ export class Player {
     this.drawHand();
     this.startTurn();
   }
-
-  // START SECTION: Core mechanics of the player to run a game
 
   startTurn() {
     this.game.phase = Phase.START;
@@ -255,18 +261,25 @@ export class Player {
     }
   }
 
-  // Decisions belonging to the player
+  loadSelectorFromConditionSet(
+    conditionSetList?: ConditionSetList,
+  ): OrderedConditionGainSelector {
+    // TODO Next load rules from conditionSetList if defined
+    if (conditionSetList) {
+      return PlayerHelper.createSelector(conditionSetList, this);
+    }
+
+    return PlayerHelper.defaultSelector(this);
+  }
+
   makeDecision(decision: Decision) {
     PlayerHelper.makeDefaultDecision(this, decision);
   }
 
+  // maybe TODO move this call point into the generalized makeDecision handler
   gainCardDecision(decision: Decision): string {
     if (decision.decisionType === DecisionType.BUY_CARD) {
-      const toGain = PlayerHelper.defaultGainDecision(
-        this,
-        decision.decisionType,
-        this.coins,
-      );
+      const toGain = this.selector.getGainName(this, this.coins);
       this.game.gamelog.logBuy(this, toGain);
       return toGain;
     } else if (decision.decisionType === DecisionType.GAIN_CARD_UP_TO) {
@@ -275,11 +288,7 @@ export class Player {
           "Decision amount required but not provided for gain effect",
         );
       }
-      const decisionResult = PlayerHelper.defaultGainDecision(
-        this,
-        decision.decisionType,
-        decision.amount,
-      );
+      const decisionResult = this.selector.getGainName(this, decision.amount);
       decision.result = decisionResult;
       return decisionResult;
     } else {

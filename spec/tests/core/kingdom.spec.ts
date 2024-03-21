@@ -4,7 +4,7 @@ import { Copper } from "@src/core/cards/basic/copper";
 import { Estate } from "@src/core/cards/basic/estate";
 import { Province } from "@src/core/cards/basic/province";
 import { Silver } from "@src/core/cards/basic/silver";
-import { EffectAction } from "@src/core/effects";
+import { EffectType } from "@src/core/effects";
 import { Game } from "@src/core/game";
 
 describe("Sanity check the kingdom setup ", () => {
@@ -21,8 +21,8 @@ describe("Sanity check the kingdom setup ", () => {
 
   it("should have 46 copper", () => {
     expect(game.kingdom.supplyPiles.get(Copper.NAME)?.length).toBe(46);
-    expect(top_copper?.playGraph().getStartNode()?.node.action).toBe(
-      EffectAction.PLUS_COIN,
+    expect(top_copper?.playGraph().getStartNode()?.node.effectType).toBe(
+      EffectType.PLUS_COIN,
     );
   });
 

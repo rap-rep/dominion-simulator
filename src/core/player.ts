@@ -7,6 +7,7 @@ import { Decision, DecisionType } from "./decisions";
 import { EffectPlayer } from "./effects";
 import { Game, Phase } from "./game";
 import { PlayerHelper } from "./helpers/player_helper";
+import { EventRecordBuilder } from "./logging/event_record_builders";
 import { MetricHelper } from "./logic/metric_helpers";
 import {
   ConditionSetList,
@@ -128,7 +129,7 @@ export class Player {
     return deck;
   };
 
-  drawCard() {
+  drawCard(): Card | undefined {
     if (this.deck.length == 0 && this.discard.length > 0) {
       this.game.gamelog.shuffleDeck(this);
       this.deck = this.shuffledDeck(this.discard);
@@ -138,6 +139,7 @@ export class Player {
     if (cardDrawn) {
       this.game.gamelog.logDraw(this, cardDrawn);
       this.addCardToHand(cardDrawn);
+      return cardDrawn;
     }
   }
 

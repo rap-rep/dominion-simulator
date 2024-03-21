@@ -14,7 +14,7 @@ const NULL_CARD = new NullCard();
  * but rather lead to the generation of new Effects
  */
 
-export enum EffectAction {
+export enum EffectType {
   // Basic descriptor of the effect
   PASS = "Pass",
 
@@ -48,7 +48,7 @@ export enum EffectPlayer {
 }
 
 export class Effect {
-  action: EffectAction;
+  effectType: EffectType;
   effectPlayer: EffectPlayer;
   affects: Card | Card[] | number | string | undefined | number[];
   reference: Decision | Effect | undefined;
@@ -58,14 +58,14 @@ export class Effect {
   referenceIndex: number | undefined;
 
   constructor(
-    action: EffectAction,
+    effectType: EffectType,
     effectPlayer: EffectPlayer,
     affects?: Card | Card[] | number | undefined | string | number[],
     reference?: Decision | Effect | undefined,
     fromCard?: Card,
     referenceIndex?: number,
   ) {
-    this.action = action;
+    this.effectType = effectType;
     this.affects = affects;
     this.effectPlayer = effectPlayer;
     this.reference = reference;

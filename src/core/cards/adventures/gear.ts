@@ -5,7 +5,7 @@ import {
   CardType,
   DurationPhase,
 } from "@src/core/card_types";
-import { Effect, EffectAction, EffectPlayer } from "@src/core/effects";
+import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 import { Decision, DecisionType } from "@src/core/decisions";
 import { PlayerHelper } from "@src/core/helpers/player_helper";
 import { Player } from "@src/core/player";
@@ -50,7 +50,7 @@ export class Gear extends Card {
     this.setAsideDecision.fromCard = this;
     const graph = new Graph();
     const draw = new PlayNode(
-      new Effect(EffectAction.DRAW_CARD, EffectPlayer.SELF, 2, undefined, this),
+      new Effect(EffectType.DRAW_CARD, EffectPlayer.SELF, 2, undefined, this),
     );
 
     const setAside = new PlayNode(this.setAsideDecision);
@@ -65,7 +65,7 @@ export class Gear extends Card {
 
     const inHand = new PlayNode(
       new Effect(
-        EffectAction.IN_HAND_FROM_SET_ASIDE,
+        EffectType.IN_HAND_FROM_SET_ASIDE,
         EffectPlayer.SELF,
         undefined,
         this.setAsideDecision,

@@ -1,7 +1,7 @@
 import { Graph, PlayNode } from "@src/core/graph";
 import { CardHeuristicType, CardType } from "@src/core/card_types";
 import { Card } from "../../card";
-import { Effect, EffectAction, EffectPlayer } from "@src/core/effects";
+import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 
 const Name = "Gold";
 
@@ -23,13 +23,7 @@ export class Gold extends Card {
 
     graph.addNode(
       new PlayNode(
-        new Effect(
-          EffectAction.PLUS_COIN,
-          EffectPlayer.SELF,
-          3,
-          undefined,
-          this,
-        ),
+        new Effect(EffectType.PLUS_COIN, EffectPlayer.SELF, 3, undefined, this),
       ),
     );
 

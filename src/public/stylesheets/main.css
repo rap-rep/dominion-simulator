@@ -8,15 +8,19 @@ body {
 }
 
 .card-input {
-  width: 115px;
+  width: 105px;
 }
 
 .smaller-card-input {
   width: 65px;
 }
 
+.medium-card-input {
+  width: 85px;
+}
+
 .number-input {
-  width: 60px;
+  width: 55px;
 }
 
 .delete-rule {

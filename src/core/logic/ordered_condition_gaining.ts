@@ -52,9 +52,9 @@ export enum LogicalJoiner {
 }
 
 export enum LogicalJoinerFrontend {
-    AND = "AND",
-    OR = "OR",
-  }
+  AND = "AND",
+  OR = "OR",
+}
 
 export enum ThresholdType {
   GREATER_OR_EQUAL = ">=",

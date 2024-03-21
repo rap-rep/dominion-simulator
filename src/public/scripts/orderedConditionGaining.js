@@ -184,7 +184,6 @@ function addConditionListener(addConditionSelect) {
       );
     }
     if (!isFirstAdded) {
-      //event.target.parentElement.insertBefore(getLogicalJoinerElement(), event.target.parentElement.children[maxElementAdded + 1]);
       conditionDiv.appendChild(getLogicalJoinerElement());
     }
     event.target.parentElement.insertBefore(
@@ -192,9 +191,6 @@ function addConditionListener(addConditionSelect) {
       event.target.parentElement.children[1],
     );
 
-    // tmp hack until supporting deletions with e.g.
-    // var delete_index = Array.from(event.target.parentNode.children).indexOf(event.target);
-    // ...
     event.target.disabled = true;
     event.target.parentElement.insertBefore(
       getAddConditionElement(),

@@ -1,7 +1,7 @@
 import { Graph, PlayNode } from "@src/core/graph";
 import { Card } from "../../card";
 import { CardHeuristicType, CardType } from "@src/core/card_types";
-import { Effect, EffectAction, EffectPlayer } from "@src/core/effects";
+import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 import { Decision, DecisionType } from "@src/core/decisions";
 
 const Name = "Workshop";
@@ -31,7 +31,7 @@ export class Workshop extends Card {
     graph.addNode(decisionNode);
     const gainNode = new PlayNode(
       new Effect(
-        EffectAction.GAIN_FROM_SUPPLY,
+        EffectType.GAIN_FROM_SUPPLY,
         EffectPlayer.SELF,
         undefined,
         gainCardDecision,

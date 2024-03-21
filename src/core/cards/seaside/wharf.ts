@@ -5,7 +5,7 @@ import {
   CardType,
   DurationPhase,
 } from "@src/core/card_types";
-import { Effect, EffectAction, EffectPlayer } from "@src/core/effects";
+import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 import { Decision, DecisionType } from "@src/core/decisions";
 
 const Name = "Wharf";
@@ -47,10 +47,10 @@ export class Wharf extends Card {
   playGraph(): Graph {
     const graph = new Graph();
     const draw = new PlayNode(
-      new Effect(EffectAction.DRAW_CARD, EffectPlayer.SELF, 2, undefined, this),
+      new Effect(EffectType.DRAW_CARD, EffectPlayer.SELF, 2, undefined, this),
     );
     const buy = new PlayNode(
-      new Effect(EffectAction.PLUS_BUY, EffectPlayer.SELF, 1, undefined, this),
+      new Effect(EffectType.PLUS_BUY, EffectPlayer.SELF, 1, undefined, this),
     );
 
     graph.addNode(draw);
@@ -62,10 +62,10 @@ export class Wharf extends Card {
   durationPlayGraph(): Graph {
     const graph = new Graph();
     const draw = new PlayNode(
-      new Effect(EffectAction.DRAW_CARD, EffectPlayer.SELF, 2, undefined, this),
+      new Effect(EffectType.DRAW_CARD, EffectPlayer.SELF, 2, undefined, this),
     );
     const buy = new PlayNode(
-      new Effect(EffectAction.PLUS_BUY, EffectPlayer.SELF, 1, undefined, this),
+      new Effect(EffectType.PLUS_BUY, EffectPlayer.SELF, 1, undefined, this),
     );
     graph.addNode(draw);
     graph.addNode(buy);

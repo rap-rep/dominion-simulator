@@ -1,5 +1,5 @@
 import { XOR } from "ts-xor";
-import { Effect, EffectAction, EffectPlayer } from "../effects";
+import { Effect, EffectType, EffectPlayer } from "../effects";
 import { NodeType, PlayNode } from "../graph";
 import { Player } from "../player";
 import { Decision, DecisionType } from "../decisions";

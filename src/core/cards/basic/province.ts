@@ -1,7 +1,7 @@
 import { Graph } from "@src/core/graph";
 import { Card } from "../../card";
 import { CardHeuristicType, CardType } from "@src/core/card_types";
-import { Effect, EffectAction, EffectPlayer } from "@src/core/effects";
+import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 
 const Name = "Province";
 

@@ -10,7 +10,7 @@ import { NullCard } from "../cards/basic/null_card";
 import { Province } from "../cards/basic/province";
 import { Silver } from "../cards/basic/silver";
 import { Decision, DecisionType } from "../decisions";
-import { EffectAction } from "../effects";
+import { EffectType } from "../effects";
 import {
   ConditionSetList,
   GainMetric,
@@ -74,14 +74,14 @@ export class PlayerHelper {
       for (const condition of conditionSet.conditionSet) {
         let joiner: LogicalJoiner = LogicalJoiner.NONE;
         if (condition.joiner) {
-          if (condition.joiner === LogicalJoinerFrontend.AND){
+          if (condition.joiner === LogicalJoinerFrontend.AND) {
             joiner = LogicalJoiner.AND;
-          }
-          else if (condition.joiner === LogicalJoinerFrontend.OR){
+          } else if (condition.joiner === LogicalJoinerFrontend.OR) {
             joiner = LogicalJoiner.OR;
-          }
-          else{
-            throw new Error(`Passed in unsupported logical joiner of ${condition.joiner}`);
+          } else {
+            throw new Error(
+              `Passed in unsupported logical joiner of ${condition.joiner}`,
+            );
           }
         }
         if (condition.gainMetric === GainMetricFrontend.CAN_GAIN) {
@@ -234,24 +234,24 @@ export class PlayerHelper {
 
       const effectedCard = effect.affects as Card;
       if (
-        effect.action === EffectAction.TRASH &&
+        effect.effectType === EffectType.TRASH &&
         PlayerHelper.isADefaultTrashCard(player, effectedCard)
       ) {
-        decision.result = EffectAction.TRASH;
+        decision.result = EffectType.TRASH;
         player.game.kingdom.trashCard(effectedCard);
         break;
       } else if (
-        effect.action === EffectAction.TOPDECK &&
+        effect.effectType === EffectType.TOPDECK &&
         PlayerHelper.isADefaultTopdeckCard(player, effectedCard)
       ) {
-        decision.result = EffectAction.TOPDECK;
+        decision.result = EffectType.TOPDECK;
         player.topdeck(effectedCard);
         break;
       } else if (
-        effect.action === EffectAction.PASS &&
+        effect.effectType === EffectType.PASS &&
         i === effectMap.size - 1
       ) {
-        decision.result = EffectAction.PASS;
+        decision.result = EffectType.PASS;
         break;
       } else {
         throw new Error(

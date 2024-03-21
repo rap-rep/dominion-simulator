@@ -33,7 +33,7 @@ export class EventLog {
       }
       parenthetical = builder.join(", ");
     }
-    const line = `<Effect: ${node.action || ""} (${parenthetical}) via ${node.fromCard.name}>`;
+    const line = `<Effect: ${node.effectType || ""} (${parenthetical}) via ${node.fromCard.name}>`;
     this.gamelog.log(line);
 
     const logEvent = new EventLogEvent(line);

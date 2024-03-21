@@ -5,12 +5,15 @@ import { Player } from "./player";
 import { EventLog } from "./logging/event_log";
 import { PlayerHelper } from "./helpers/player_helper";
 import { ConditionSetList } from "./logic/ordered_condition_gaining";
+import { EventQueryManager } from "./logging/event_query";
 
 export type GameConfig = {
   logMode?: LogMode | undefined;
   logLevel?: LogLevel | undefined;
   p1gainRules?: ConditionSetList | undefined;
   p2gainRules?: ConditionSetList | undefined;
+  gameNumber?: number | undefined;
+  eventQueryManager?: EventQueryManager | undefined;
 };
 
 export class Game {
@@ -28,17 +31,22 @@ export class Game {
   phase: Phase = Phase.START;
   cardNameMap: CardNameMap;
   winner: undefined | Player | null;
+  gameNumber: number;
+  eventQueryManager: EventQueryManager;
 
   constructor(config?: GameConfig | undefined) {
     this.cardNameMap = new CardNameMap();
     this.kingdom = new Kingdom();
     this.gamelog = new GameLog(config?.logMode, config?.logLevel);
     this.eventlog = new EventLog(this.gamelog);
+    this.gameNumber = config?.gameNumber || 1;
     this.p1 = new Player("player one", this, config?.p1gainRules);
     this.p2 = new Player("player two", this, config?.p2gainRules);
     this.p1.setOpponent(this.p2);
     this.p2.setOpponent(this.p1);
     this.currentPlayer = this.p1;
+    this.eventQueryManager =
+      config?.eventQueryManager || new EventQueryManager();
   }
 
   playGame() {

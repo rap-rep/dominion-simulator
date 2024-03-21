@@ -1,12 +1,13 @@
 import { XOR } from "ts-xor";
 import { Card } from "../card";
-import { Effect, EffectAction, EffectPlayer } from "../effects";
+import { Effect, EffectType, EffectPlayer } from "../effects";
 import { NodeType, PlayNode } from "../graph";
 import { Player } from "../player";
 import { Decision } from "../decisions";
 import { DecisionResolver } from "./decision_resolver";
 import { PlayerHelper } from "../helpers/player_helper";
 import { DurationPhase } from "../card_types";
+import { EventRecordBuilder } from "../logging/event_record_builders";
 
 export class EffectResolver {
   decisionResolver: DecisionResolver;
@@ -72,9 +73,9 @@ export class EffectResolver {
     if (!handEffectResolution) {
       player.addToAllCards(gainedCard);
       player.discard.push(gainedCard);
-    } else if (handEffectResolution === EffectAction.TOPDECK) {
+    } else if (handEffectResolution === EffectType.TOPDECK) {
       player.addToAllCards(gainedCard);
-    } else if (handEffectResolution === EffectAction.TRASH) {
+    } else if (handEffectResolution === EffectType.TRASH) {
       // no player record-keeping needed
     } else {
       throw new Error(
@@ -91,25 +92,25 @@ export class EffectResolver {
     }
 
     const effect = effectNode as Effect;
-    if (effect.action == EffectAction.PLUS_COIN) {
+    if (effect.effectType == EffectType.PLUS_COIN) {
       this.plusCoinResolver(player, effect);
-    } else if (effect.action === EffectAction.DRAW_CARD) {
+    } else if (effect.effectType === EffectType.DRAW_CARD) {
       this.drawCardResolver(player, effect);
-    } else if (effect.action === EffectAction.DRAW_TO) {
+    } else if (effect.effectType === EffectType.DRAW_TO) {
       this.drawToResolver(player, effect);
-    } else if (effect.action === EffectAction.PLUS_ACTION) {
+    } else if (effect.effectType === EffectType.PLUS_ACTION) {
       this.plusActionResolver(player, effect);
-    } else if (effect.action === EffectAction.PLUS_BUY) {
+    } else if (effect.effectType === EffectType.PLUS_BUY) {
       this.plusBuyResolver(player, effect);
-    } else if (effect.action === EffectAction.GAIN_FROM_SUPPLY) {
+    } else if (effect.effectType === EffectType.GAIN_FROM_SUPPLY) {
       this.gainFromSupply(player, effect);
-    } else if (effect.action === EffectAction.TYPE_BONUSES) {
+    } else if (effect.effectType === EffectType.TYPE_BONUSES) {
       this.awardTypeBonuses(player, effect);
-    } else if (effect.action === EffectAction.IN_HAND_FROM_SET_ASIDE) {
+    } else if (effect.effectType === EffectType.IN_HAND_FROM_SET_ASIDE) {
       this.putInHandFromSetAside(player, effect);
     } else {
       throw new Error(
-        `Unable to resolve effect of EffectAction type ${effect.action}`,
+        `Unable to resolve effect of EffectAction type ${effect.effectType}`,
       );
     }
     player.game.eventlog.logEffect(effect);
@@ -172,10 +173,27 @@ export class EffectResolver {
     const amount = effect.affects as number;
 
     for (let i = 0; i < amount; i++) {
+      let cardDrawn = undefined;
       if (effect.effectPlayer == EffectPlayer.SELF) {
-        player.drawCard();
+        cardDrawn = player.drawCard();
+        if (cardDrawn) {
+          player.game.eventQueryManager.recordEffect(
+            EventRecordBuilder.draw(player, effect.fromCard, cardDrawn),
+          );
+        }
       } else {
-        player.opponent?.drawCard();
+        if (player.opponent) {
+          cardDrawn = player.opponent.drawCard() || undefined;
+          if (cardDrawn) {
+            player.game.eventQueryManager.recordEffect(
+              EventRecordBuilder.draw(
+                player.opponent,
+                effect.fromCard,
+                cardDrawn,
+              ),
+            );
+          }
+        }
       }
     }
   }
@@ -198,7 +216,7 @@ export class EffectResolver {
   private handEffectGainResolver(
     player: Player,
     card: Card,
-  ): EffectAction | undefined {
+  ): EffectType | undefined {
     // Walks through the cards in hand looking for any decisions that need to happen while gaining a card
     // Returns the action type taken on the card, or undefined if none taken
     for (const handCardStack of player.hand.values()) {
@@ -207,8 +225,8 @@ export class EffectResolver {
         const decision = inHandCard.inHandWhileGaining(card);
         if (decision) {
           this.decisionResolver.resolveDecision(player, decision);
-          if (decision.result === EffectAction.TOPDECK || EffectAction.TRASH) {
-            return decision.result as EffectAction;
+          if (decision.result === EffectType.TOPDECK || EffectType.TRASH) {
+            return decision.result as EffectType;
           }
         }
       }

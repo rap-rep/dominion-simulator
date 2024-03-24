@@ -8,6 +8,7 @@ import {
 import { NullCard } from "../cards/basic/null_card";
 import { MetricHelper } from "./metric_helpers";
 import { PlayerHelper } from "../helpers/player_helper";
+import { LogLevel, LogMode } from "../logging/game_log";
 
 // JSON import type
 export type ConditionSetList = {
@@ -226,8 +227,14 @@ export class OrderedConditionGainSelector {
         evalObj[condition.id] = metricValue;
         evalObj[condition.threshold_id] = condition.threshold;
       }
-      //console.log(condition_token_str);
-      //console.log(evalObj);
+      
+      // TODO: Add one more level of logging that stuff like this can go under
+      player.game.gamelog.log(condition_token_str, LogLevel.DEBUG);
+      //player.game.gamelog.log(evalObj.toString(), LogLevel.DEBUG);
+      if (player.game.gamelog.level === LogLevel.DEBUG && player.game.gamelog.mode === LogMode.CONSOLE_LOG){
+        // temporary hack until able to properly convert to string in actual log
+        console.log(evalObj);
+      }
 
       const ast = parseExpression(tokenizeExpression(condition_token_str));
 

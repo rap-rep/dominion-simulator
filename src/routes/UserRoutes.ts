@@ -6,6 +6,8 @@ import { IReq, IRes } from "./types/express/misc";
 import { Game } from "@src/core/game";
 import { ConditionSetList } from "@src/core/logic/ordered_condition_gaining";
 import { LogMode } from "@src/core/logging/game_log";
+import { EventQueryInput } from "@src/core/logging/event_query";
+import { GameManager } from "@src/core/game_manager";
 
 // **** Functions **** //
 
@@ -17,18 +19,28 @@ async function getGame(_: IReq, res: IRes) {
 }
 
 async function postGame(
-  req: IReq<{ p1rules: ConditionSetList; p2rules: ConditionSetList }>,
+  req: IReq<{
+    p1rules: ConditionSetList;
+    p2rules: ConditionSetList;
+    eventQueries: EventQueryInput[];
+    numGames: number;
+  }>,
   res: IRes,
 ) {
-  const { p1rules, p2rules } = req.body;
+  const { p1rules, p2rules, eventQueries, numGames } = req.body;
 
-  const game = new Game({
+  const config = {
     p1gainRules: p1rules,
     p2gainRules: p2rules,
-    logMode: LogMode.CONSOLE_LOG,
+    logMode: LogMode.SILENT,
+  };
+
+  const gameManager = new GameManager(config, numGames, eventQueries);
+  gameManager.playGames();
+  return res.status(HttpStatusCodes.OK).json({
+    turns: gameManager.currentGame.turn,
+    results: gameManager.eventQueryManager.getJsonResults(numGames),
   });
-  game.playGame();
-  return res.status(HttpStatusCodes.OK).json({ turns: game.turn });
 }
 
 /**

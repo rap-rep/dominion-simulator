@@ -85,8 +85,6 @@ export class PlayerHelper {
           }
         }
 
-        console.log(condition.gainMetric);
-
         if (condition.gainMetric === GainMetricFrontend.CAN_GAIN) {
           if (conditionSet.conditionSet.length > 1) {
             throw new Error("Can gain rules can only exist independently");
@@ -96,9 +94,6 @@ export class PlayerHelper {
           condition.gainMetric === GainMetricFrontend.TURN ||
           condition.gainMetric === GainMetricFrontend.COINS_AVAILABLE
         ) {
-          console.log("in here for some reason");
-          console.log(condition.gainMetric);
-
           const gainMetric =
             condition.gainMetric === GainMetricFrontend.TURN
               ? GainMetric.TURN
@@ -135,8 +130,6 @@ export class PlayerHelper {
       }
 
       if (outputConditions.length > 0) {
-        console.log(outputConditions.length);
-        console.log(outputConditions[0].metric);
         selector.addConditionSet(outputConditions, conditionSet.cardToGain);
       }
     }

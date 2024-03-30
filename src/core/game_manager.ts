@@ -1,5 +1,8 @@
 import { Game, GameConfig } from "./game";
-import { EventQuery, EventQueryManager } from "./logging/event_query";
+import {
+  EventQueryInput,
+  EventQueryManager,
+} from "./logging/event_query";
 
 export class GameManager {
   defaultGameConfig: GameConfig;
@@ -7,18 +10,30 @@ export class GameManager {
   totalSims: number;
   currentGameNumber: number;
   currentGame: Game;
+  p1Name: string;
+  p2Name: string;
 
   constructor(
     gameConfig: GameConfig,
-    eventQueries: EventQuery[],
     totalSims: number,
+    eventQueryInput: EventQueryInput[],
+    p1Name: string = "p1",
+    p2Name: string = "p2",
   ) {
     this.defaultGameConfig = gameConfig;
-    this.eventQueryManager = new EventQueryManager(eventQueries);
+    this.eventQueryManager = new EventQueryManager(
+      EventQueryManager.fromInput(p1Name, p2Name, eventQueryInput),
+    );
     this.defaultGameConfig.eventQueryManager = this.eventQueryManager;
     this.totalSims = totalSims;
-    this.currentGame = new Game(this.defaultGameConfig);
     this.currentGameNumber = 1;
+
+    this.p1Name = p1Name;
+    this.p2Name = p2Name;
+    this.defaultGameConfig.p1Name = p1Name;
+    this.defaultGameConfig.p2Name = p2Name;
+    
+    this.currentGame = new Game(this.defaultGameConfig);
   }
 
   playGames() {

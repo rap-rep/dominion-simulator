@@ -19,21 +19,28 @@
   </head>
   <body>
     <div id="main">
+      <h3> p1 Rules </h3>
       <div id="first-player-row" class="pure-g">
         <div id="player-one-conditions" class="gain-conditions"></div>
       </div>
+      <h3> p2 Rules </h3>
       <div id="second-player-row" class="pure-g">
         <div id="player-two-conditions" class="gain-conditions"></div>
       </div>
-      <div class="play-game" class="pure-g">
-        <div>
-          <button id="play-game-btn" class="pure-button">Play Game</button>
-        </div>
-        <div id="game-results"></div>
-      </div>
+      
     </div>
     <hr />
+    <h3> Event Queries </h3>
     <div id="event-queries" class="pure-g"></div>
+    <div id="event-query-results" class="pure-g"></div>
+    <div class="play-game" class="pure-g">
+      <div>
+        <button id="play-game-btn" class="pure-button">Sim 1</button>
+        <button id="play-game-btn-100" class="pure-button">Sim 100</button>
+        <button id="play-game-btn-1000" class="pure-button">Sim 1000</button>
+      </div>
+      <div id="game-results"></div>
+    </div>
   </body>
   <script src="scripts/http.js"></script>
   <script src="scripts/orderedConditionGaining.js"></script>

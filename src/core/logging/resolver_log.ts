@@ -2,9 +2,9 @@ import { XOR } from "ts-xor";
 import { Decision } from "../decisions";
 import { Effect } from "../effects";
 import { Card } from "../card";
-import { GameLog, LogMode } from "./game_log";
+import { GameLog, LogLevel, LogMode } from "./game_log";
 
-export class EventLogEvent {
+export class ResolverLogEvent {
   line: string;
 
   constructor(line: string) {
@@ -12,8 +12,8 @@ export class EventLogEvent {
   }
 }
 
-export class EventLog {
-  events: EventLogEvent[] = [];
+export class ResolverLog {
+  events: ResolverLogEvent[] = [];
   mode: LogMode;
   gamelog: GameLog;
 
@@ -33,12 +33,11 @@ export class EventLog {
       }
       parenthetical = builder.join(", ");
     }
-    const line = `<Effect: ${node.effectType || ""} (${parenthetical}) via ${node.fromCard.name}>`;
-    this.gamelog.log(line);
+    const line = `<Effect resolved: ${node.effectType || ""} (${parenthetical}) via ${node.fromCard.name}>`;
 
-    const logEvent = new EventLogEvent(line);
+    const logEvent = new ResolverLogEvent(line);
     if (this.mode === LogMode.CONSOLE_LOG) {
-      console.log(logEvent.line);
+      this.gamelog.log(logEvent.line, LogLevel.DEBUG);
     } else if (this.mode === LogMode.BUFFER) {
       this.events.push(logEvent);
     }
@@ -57,11 +56,10 @@ export class EventLog {
       }
       parenthetical = builder.join(", ");
     }
-    const line = `<Decision: ${node.decisionType || ""} ${parenthetical} via ${node.fromCard.name}>`;
-    this.gamelog.log(line);
-    const logEvent = new EventLogEvent(line);
+    const line = `<Decision resolved: ${node.decisionType || ""} ${parenthetical} via ${node.fromCard.name}>`;
+    const logEvent = new ResolverLogEvent(line);
     if (this.mode === LogMode.CONSOLE_LOG) {
-      console.log(logEvent.line);
+      this.gamelog.log(line, LogLevel.DEBUG);
     } else if (this.mode === LogMode.BUFFER) {
       this.events.push(logEvent);
     }

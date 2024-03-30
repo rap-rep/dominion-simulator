@@ -1,13 +1,25 @@
-
 const EventQueryType = {
   DRAW_CARD: "cards drawn",
 };
 
 function guidGenerator() {
-    var S4 = function() {
-       return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-    };
-    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+  var S4 = function () {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  };
+  return (
+    S4() +
+    S4() +
+    "-" +
+    S4() +
+    "-" +
+    S4() +
+    "-" +
+    S4() +
+    "-" +
+    S4() +
+    S4() +
+    S4()
+  );
 }
 
 function getEventCardInputElements() {
@@ -26,20 +38,20 @@ function getEventCardInputElements() {
 }
 
 function getEventNumericalInputElements() {
-    var numberInput = document.createElement("input");
-    numberInput.classList.add("number-input");
+  var numberInput = document.createElement("input");
+  numberInput.classList.add("number-input");
 
-    const inputId = guidGenerator();
-    numberInput.id = inputId;
-    numberInput.type = "number";
-    numberInput.value = 99;
+  const inputId = guidGenerator();
+  numberInput.id = inputId;
+  numberInput.type = "number";
+  numberInput.value = 99;
 
-    var label = document.createElement("label");
-    label.for = inputId;
-    label.innerHTML = " by turn ";
+  var label = document.createElement("label");
+  label.for = inputId;
+  label.innerHTML = " by turn ";
 
-    return [label, numberInput];
-  }
+  return [label, numberInput];
+}
 
 function addQueryListener(addQuerySelect) {
   addQuerySelect.addEventListener("change", (event) => {
@@ -47,10 +59,9 @@ function addQueryListener(addQuerySelect) {
     if (event.target.value === EventQueryType.DRAW_CARD) {
       const cardInputElements = getEventCardInputElements();
       const cardLabel = cardInputElements[0];
-      const cardInput = cardInputElements[1]
+      const cardInput = cardInputElements[1];
       parent.appendChild(cardInput);
       parent.insertBefore(cardLabel, cardInput);
-
 
       const turnInputElements = getEventNumericalInputElements();
       const turnLabel = turnInputElements[0];
@@ -70,6 +81,8 @@ function addQueryListener(addQuerySelect) {
 function getAddQueryElement() {
   var form = document.createElement("form");
   form.classList.add("pure-form");
+  form.classList.add("result-query-form");
+
   var addQuerySelect = document.createElement("select");
   addQuerySelect.classList.add("select-query");
 

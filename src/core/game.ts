@@ -2,10 +2,12 @@ import { CardNameMap } from "./cards/name_map";
 import { GameLog, LogLevel, LogMode } from "./logging/game_log";
 import { Kingdom } from "./kingdom";
 import { Player } from "./player";
-import { EventLog } from "./logging/event_log";
+import { ResolverLog } from "./logging/resolver_log";
 import { PlayerHelper } from "./helpers/player_helper";
 import { ConditionSetList } from "./logic/ordered_condition_gaining";
-import { EventQueryManager } from "./logging/event_query";
+import { EventQueryInput, EventQueryManager } from "./logging/event_query";
+
+const MAX_TURNS = 100;
 
 export type GameConfig = {
   logMode?: LogMode | undefined;
@@ -14,6 +16,8 @@ export type GameConfig = {
   p2gainRules?: ConditionSetList | undefined;
   gameNumber?: number | undefined;
   eventQueryManager?: EventQueryManager | undefined;
+  p1Name?: string | undefined;
+  p2Name?: string | undefined;
 };
 
 export class Game {
@@ -27,7 +31,7 @@ export class Game {
   currentPlayer: Player;
   turn: number = 0;
   gamelog: GameLog;
-  eventlog: EventLog;
+  eventlog: ResolverLog;
   phase: Phase = Phase.START;
   cardNameMap: CardNameMap;
   winner: undefined | Player | null;
@@ -38,10 +42,18 @@ export class Game {
     this.cardNameMap = new CardNameMap();
     this.kingdom = new Kingdom();
     this.gamelog = new GameLog(config?.logMode, config?.logLevel);
-    this.eventlog = new EventLog(this.gamelog);
+    this.eventlog = new ResolverLog(this.gamelog);
     this.gameNumber = config?.gameNumber || 1;
-    this.p1 = new Player("player one", this, config?.p1gainRules);
-    this.p2 = new Player("player two", this, config?.p2gainRules);
+    this.p1 = new Player(
+      config?.p1Name || "player one",
+      this,
+      config?.p1gainRules,
+    );
+    this.p2 = new Player(
+      config?.p2Name || "player two",
+      this,
+      config?.p2gainRules,
+    );
     this.p1.setOpponent(this.p2);
     this.p2.setOpponent(this.p1);
     this.currentPlayer = this.p1;
@@ -50,9 +62,9 @@ export class Game {
   }
 
   playGame() {
-    while (!this.kingdom.gameOver() && this.turn < 500) {
+    while (!this.kingdom.gameOver() && this.turn < MAX_TURNS) {
       this.incrementTurn();
-      this.currentPlayer.startTurn();
+      this.currentPlayer.playStartTurn();
       this.currentPlayer.playActionPhase();
       this.currentPlayer.playTreasurePhase();
       this.currentPlayer.playBuyPhase();

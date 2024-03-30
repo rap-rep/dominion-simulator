@@ -90,6 +90,7 @@ function getMoveUpRuleIcon() {
 function getMoveDownRuleIcon() {
   var button = document.createElement("button");
   button.classList.add("pure-button");
+  button.classList.add("move-rule-down");
 
   button.innerHTML = "v";
 

@@ -1,3 +1,5 @@
+// Section: ordered condition gaining parsing for passing to Game creation
+
 class ConditionSet {
   constructor(conditionSet, cardToGain) {
     this.conditionSet = conditionSet;
@@ -103,28 +105,105 @@ function getConditionRules(playerAnchor) {
   return playerRules;
 }
 
-function getGame() {
+function getResultElement(result){
+    var resultDiv = document.createElement("div");
+    resultDiv.classList.add("pure-g");
+    resultDiv.classList.add("query-result")
+
+    let byTurnClause = "";
+    if (byTurn !== 99){
+      byTurnClause =  ` by turn ${result.byTurn}`
+    }
+    if (result.type === EventQueryType.DRAW_CARD){
+      resultDiv.innerHTML = `${result.playerName} average cards drawn with ${result.fromCard}${byTurnClause}: ${result.average}`;
+    }
+    else{
+      throw new Error(`'${result.type}' result type not supported`)
+    }
+  
+    return resultDiv;
+}
+
+function simGame(numGames){
+  const p1anchor = document.getElementById("player-one-conditions");
+  const p1rules = getConditionRules(p1anchor);
+
+  const p2anchor = document.getElementById("player-two-conditions");
+  const p2rules = getConditionRules(p2anchor);
+
+  const eventQueries = parseEventQueries();
+
+  data = { p1rules: p1rules, p2rules: p2rules, eventQueries: eventQueries, numGames: numGames };
+
+  Http.post("/api/game/post_run", data)
+    .then((resp) => resp.json())
+    .then((resp) => {
+      var results = resp.results;
+      var anchor = document.getElementById("game-results");
+      anchor.replaceChildren([]);
+
+      for (const result of results){
+          anchor.appendChild(getResultElement(result));
+      }
+      
+    });
+}
+
+function setupSimListeners() {
   var playButton = document.getElementById("play-game-btn");
 
   playButton.addEventListener("click", (event) => {
     event.preventDefault();
+    simGame(1);
+  });
 
-    const p1anchor = document.getElementById("player-one-conditions");
-    const p1rules = getConditionRules(p1anchor);
 
-    const p2anchor = document.getElementById("player-two-conditions");
-    const p2rules = getConditionRules(p2anchor);
+  var playButton100 = document.getElementById("play-game-btn-100");
+  playButton100.addEventListener("click", (event) => {
+    event.preventDefault();
+    simGame(100);
+  });
 
-    data = { p1rules: p1rules, p2rules: p2rules };
 
-    Http.post("/api/game/post_run", data)
-      .then((resp) => resp.json())
-      .then((resp) => {
-        var turns = resp.turns;
-        var anchor = document.getElementById("game-results");
-        anchor.innerHTML = "<ul><li>Turns: " + turns + "</li></ul>";
-      });
+  var playButton1000 = document.getElementById("play-game-btn-1000");
+  playButton1000.addEventListener("click", (event) => {
+    event.preventDefault();
+    simGame(1000);
   });
 }
 
-getGame();
+// Section: event querying parsing for passing to Game creation
+
+class EventQuery {
+  constructor(
+    type, // EventQueryType (string)
+    fromCard, // string
+    byTurn, // number
+    toCard, // string (optional)
+  ) {
+    this.type = type;
+    this.fromCard = fromCard;
+    this.byTurn = byTurn;
+    this.toCard = toCard;
+  }
+}
+
+function parseEventQueries() {
+  const eventQueries = [];
+
+  const queryDiv = document.getElementById("event-queries");
+  for (const queryForm of queryDiv.children) {
+    const formElements = queryForm.children;
+    const selectionType = formElements[0].value;
+    if (selectionType === EventQueryType.DRAW_CARD) {
+      fromCard = formElements[2].value;
+      byTurn = parseInt(formElements[4].value);
+      eventQueries.push(new EventQuery(selectionType, fromCard, byTurn));
+    }
+  }
+
+  return eventQueries;
+}
+
+// Section: Initializers
+setupSimListeners();

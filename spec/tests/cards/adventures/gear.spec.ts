@@ -105,7 +105,7 @@ describe("Terminal gear", () => {
   game.p1.removeCardFromHand(gear);
   game.p1.effectResolver.playCard(game.p1, gear);
   game.p1.playCleanupPhase();
-  game.p1.startTurn();
+  game.p1.playStartTurn();
 
   it("sets aside a Market and puts it in hand next turn", () => {
     expect(game.p1.inPlay?.[0].name).toEqual(Gear.NAME);
@@ -134,11 +134,11 @@ describe("Gear on the second turn after it is played", () => {
   game.p1.effectResolver.playCard(game.p1, gear);
   // duration turn
   game.p1.playCleanupPhase();
-  game.p1.startTurn();
+  game.p1.playStartTurn();
 
   // turn which should have no effect
   game.p1.playCleanupPhase();
-  game.p1.startTurn();
+  game.p1.playStartTurn();
 
   it("is removed from play and has no effect", () => {
     expect(game.p1.inPlay.length).toEqual(0);

@@ -56,10 +56,10 @@ export class Player {
     this.deck = this.defaultStartingDeck();
 
     this.drawHand();
-    this.startTurn();
+    this.playStartTurn();
   }
 
-  startTurn() {
+  playStartTurn() {
     this.game.phase = Phase.START;
     this.actions = 1;
     this.buys = 1;

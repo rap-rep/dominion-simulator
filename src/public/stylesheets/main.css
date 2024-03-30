@@ -1,5 +1,5 @@
 body {
-  padding: 75px;
+  padding: 30px;
   font:
     14px "Lucida Grande",
     Helvetica,
@@ -34,7 +34,7 @@ body {
 }
 
 #player-one-conditions {
-  padding-bottom: 35px;
+  padding-bottom: 0px;
 }
 
 .ordered-gain-rule {
@@ -52,4 +52,8 @@ body {
 
 .gain-conditions {
   float: right;
+}
+
+.play-game {
+  margin-top: 15px;
 }

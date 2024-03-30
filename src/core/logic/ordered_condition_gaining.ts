@@ -227,11 +227,14 @@ export class OrderedConditionGainSelector {
         evalObj[condition.id] = metricValue;
         evalObj[condition.threshold_id] = condition.threshold;
       }
-      
+
       // TODO: Add one more level of logging that stuff like this can go under
       player.game.gamelog.log(condition_token_str, LogLevel.DEBUG);
       //player.game.gamelog.log(evalObj.toString(), LogLevel.DEBUG);
-      if (player.game.gamelog.level === LogLevel.DEBUG && player.game.gamelog.mode === LogMode.CONSOLE_LOG){
+      if (
+        player.game.gamelog.level === LogLevel.DEBUG &&
+        player.game.gamelog.mode === LogMode.CONSOLE_LOG
+      ) {
         // temporary hack until able to properly convert to string in actual log
         console.log(evalObj);
       }

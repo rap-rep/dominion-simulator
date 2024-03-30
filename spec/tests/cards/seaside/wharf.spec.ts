@@ -29,7 +29,7 @@ describe("Wharf", () => {
   game.p1.playActionPhase();
   game.p1.playCleanupPhase();
   game.turn++;
-  game.p1.startTurn();
+  game.p1.playStartTurn();
 
   it("draws two cards and gives a buy on the duration turn", () => {
     expect(game.p1.inPlay?.[0]?.name).toEqual(Wharf.NAME);
@@ -65,7 +65,7 @@ describe("Wharf", () => {
   game.p1.playActionPhase();
   game.p1.playCleanupPhase();
   game.turn++;
-  game.p1.startTurn();
+  game.p1.playStartTurn();
   game.p1.playCleanupPhase();
 
   it("is discarded and ready to be played again after the duration turn", () => {

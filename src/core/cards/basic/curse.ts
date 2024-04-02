@@ -1,5 +1,6 @@
-import { CardHeuristicType, CardType } from "@src/core/card_types";
+import { DeprecatedCardHeuristicType, CardType } from "@src/core/card_types";
 import { Card } from "../../card";
+import { HeuristicType, TerminalType } from "@src/core/logic/card_selector";
 
 const Name = "Curse";
 
@@ -12,11 +13,19 @@ export class Curse extends Card {
     return Name;
   }
 
-  heuristicType(): CardHeuristicType {
-    return CardHeuristicType.VICTORY;
+  deprecatedHeuristicType(): DeprecatedCardHeuristicType {
+    return DeprecatedCardHeuristicType.VICTORY;
   }
 
   victoryPoints(): number {
     return -1;
+  }
+
+  heuristicType(): HeuristicType {
+    return HeuristicType.JUNK;
+  }
+
+  terminalType(): TerminalType {
+    return TerminalType.NONPLAYABLE;
   }
 }

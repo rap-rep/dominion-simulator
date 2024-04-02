@@ -1,12 +1,13 @@
 import { Graph, PlayNode } from "@src/core/graph";
 import { Card } from "../../card";
 import {
-  CardHeuristicType,
+  DeprecatedCardHeuristicType,
   CardType,
   DurationPhase,
 } from "@src/core/card_types";
 import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 import { Decision, DecisionType } from "@src/core/decisions";
+import { HeuristicType, TerminalType } from "@src/core/logic/card_selector";
 
 const Name = "Wharf";
 
@@ -32,8 +33,8 @@ export class Wharf extends Card {
     return new Wharf();
   }
 
-  heuristicType(): CardHeuristicType {
-    return CardHeuristicType.TERMINAL_DRAW;
+  deprecatedHeuristicType(): DeprecatedCardHeuristicType {
+    return DeprecatedCardHeuristicType.TERMINAL_DRAW;
   }
 
   staysInPlay(): boolean {
@@ -76,5 +77,13 @@ export class Wharf extends Card {
 
   cost(): number {
     return 5;
+  }
+
+  heuristicType(): HeuristicType {
+    return HeuristicType.DRAW;
+  }
+
+  terminalType(): TerminalType {
+    return TerminalType.TERMINAL;
   }
 }

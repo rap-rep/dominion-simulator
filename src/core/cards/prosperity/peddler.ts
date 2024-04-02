@@ -1,8 +1,9 @@
 import { Graph, PlayNode } from "@src/core/graph";
 import { Card } from "../../card";
-import { CardHeuristicType, CardType } from "@src/core/card_types";
+import { DeprecatedCardHeuristicType, CardType } from "@src/core/card_types";
 import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 import { InteractionType } from "@src/core/card_types";
+import { HeuristicType, TerminalType } from "@src/core/logic/card_selector";
 
 const Name = "Peddler";
 
@@ -19,8 +20,8 @@ export class Peddler extends Card {
     return new Peddler();
   }
 
-  heuristicType(): CardHeuristicType {
-    return CardHeuristicType.CANTRIP;
+  deprecatedHeuristicType(): DeprecatedCardHeuristicType {
+    return DeprecatedCardHeuristicType.CANTRIP;
   }
 
   playGraph(): Graph {
@@ -67,5 +68,17 @@ export class Peddler extends Card {
       specificReductionValue = specificReductionCount * 2;
     }
     return Math.max(0, this.cost() - globalReduction - specificReductionValue);
+  }
+
+  economyHeuristicValue(): number {
+    return 1;
+  }
+
+  heuristicType(): HeuristicType {
+    return HeuristicType.CANTRIP;
+  }
+
+  terminalType(): TerminalType {
+    return TerminalType.NONTERMINAL;
   }
 }

@@ -1,7 +1,8 @@
 import { Graph, PlayNode } from "@src/core/graph";
 import { Card } from "../../card";
-import { CardHeuristicType, CardType } from "@src/core/card_types";
+import { DeprecatedCardHeuristicType, CardType } from "@src/core/card_types";
 import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
+import { HeuristicType, TerminalType } from "@src/core/logic/card_selector";
 
 const Name = "Village";
 
@@ -14,8 +15,8 @@ export class Village extends Card {
     return Name;
   }
 
-  heuristicType(): CardHeuristicType {
-    return CardHeuristicType.VILLAGE;
+  deprecatedHeuristicType(): DeprecatedCardHeuristicType {
+    return DeprecatedCardHeuristicType.VILLAGE;
   }
 
   static factoryGenerator(): Village {
@@ -37,6 +38,14 @@ export class Village extends Card {
     graph.addEdge(draw, action);
 
     return graph;
+  }
+
+  heuristicType(): HeuristicType {
+    return HeuristicType.CANTRIP;
+  }
+
+  terminalType(): TerminalType {
+    return TerminalType.NONTERMINAL;
   }
 
   cost(): number {

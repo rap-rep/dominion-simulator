@@ -1,4 +1,3 @@
-import type { XOR } from "ts-xor";
 import { Card } from "@src/core/card";
 import { Decision } from "./decisions";
 import { NodeType } from "./graph";
@@ -25,7 +24,7 @@ export enum EffectType {
   DRAW_CARD = "Draw",
   DRAW_TO = "Draw to",
   TOPDECK = "Topdeck",
-  TRASH = "Trash",
+  TRASH_FROM_HAND = "Trash",
   DISCARD = "Discard",
   GAIN_FROM_SUPPLY = "Gain",
   TYPE_BONUSES = "Type bonuses",

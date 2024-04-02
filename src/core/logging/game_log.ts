@@ -21,6 +21,7 @@ export enum LogMode {
 export enum LogLevel {
   INFO = "Info",
   DEBUG = "Debug",
+  EXTREME = "Extreme",
 }
 
 export class GameLog {
@@ -44,7 +45,8 @@ export class GameLog {
   log(line: string, level: LogLevel = LogLevel.INFO) {
     if (
       level === LogLevel.INFO ||
-      (level === LogLevel.DEBUG && this.level === LogLevel.DEBUG)
+      (level === LogLevel.DEBUG && this.level === LogLevel.DEBUG) ||
+      this.level === LogLevel.EXTREME
     ) {
       if (this.mode === LogMode.CONSOLE_LOG) {
         console.log(line);

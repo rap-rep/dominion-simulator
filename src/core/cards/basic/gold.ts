@@ -1,7 +1,8 @@
 import { Graph, PlayNode } from "@src/core/graph";
-import { CardHeuristicType, CardType } from "@src/core/card_types";
+import { DeprecatedCardHeuristicType, CardType } from "@src/core/card_types";
 import { Card } from "../../card";
 import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
+import { HeuristicType, TerminalType } from "@src/core/logic/card_selector";
 
 const Name = "Gold";
 
@@ -14,8 +15,8 @@ export class Gold extends Card {
     return Name;
   }
 
-  heuristicType(): CardHeuristicType {
-    return CardHeuristicType.TREASURE;
+  deprecatedHeuristicType(): DeprecatedCardHeuristicType {
+    return DeprecatedCardHeuristicType.TREASURE;
   }
 
   playGraph(): Graph {
@@ -32,5 +33,17 @@ export class Gold extends Card {
 
   cost(): number {
     return 6;
+  }
+
+  heuristicType(): HeuristicType {
+    return HeuristicType.TREASURE;
+  }
+
+  terminalType(): TerminalType {
+    return TerminalType.NONTERMINAL;
+  }
+
+  economyHeuristicValue(): number {
+    return 3;
   }
 }

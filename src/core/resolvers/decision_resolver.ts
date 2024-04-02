@@ -21,6 +21,8 @@ export class DecisionResolver {
       this.gainCardUptoResolver(player, decision);
     } else if (decision.decisionType == DecisionType.SELECT_EFFECT) {
       player.makeDecision(decision);
+    } else if (decision.decisionType == DecisionType.TRASH_FROM_HAND) {
+      player.makeDecision(decision);
     } else if (decision.decisionType == DecisionType.SET_ASIDE_ON_FROM_HAND) {
       player.makeDecision(decision);
     } else {

@@ -15,7 +15,7 @@ export enum DecisionType {
   SELECT_EFFECT = "Select effect",
 
   // Card decisions
-  TRASH_CARD = "Trash card",
+  TRASH_FROM_HAND = "Trash from hand",
   NAME_CARD = "Name card",
   GAIN_CARD_UP_TO = "Gain card up to",
   GAIN_CARD_EXACTLY = "Gain card exactly",
@@ -30,6 +30,7 @@ export class Decision {
   decisionType: DecisionType;
   effectPlayer: EffectPlayer;
   amount: number | undefined;
+  amountMinimum: number | undefined;
   nodeType: NodeType;
   result: string | Card | Card[] | undefined | number | number[];
   fromCard: Card = NULL_CARD;
@@ -41,10 +42,12 @@ export class Decision {
     amount?: number | undefined,
     fromCard?: Card,
     selectionMap?: Map<number, Effect>,
+    amountMinimum?: number | undefined,
   ) {
     this.decisionType = decisionType;
     this.effectPlayer = effectPlayer;
     this.amount = amount;
+    this.amountMinimum = amountMinimum;
     this.nodeType = NodeType.DECISION;
     this.selectionMap = selectionMap;
     if (fromCard) {

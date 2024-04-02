@@ -1,6 +1,7 @@
 import { Card } from "../card";
-import { CardHeuristicType, CardType } from "../card_types";
+import { DeprecatedCardHeuristicType, CardType } from "../card_types";
 import { Gear } from "../cards/adventures/gear";
+import { Chapel } from "../cards/base/chapel";
 import { Copper } from "../cards/basic/copper";
 import { Curse } from "../cards/basic/curse";
 import { Duchy } from "../cards/basic/duchy";
@@ -9,8 +10,11 @@ import { Gold } from "../cards/basic/gold";
 import { NullCard } from "../cards/basic/null_card";
 import { Province } from "../cards/basic/province";
 import { Silver } from "../cards/basic/silver";
+import { Watchtower } from "../cards/prosperity/watchtower";
 import { Decision, DecisionType } from "../decisions";
 import { EffectType } from "../effects";
+import { EventRecord } from "../logging/event_query";
+import { EventRecordBuilder } from "../logging/event_record_builders";
 import {
   ConditionSetList,
   GainMetric,
@@ -28,15 +32,30 @@ const NULL_CARD = new NullCard();
 export class PlayerHelper {
   static makeDefaultDecision(player: Player, decision: Decision) {
     if (decision.decisionType === DecisionType.SELECT_EFFECT) {
-      PlayerHelper.watchtowerDecision(player, decision);
+      if (decision.fromCard.name === Watchtower.NAME) {
+        PlayerHelper.watchtowerDecision(player, decision);
+      } else {
+        throw new Error(
+          `${decision.decisionType} decision for card ${decision.fromCard.name} not implemented`,
+        );
+      }
     } else if (decision.decisionType === DecisionType.GAIN_CARD_UP_TO) {
+      // TODO: Make this for the first condition for clarity
       player.gainCardDecision(decision);
+    } else if (decision.decisionType === DecisionType.TRASH_FROM_HAND) {
+      if (decision.fromCard.name === Chapel.NAME) {
+        Chapel.defaultChapelDecision(player, decision);
+      } else {
+        throw new Error(
+          `${decision.decisionType} decision for card ${decision.fromCard.name} not implemented`,
+        );
+      }
     } else if (decision.decisionType === DecisionType.SET_ASIDE_ON_FROM_HAND) {
       if (decision.fromCard.name === Gear.NAME) {
         Gear.defaultGearDecision(player, decision);
       } else {
         throw new Error(
-          `Set aside decision for ${decision.decisionType}, ${decision.nodeType}, ${decision.amount}, ${decision.result}, card ${decision.fromCard.name} not implemented`,
+          `${decision.decisionType} decision for card ${decision.fromCard.name} not implemented`,
         );
       }
     } else {
@@ -52,6 +71,17 @@ export class PlayerHelper {
       tally += card.victoryPoints();
     }
     return tally;
+  }
+
+  static getVPrecords(player: Player): EventRecord[] {
+    const records = new Array();
+    for (const card of player.allCardsList) {
+      const vp = card.victoryPoints();
+      if (vp) {
+        records.push(EventRecordBuilder.vp(player, card, vp));
+      }
+    }
+    return records;
   }
 
   static selectAnyAction(player: Player): Card {
@@ -140,25 +170,25 @@ export class PlayerHelper {
     // TODO Make better - this is a basic, sloppy getting started implementation
     return (
       this.findFromPriorityList(player, [
-        CardHeuristicType.NONTERMINAL_FROM_DECK_SIFTER,
-        CardHeuristicType.NONTERMINAL_DRAW,
-        CardHeuristicType.VILLAGE,
-        CardHeuristicType.CANTRIP,
-        CardHeuristicType.NONTERMINAL_HAND_SIFTER,
-        CardHeuristicType.NONTERMINAL_GAINER,
-        CardHeuristicType.NONTERMINAL_PAYLOAD,
-        CardHeuristicType.TERMINAL_DRAW,
-        CardHeuristicType.TERMINAL_FROM_DECK_SIFTER,
-        CardHeuristicType.TERMINAL_PAYLOAD,
-        CardHeuristicType.TRASHER,
-        CardHeuristicType.TERMINAL_GAINER,
+        DeprecatedCardHeuristicType.NONTERMINAL_FROM_DECK_SIFTER,
+        DeprecatedCardHeuristicType.NONTERMINAL_DRAW,
+        DeprecatedCardHeuristicType.VILLAGE,
+        DeprecatedCardHeuristicType.CANTRIP,
+        DeprecatedCardHeuristicType.NONTERMINAL_HAND_SIFTER,
+        DeprecatedCardHeuristicType.NONTERMINAL_GAINER,
+        DeprecatedCardHeuristicType.NONTERMINAL_PAYLOAD,
+        DeprecatedCardHeuristicType.TERMINAL_DRAW,
+        DeprecatedCardHeuristicType.TERMINAL_FROM_DECK_SIFTER,
+        DeprecatedCardHeuristicType.TERMINAL_PAYLOAD,
+        DeprecatedCardHeuristicType.TRASHER,
+        DeprecatedCardHeuristicType.TERMINAL_GAINER,
       ]) || NULL_CARD
     );
   }
 
   private static findFromPriorityList(
     player: Player,
-    priorityList: CardHeuristicType[],
+    priorityList: DeprecatedCardHeuristicType[],
   ) {
     for (const heuristicType of priorityList) {
       const card = this.getCardOfHeuristicType(player, heuristicType);
@@ -180,11 +210,11 @@ export class PlayerHelper {
 
   static getCardOfHeuristicType(
     player: Player,
-    heuristicType: CardHeuristicType,
+    heuristicType: DeprecatedCardHeuristicType,
     alreadySelectedCard?: Card | undefined, // TODO make more resilient (really just for Gear right now and thus only works for one card)
   ): Card | undefined {
     for (const cardStack of player.hand.values()) {
-      if (cardStack[0].heuristicType() === heuristicType) {
+      if (cardStack[0].deprecatedHeuristicType() === heuristicType) {
         if (alreadySelectedCard?.name === cardStack[0].name) {
           // if the card has already been selected, prevent re-selection of the same card
           if (cardStack.length > 1) {
@@ -235,10 +265,10 @@ export class PlayerHelper {
 
       const effectedCard = effect.affects as Card;
       if (
-        effect.effectType === EffectType.TRASH &&
+        effect.effectType === EffectType.TRASH_FROM_HAND &&
         PlayerHelper.isADefaultTrashCard(player, effectedCard)
       ) {
-        decision.result = EffectType.TRASH;
+        decision.result = EffectType.TRASH_FROM_HAND;
         player.game.kingdom.trashCard(effectedCard);
         break;
       } else if (

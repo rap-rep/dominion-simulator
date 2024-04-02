@@ -75,7 +75,7 @@ export class EffectResolver {
       player.discard.push(gainedCard);
     } else if (handEffectResolution === EffectType.TOPDECK) {
       player.addToAllCards(gainedCard);
-    } else if (handEffectResolution === EffectType.TRASH) {
+    } else if (handEffectResolution === EffectType.TRASH_FROM_HAND) {
       // no player record-keeping needed
     } else {
       throw new Error(
@@ -96,6 +96,8 @@ export class EffectResolver {
       this.plusCoinResolver(player, effect);
     } else if (effect.effectType === EffectType.DRAW_CARD) {
       this.drawCardResolver(player, effect);
+    } else if (effect.effectType === EffectType.TRASH_FROM_HAND) {
+      this.trashFromHandResolver(player, effect);
     } else if (effect.effectType === EffectType.DRAW_TO) {
       this.drawToResolver(player, effect);
     } else if (effect.effectType === EffectType.PLUS_ACTION) {
@@ -177,7 +179,7 @@ export class EffectResolver {
       if (effect.effectPlayer == EffectPlayer.SELF) {
         cardDrawn = player.drawCard();
         if (cardDrawn) {
-          player.game.eventQueryManager.recordEffect(
+          player.game.eventQueryManager.recordEvent(
             EventRecordBuilder.draw(player, effect.fromCard, cardDrawn),
           );
         }
@@ -185,7 +187,7 @@ export class EffectResolver {
         if (player.opponent) {
           cardDrawn = player.opponent.drawCard() || undefined;
           if (cardDrawn) {
-            player.game.eventQueryManager.recordEffect(
+            player.game.eventQueryManager.recordEvent(
               EventRecordBuilder.draw(
                 player.opponent,
                 effect.fromCard,
@@ -198,6 +200,28 @@ export class EffectResolver {
     }
   }
 
+  private trashFromHandResolver(player: Player, effect: Effect) {
+    if (effect.effectPlayer !== EffectPlayer.SELF) {
+      throw new Error("Trashing opponent's hand not supported");
+    }
+  
+    const toTrash = effect.reference?.result as Card[];
+    if (!toTrash){
+      throw new Error("Cards to trash not defined (empty list should be specified if trashing none)");
+    }
+
+    for (const card of toTrash){
+      player.removeCardFromHand(card, true);
+      player.game.kingdom.trashCard(card);
+      player.game.gamelog.log(`${player.name} trashes a ${card.name}`);
+      player.game.eventQueryManager.recordEvent(EventRecordBuilder.trash(player, effect.fromCard, card));
+    }
+
+    if (effect.reference){
+      effect.reference.result = undefined;
+    }
+  }
+
   private drawToResolver(player: Player, effect: Effect) {
     const amount = effect.affects as number;
     const handSize = PlayerHelper.countHandSize(player);
@@ -206,9 +230,26 @@ export class EffectResolver {
 
     for (let i = 0; i < toDraw; i++) {
       if (effect.effectPlayer == EffectPlayer.SELF) {
-        player.drawCard();
+        const cardDrawn = player.drawCard();
+        if (cardDrawn) {
+          player.game.eventQueryManager.recordEvent(
+            EventRecordBuilder.draw(player, effect.fromCard, cardDrawn),
+          );
+        }
       } else {
-        player.opponent?.drawCard();
+        if (player.opponent) {
+          player.opponent?.drawCard();
+          const cardDrawn = player.opponent?.drawCard();
+          if (cardDrawn) {
+            player.game.eventQueryManager.recordEvent(
+              EventRecordBuilder.draw(
+                player.opponent,
+                effect.fromCard,
+                cardDrawn,
+              ),
+            );
+          }
+        }
       }
     }
   }
@@ -225,7 +266,10 @@ export class EffectResolver {
         const decision = inHandCard.inHandWhileGaining(card);
         if (decision) {
           this.decisionResolver.resolveDecision(player, decision);
-          if (decision.result === EffectType.TOPDECK || EffectType.TRASH) {
+          if (
+            decision.result === EffectType.TOPDECK ||
+            EffectType.TRASH_FROM_HAND
+          ) {
             return decision.result as EffectType;
           }
         }

@@ -11,6 +11,12 @@ import { Curse } from "./cards/basic/curse";
 import { Market } from "./cards/base/market";
 import { Wharf } from "./cards/seaside/wharf";
 import { Smithy } from "./cards/base/smithy";
+import { Chapel } from "./cards/base/chapel";
+import { WorkersVillage } from "./cards/prosperity/workers_village";
+import { Ironworks } from "./cards/intrigue/ironworks";
+import { Workshop } from "./cards/base/workshop";
+import { Peddler } from "./cards/prosperity/peddler";
+import { Watchtower } from "./cards/prosperity/watchtower";
 
 export class Kingdom {
   /*
@@ -50,6 +56,12 @@ export class Kingdom {
     this.addSupplyPile(Market.NAME);
     this.addSupplyPile(Wharf.NAME);
     this.addSupplyPile(Smithy.NAME);
+    this.addSupplyPile(Chapel.NAME);
+    this.addSupplyPile(WorkersVillage.NAME);
+    this.addSupplyPile(Ironworks.NAME);
+    this.addSupplyPile(Workshop.NAME);
+    this.addSupplyPile(Peddler.NAME);
+    this.addSupplyPile(Watchtower.NAME);
   }
 
   private getBasicSupply(): Map<string, Card[]> {
@@ -134,6 +146,14 @@ export class Kingdom {
     } else {
       in_trash_already.push(card);
     }
+  }
+
+  getTotalTrashSize() {
+    let tally = 0;
+    for (const cardStack of this.trash.values()){
+      tally += cardStack.length;
+    }
+    return tally;
   }
 
   removeFromTrash(card: Card) {

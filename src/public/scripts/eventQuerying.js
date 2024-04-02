@@ -1,6 +1,10 @@
 const EventQueryType = {
+  WINS: "wins",
+  VP: "vp",
   DRAW_CARD: "cards drawn",
 };
+
+const ANY_CARD = "All";
 
 function guidGenerator() {
   var S4 = function () {
@@ -28,16 +32,17 @@ function getEventCardInputElements() {
   const inputId = guidGenerator();
   cardInput.id = inputId;
   cardInput.type = "text";
-  cardInput.value = "All";
+  cardInput.value = ANY_CARD;
 
   var label = document.createElement("label");
+  label.classList.add("event-with-label");
   label.for = inputId;
-  label.innerHTML = " by ";
+  label.innerHTML = " with ";
 
   return [label, cardInput];
 }
 
-function getEventNumericalInputElements() {
+function getByTurnInputElements() {
   var numberInput = document.createElement("input");
   numberInput.classList.add("number-input");
 
@@ -47,6 +52,7 @@ function getEventNumericalInputElements() {
   numberInput.value = 99;
 
   var label = document.createElement("label");
+  label.classList.add("by-turn-label");
   label.for = inputId;
   label.innerHTML = " by turn ";
 
@@ -56,6 +62,7 @@ function getEventNumericalInputElements() {
 function addQueryListener(addQuerySelect) {
   addQuerySelect.addEventListener("change", (event) => {
     const parent = event.target.parentElement;
+    parent.replaceChildren(event.target);
     if (event.target.value === EventQueryType.DRAW_CARD) {
       const cardInputElements = getEventCardInputElements();
       const cardLabel = cardInputElements[0];
@@ -63,18 +70,30 @@ function addQueryListener(addQuerySelect) {
       parent.appendChild(cardInput);
       parent.insertBefore(cardLabel, cardInput);
 
-      const turnInputElements = getEventNumericalInputElements();
+      const turnInputElements = getByTurnInputElements();
       const turnLabel = turnInputElements[0];
       const turnInput = turnInputElements[1];
       parent.appendChild(turnInput);
       parent.insertBefore(turnLabel, turnInput);
+    } else if (event.target.value === EventQueryType.WINS) {
+      const turnInputElements = getByTurnInputElements();
+      const turnLabel = turnInputElements[0];
+      const turnInput = turnInputElements[1];
+      parent.appendChild(turnInput);
+      parent.insertBefore(turnLabel, turnInput);
+    } else if (event.target.value === EventQueryType.VP) {
+      const cardInputElements = getEventCardInputElements();
+      const cardLabel = cardInputElements[0];
+      const cardInput = cardInputElements[1];
+      parent.appendChild(cardInput);
+      parent.insertBefore(cardLabel, cardInput);
     } else {
       throw new Error(
         `Unable to handle EventQueryType value '${event.target.value}''`,
       );
     }
 
-    event.target.disabled = true;
+    // event.target.disabled = true;
   });
 }
 
@@ -83,26 +102,29 @@ function getAddQueryElement() {
   form.classList.add("pure-form");
   form.classList.add("result-query-form");
 
+  var formDiv = document.createElement("div");
+  formDiv.classList.add("pure-g");
+  formDiv.classList.add("result-query-form-div");
+
   var addQuerySelect = document.createElement("select");
   addQuerySelect.classList.add("select-query");
 
-  var menuTitle = document.createElement("option");
-  menuTitle.value = "+ Result query";
-  menuTitle.text = "+ Result query";
-  menuTitle.style = "display:none";
-
-  addQuerySelect.appendChild(menuTitle);
   for (const eventQueryType of Object.values(EventQueryType)) {
     var option = document.createElement("option");
     option.value = eventQueryType;
     option.text = eventQueryType;
     addQuerySelect.appendChild(option);
   }
-
   addQueryListener(addQuerySelect);
+  formDiv.appendChild(addQuerySelect);
 
-  form.appendChild(addQuerySelect);
+  const turnInputElements = getByTurnInputElements();
+  const turnLabel = turnInputElements[0];
+  const turnInput = turnInputElements[1];
+  formDiv.appendChild(turnInput);
+  formDiv.insertBefore(turnLabel, turnInput);
 
+  form.appendChild(formDiv);
   return form;
 }
 
@@ -114,6 +136,12 @@ function setupDefaultQueries(anchor) {
 function setupEventQueries() {
   var anchor = document.getElementById("event-queries");
   setupDefaultQueries(anchor);
+
+  var addButton = document.getElementById("add-event-query");
+  addButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    anchor.appendChild(getAddQueryElement());
+  });
 }
 
 setupEventQueries();

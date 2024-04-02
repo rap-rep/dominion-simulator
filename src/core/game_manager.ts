@@ -1,8 +1,6 @@
 import { Game, GameConfig } from "./game";
-import {
-  EventQueryInput,
-  EventQueryManager,
-} from "./logging/event_query";
+import { EventQueryInput, EventQueryManager } from "./logging/event_query";
+import { EventRecordBuilder } from "./logging/event_record_builders";
 
 export class GameManager {
   defaultGameConfig: GameConfig;
@@ -32,14 +30,24 @@ export class GameManager {
     this.p2Name = p2Name;
     this.defaultGameConfig.p1Name = p1Name;
     this.defaultGameConfig.p2Name = p2Name;
-    
+
     this.currentGame = new Game(this.defaultGameConfig);
   }
 
   playGames() {
     for (let i = 0; i < this.totalSims; i++) {
       this.currentGame.playGame();
+      this.writeEndOfGameMetrics();
       this.currentGame = new Game(this.defaultGameConfig);
+    }
+  }
+
+  private writeEndOfGameMetrics() {
+    for (const effectRecord of EventRecordBuilder.winner(
+      this.currentGame,
+      this.currentGame.winner,
+    )) {
+      this.eventQueryManager.recordEvent(effectRecord);
     }
   }
 }

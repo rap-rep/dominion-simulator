@@ -1,7 +1,8 @@
 import { Graph, PlayNode } from "@src/core/graph";
 import { Card } from "../../card";
-import { CardHeuristicType, CardType } from "@src/core/card_types";
+import { DeprecatedCardHeuristicType, CardType } from "@src/core/card_types";
 import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
+import { HeuristicType, TerminalType } from "@src/core/logic/card_selector";
 
 const Name = "Smithy";
 
@@ -18,8 +19,16 @@ export class Smithy extends Card {
     return new Smithy();
   }
 
-  heuristicType(): CardHeuristicType {
-    return CardHeuristicType.TERMINAL_DRAW;
+  deprecatedHeuristicType(): DeprecatedCardHeuristicType {
+    return DeprecatedCardHeuristicType.TERMINAL_DRAW;
+  }
+
+  heuristicType(): HeuristicType {
+    return HeuristicType.CANTRIP;
+  }
+
+  terminalType(): TerminalType {
+    return TerminalType.TERMINAL;
   }
 
   playGraph(): Graph {

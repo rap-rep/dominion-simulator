@@ -228,15 +228,14 @@ export class OrderedConditionGainSelector {
         evalObj[condition.threshold_id] = condition.threshold;
       }
 
-      // TODO: Add one more level of logging that stuff like this can go under
-      player.game.gamelog.log(condition_token_str, LogLevel.DEBUG);
-      //player.game.gamelog.log(evalObj.toString(), LogLevel.DEBUG);
+      player.game.gamelog.log(condition_token_str, LogLevel.EXTREME);
       if (
         player.game.gamelog.level === LogLevel.DEBUG &&
         player.game.gamelog.mode === LogMode.CONSOLE_LOG
       ) {
-        // temporary hack until able to properly convert to string in actual log
-        console.log(evalObj);
+        // TODO fix this and send it with LogLevel.EXTREME
+        // temporary hack until able to properly convert to string for actual log
+        // console.log(evalObj); //needs to stay commented unless debugging
       }
 
       const ast = parseExpression(tokenizeExpression(condition_token_str));

@@ -6,6 +6,7 @@ import { ResolverLog } from "./logging/resolver_log";
 import { PlayerHelper } from "./helpers/player_helper";
 import { ConditionSetList } from "./logic/ordered_condition_gaining";
 import { EventQueryInput, EventQueryManager } from "./logging/event_query";
+import { GameHelper } from "./helpers/game_helper";
 
 const MAX_TURNS = 100;
 
@@ -34,7 +35,8 @@ export class Game {
   eventlog: ResolverLog;
   phase: Phase = Phase.START;
   cardNameMap: CardNameMap;
-  winner: undefined | Player | null;
+  winner: undefined | Player | Player[];
+  starter: Player;
   gameNumber: number;
   eventQueryManager: EventQueryManager;
 
@@ -57,19 +59,24 @@ export class Game {
     this.p1.setOpponent(this.p2);
     this.p2.setOpponent(this.p1);
     this.currentPlayer = this.p1;
+    this.starter = this.currentPlayer;
     this.eventQueryManager =
       config?.eventQueryManager || new EventQueryManager();
   }
 
-  playGame() {
-    while (!this.kingdom.gameOver() && this.turn < MAX_TURNS) {
-      this.incrementTurn();
+  playGame(untilTurn?:number|undefined) {
+    let gameOver = false;
+    while (!gameOver && this.turn < (untilTurn || MAX_TURNS)) {
       this.currentPlayer.playStartTurn();
       this.currentPlayer.playActionPhase();
       this.currentPlayer.playTreasurePhase();
       this.currentPlayer.playBuyPhase();
       this.currentPlayer.playCleanupPhase();
-      this.switchPlayer();
+      gameOver = this.kingdom.gameOver();
+      if (!gameOver) {
+        this.switchPlayer();
+        this.incrementTurn();
+      }
     }
     this.logGameOver(this.p1);
     this.logGameOver(this.p2);
@@ -103,13 +110,22 @@ export class Game {
     const p1Points = PlayerHelper.countVictoryPoints(this.p1);
     const p2Points = PlayerHelper.countVictoryPoints(this.p2);
     if (p1Points === p2Points) {
-      this.winner = null;
+      if (this.currentPlayer === this.starter) {
+        this.winner = this.currentPlayer.opponent;
+      } else {
+        this.winner = [this.p1, this.p2];
+      }
     } else if (p1Points > p2Points) {
       this.winner = this.p1;
     } else {
       this.winner = this.p2;
     }
-    this.gamelog.log(`Winner: ${this.winner?.name || "Tie"}`);
+    if (Array.isArray(this.winner)) {
+      this.gamelog.log("Winner: Tie");
+    } else {
+      this.gamelog.log(`Winner: ${this.winner?.name}`);
+    }
+    GameHelper.recordVPEvents(this);
   }
 }
 

@@ -1,7 +1,8 @@
 import { Graph, PlayNode } from "@src/core/graph";
 import { Card } from "../../card";
 import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
-import { CardHeuristicType, CardType } from "@src/core/card_types";
+import { DeprecatedCardHeuristicType, CardType } from "@src/core/card_types";
+import { HeuristicType, TerminalType } from "@src/core/logic/card_selector";
 
 const Name = "Copper";
 
@@ -14,8 +15,8 @@ export class Copper extends Card {
     return Name;
   }
 
-  heuristicType(): CardHeuristicType {
-    return CardHeuristicType.TREASURE;
+  deprecatedHeuristicType(): DeprecatedCardHeuristicType {
+    return DeprecatedCardHeuristicType.TREASURE;
   }
 
   playGraph(): Graph {
@@ -26,5 +27,17 @@ export class Copper extends Card {
       ),
     );
     return graph;
+  }
+
+  economyHeuristicValue(): number {
+    return 1;
+  }
+
+  heuristicType(): HeuristicType {
+    return HeuristicType.TREASURE;
+  }
+
+  terminalType(): TerminalType {
+    return TerminalType.NONTERMINAL;
   }
 }

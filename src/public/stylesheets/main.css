@@ -57,3 +57,22 @@ body {
 .play-game {
   margin-top: 15px;
 }
+
+#add-event-query-div {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.result-query-form-div {
+  margin-bottom: 5px;
+}
+
+.event-with-label {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.by-turn-label {
+  padding-left: 5px;
+  padding-right: 5px;
+}

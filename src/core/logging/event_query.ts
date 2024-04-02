@@ -18,7 +18,10 @@ export type EventQueryResult = {
 };
 
 export enum EventQueryType {
+  WINS = "wins",
   DRAW_CARD = "cards drawn",
+  VP = "vp",
+  TRASH = "trash",
   // PLUS_COIN = "+ coin",
 }
 
@@ -27,7 +30,8 @@ export type EventRecord = {
   playerName: string;
   gameNumber: number;
   amount: number;
-  fromCard: string;
+  turn: number;
+  fromCard?: string | undefined;
   toCard?: string | undefined;
 };
 
@@ -62,7 +66,7 @@ export class EventQueryManager {
     return outputQueries;
   }
 
-  recordEffect(eventRecord: EventRecord) {
+  recordEvent(eventRecord: EventRecord) {
     if (this.eventQueries) {
       for (const query of this.eventQueries) {
         query.recordEffect(eventRecord);
@@ -116,15 +120,16 @@ export class EventQuery {
 
   private appliesToQuery(effectRecord: EventRecord): boolean {
     return (
+      effectRecord.type === this.type &&
       (this.playerName === undefined ||
         effectRecord.playerName === this.playerName) &&
-      effectRecord.type === this.type &&
       (!this.fromCard ||
         this.fromCard === ANY_CARD ||
         effectRecord.fromCard === this.fromCard) &&
       (!this.toCard ||
         this.toCard === ANY_CARD ||
-        this.toCard === effectRecord.toCard)
+        this.toCard === effectRecord.toCard) &&
+      (this.byTurn === undefined || effectRecord.turn <= this.byTurn)
     );
   }
 
@@ -151,7 +156,7 @@ export class EventQuery {
     return total;
   }
 
-  getAverage(numGames: number){
+  getAverage(numGames: number) {
     return this.getTotal() / numGames;
   }
 }

@@ -8,6 +8,7 @@ import { EffectPlayer } from "./effects";
 import { Game, Phase } from "./game";
 import { PlayerHelper } from "./helpers/player_helper";
 import { EventRecordBuilder } from "./logging/event_record_builders";
+import { LogLevel } from "./logging/game_log";
 import { MetricHelper } from "./logic/metric_helpers";
 import {
   ConditionSetList,
@@ -143,7 +144,10 @@ export class Player {
     }
   }
 
-  addCardToHand(card: Card) {
+  addCardToHand(card: Card, addToAllCards: boolean=false) {
+    if (addToAllCards){
+      this.addToAllCards(card);
+    }
     const in_hand_already = this.hand.get(card.name);
     if (!in_hand_already) {
       this.hand.set(card.name, [card]);
@@ -152,12 +156,16 @@ export class Player {
     }
   }
 
-  removeCardFromHand(card: Card) {
+  removeCardFromHand(card: Card, removeFromAllCards: boolean=false) {
     const in_hand = this.hand.get(card.name);
+    this.game.gamelog.log(`Removing ${card.name} from hand`, LogLevel.EXTREME);
     if (!in_hand) {
       throw new Error("Attempting to remove card that is not in hand");
     } else {
       this.removeCardFromList(card, in_hand);
+      if (removeFromAllCards){
+        this.removeFromAllCards(card);
+      }
       if (in_hand.length === 0) {
         this.hand.delete(card.name);
       }

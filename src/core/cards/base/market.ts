@@ -1,7 +1,8 @@
 import { Graph, PlayNode } from "@src/core/graph";
 import { Card } from "../../card";
-import { CardHeuristicType, CardType } from "@src/core/card_types";
+import { DeprecatedCardHeuristicType, CardType } from "@src/core/card_types";
 import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
+import { HeuristicType, TerminalType } from "@src/core/logic/card_selector";
 
 const Name = "Market";
 
@@ -18,8 +19,8 @@ export class Market extends Card {
     return new Market();
   }
 
-  heuristicType(): CardHeuristicType {
-    return CardHeuristicType.CANTRIP;
+  deprecatedHeuristicType(): DeprecatedCardHeuristicType {
+    return DeprecatedCardHeuristicType.CANTRIP;
   }
 
   playGraph(): Graph {
@@ -52,5 +53,17 @@ export class Market extends Card {
 
   cost(): number {
     return 5;
+  }
+
+  economyHeuristicValue(): number {
+    return 1;
+  }
+
+  heuristicType(): HeuristicType {
+    return HeuristicType.CANTRIP;
+  }
+
+  terminalType(): TerminalType {
+    return TerminalType.NONTERMINAL;
   }
 }

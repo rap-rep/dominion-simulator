@@ -1,8 +1,9 @@
 import { Graph, PlayNode } from "@src/core/graph";
 import { Card } from "../../card";
-import { CardHeuristicType, CardType } from "@src/core/card_types";
+import { DeprecatedCardHeuristicType, CardType } from "@src/core/card_types";
 import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 import { Decision, DecisionType } from "@src/core/decisions";
+import { HeuristicType, TerminalType } from "@src/core/logic/card_selector";
 
 const Name = "Ironworks";
 
@@ -15,8 +16,16 @@ export class Ironworks extends Card {
     return Name;
   }
 
-  heuristicType(): CardHeuristicType {
-    return CardHeuristicType.NONTERMINAL_GAINER;
+  deprecatedHeuristicType(): DeprecatedCardHeuristicType {
+    return DeprecatedCardHeuristicType.NONTERMINAL_GAINER;
+  }
+
+  heuristicType(): HeuristicType {
+    return HeuristicType.PAYLOAD_GAINER;
+  }
+
+  terminalType(): TerminalType {
+    return TerminalType.NONTERMINAL;
   }
 
   typeBonusMap() {

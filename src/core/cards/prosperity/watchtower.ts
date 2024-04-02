@@ -1,8 +1,9 @@
 import { Graph, PlayNode } from "@src/core/graph";
 import { Card } from "../../card";
-import { CardHeuristicType, CardType } from "@src/core/card_types";
+import { DeprecatedCardHeuristicType, CardType } from "@src/core/card_types";
 import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 import { Decision, DecisionType } from "@src/core/decisions";
+import { HeuristicType, TerminalType } from "@src/core/logic/card_selector";
 
 const Name = "Watchtower";
 
@@ -14,7 +15,7 @@ export class Watchtower extends Card {
     this.selectionMap.set(
       0,
       new Effect(
-        EffectType.TRASH,
+        EffectType.TRASH_FROM_HAND,
         EffectPlayer.SELF,
         undefined,
         undefined,
@@ -47,8 +48,8 @@ export class Watchtower extends Card {
     return Name;
   }
 
-  heuristicType(): CardHeuristicType {
-    return CardHeuristicType.TERMINAL_DRAW;
+  deprecatedHeuristicType(): DeprecatedCardHeuristicType {
+    return DeprecatedCardHeuristicType.TERMINAL_DRAW;
   }
 
   playGraph(): Graph {
@@ -81,5 +82,13 @@ export class Watchtower extends Card {
 
   cost(): number {
     return 3;
+  }
+
+  heuristicType(): HeuristicType {
+    return HeuristicType.DRAW_TO_X;
+  }
+
+  terminalType(): TerminalType {
+    return TerminalType.TERMINAL;
   }
 }

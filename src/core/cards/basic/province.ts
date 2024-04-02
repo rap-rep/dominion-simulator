@@ -1,6 +1,6 @@
 import { Graph } from "@src/core/graph";
 import { Card } from "../../card";
-import { CardHeuristicType, CardType } from "@src/core/card_types";
+import { DeprecatedCardHeuristicType, CardType } from "@src/core/card_types";
 import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 
 const Name = "Province";
@@ -18,8 +18,8 @@ export class Province extends Card {
     return 6;
   }
 
-  heuristicType(): CardHeuristicType {
-    return CardHeuristicType.VICTORY;
+  deprecatedHeuristicType(): DeprecatedCardHeuristicType {
+    return DeprecatedCardHeuristicType.VICTORY;
   }
 
   cost(): number {

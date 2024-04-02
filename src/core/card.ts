@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused-variable */
 import {
-  CardHeuristicType,
+  DeprecatedCardHeuristicType,
   InteractionType,
   CardType,
   DurationPhase,
@@ -8,6 +8,7 @@ import {
 import { Decision } from "./decisions";
 import { Effect } from "./effects";
 import { Graph } from "./graph";
+import { HeuristicType, TerminalType } from "./logic/card_selector";
 
 export class Card {
   name: string;
@@ -40,8 +41,16 @@ export class Card {
     return 0;
   }
 
-  heuristicType(): CardHeuristicType {
-    return CardHeuristicType.NULL;
+  deprecatedHeuristicType(): DeprecatedCardHeuristicType {
+    return DeprecatedCardHeuristicType.NULL;
+  }
+
+  heuristicType(): HeuristicType {
+    return HeuristicType.JUNK;
+  }
+
+  terminalType(): TerminalType {
+    return TerminalType.NONPLAYABLE;
   }
 
   staysInPlay(): boolean {
@@ -70,6 +79,10 @@ export class Card {
 
   specificReductionInteraction(): InteractionType | undefined {
     return undefined;
+  }
+
+  economyHeuristicValue(): number {
+    return 0;
   }
 
   inHandWhileGaining(_card: Card): Decision | undefined {

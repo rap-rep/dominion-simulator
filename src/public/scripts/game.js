@@ -1,5 +1,4 @@
 // Section: ordered condition gaining parsing for passing to Game creation
-
 class ConditionSet {
   constructor(conditionSet, cardToGain) {
     this.conditionSet = conditionSet;
@@ -105,26 +104,42 @@ function getConditionRules(playerAnchor) {
   return playerRules;
 }
 
-function getResultElement(result){
-    var resultDiv = document.createElement("div");
-    resultDiv.classList.add("pure-g");
-    resultDiv.classList.add("query-result")
+function getResultElement(result) {
+  var resultDiv = document.createElement("div");
+  resultDiv.classList.add("pure-g");
+  resultDiv.classList.add("query-result");
 
-    let byTurnClause = "";
-    if (byTurn !== 99){
-      byTurnClause =  ` by turn ${result.byTurn}`
+  let withClause = undefined;
+  if (result.fromCard && result.fromCard !== ANY_CARD) {
+    withClause = ` with ${result.fromCard}`;
+  }
+
+  let byTurnClause = undefined;
+  if (result.byTurn && result.byTurn < 99) {
+    byTurnClause = ` by turn ${result.byTurn}`;
+  }
+
+  const optionalClauses = [];
+  for (const clause of [withClause, byTurnClause]) {
+    if (clause !== undefined) {
+      optionalClauses.push(clause);
     }
-    if (result.type === EventQueryType.DRAW_CARD){
-      resultDiv.innerHTML = `${result.playerName} average cards drawn with ${result.fromCard}${byTurnClause}: ${result.average}`;
-    }
-    else{
-      throw new Error(`'${result.type}' result type not supported`)
-    }
-  
-    return resultDiv;
+  }
+
+  if (result.type === EventQueryType.DRAW_CARD) {
+    resultDiv.innerHTML = `${result.playerName} average cards drawn${optionalClauses.join(" ")}: ${result.average}`;
+  } else if (result.type === EventQueryType.WINS) {
+    resultDiv.innerHTML = `${result.playerName} win ratio${optionalClauses.join(" ")}: ${result.average}`;
+  } else if (result.type === EventQueryType.VP) {
+    resultDiv.innerHTML = `${result.playerName} average VP${optionalClauses.join(" ")}: ${result.average}`;
+  } else {
+    throw new Error(`'${result.type}' result type not supported`);
+  }
+
+  return resultDiv;
 }
 
-function simGame(numGames){
+function simGame(numGames) {
   const p1anchor = document.getElementById("player-one-conditions");
   const p1rules = getConditionRules(p1anchor);
 
@@ -133,7 +148,12 @@ function simGame(numGames){
 
   const eventQueries = parseEventQueries();
 
-  data = { p1rules: p1rules, p2rules: p2rules, eventQueries: eventQueries, numGames: numGames };
+  data = {
+    p1rules: p1rules,
+    p2rules: p2rules,
+    eventQueries: eventQueries,
+    numGames: numGames,
+  };
 
   Http.post("/api/game/post_run", data)
     .then((resp) => resp.json())
@@ -142,10 +162,9 @@ function simGame(numGames){
       var anchor = document.getElementById("game-results");
       anchor.replaceChildren([]);
 
-      for (const result of results){
-          anchor.appendChild(getResultElement(result));
+      for (const result of results) {
+        anchor.appendChild(getResultElement(result));
       }
-      
     });
 }
 
@@ -157,13 +176,11 @@ function setupSimListeners() {
     simGame(1);
   });
 
-
   var playButton100 = document.getElementById("play-game-btn-100");
   playButton100.addEventListener("click", (event) => {
     event.preventDefault();
     simGame(100);
   });
-
 
   var playButton1000 = document.getElementById("play-game-btn-1000");
   playButton1000.addEventListener("click", (event) => {
@@ -193,12 +210,18 @@ function parseEventQueries() {
 
   const queryDiv = document.getElementById("event-queries");
   for (const queryForm of queryDiv.children) {
-    const formElements = queryForm.children;
+    const formElements = queryForm.children[0].children;
     const selectionType = formElements[0].value;
     if (selectionType === EventQueryType.DRAW_CARD) {
       fromCard = formElements[2].value;
       byTurn = parseInt(formElements[4].value);
       eventQueries.push(new EventQuery(selectionType, fromCard, byTurn));
+    } else if (selectionType === EventQueryType.WINS) {
+      byTurn = parseInt(formElements[2].value);
+      eventQueries.push(new EventQuery(selectionType, undefined, byTurn));
+    } else if (selectionType === EventQueryType.VP) {
+      fromCard = formElements[2].value;
+      eventQueries.push(new EventQuery(selectionType, fromCard));
     }
   }
 

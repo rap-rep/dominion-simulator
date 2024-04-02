@@ -23,7 +23,7 @@ export enum InteractionType {
   ACTIONS_IN_PLAY_DURING_BUY = 1,
 }
 
-export enum CardHeuristicType {
+export enum DeprecatedCardHeuristicType {
   TREASURE = 0,
   CANTRIP = 1,
   TERMINAL_DRAW = 2,

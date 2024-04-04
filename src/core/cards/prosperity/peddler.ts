@@ -60,7 +60,7 @@ export class Peddler extends Card {
     specificReductionCount?: number | undefined,
   ): number {
     let specificReductionValue = 0;
-    if (!specificReductionCount) {
+    if (specificReductionCount === undefined) {
       throw new Error(
         "Invalid state: effective cost for Peddler requires a value passed in representing actions in play",
       );

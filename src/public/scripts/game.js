@@ -139,6 +139,37 @@ function getResultElement(result) {
   return resultDiv;
 }
 
+function includeSampleLog(){
+  var sampleLogSelect = document.getElementById("sample-log-select");
+  return sampleLogSelect.checked;
+}
+
+function displaySampleLog(log){
+  if (log === undefined){
+    return;
+  }
+  else{
+    const anchor = document.getElementById("sample-log");
+    const title = document.createElement("h4");
+    title.innerHTML = "Sample Log";
+    anchor.appendChild(title);
+    for (const line of log){
+      const lineDiv = document.createElement("div");
+      lineDiv.classList.add("pure-g");
+      lineDiv.classList.add("log-line")
+      if (line === ""){
+        lineDiv.innerHTML = "&nbsp;"
+      }
+      else{
+        lineDiv.innerHTML = line;
+      }
+
+      anchor.appendChild(lineDiv);
+    }
+  }
+
+}
+
 function simGame(numGames) {
   const p1anchor = document.getElementById("player-one-conditions");
   const p1rules = getConditionRules(p1anchor);
@@ -148,23 +179,37 @@ function simGame(numGames) {
 
   const eventQueries = parseEventQueries();
 
+  const includeSampleLogResult = includeSampleLog();
+
   data = {
     p1rules: p1rules,
     p2rules: p2rules,
     eventQueries: eventQueries,
     numGames: numGames,
+    includeSampleLog: includeSampleLogResult,
   };
+
+  var anchor = document.getElementById("game-results");
+  var sampleLogAnchor = document.getElementById("sample-log");
+  sampleLogAnchor.replaceChildren([]);
+
+  const spinnerDiv = document.createElement("div");
+  spinnerDiv.classList.add("lds-dual-ring");
+  anchor.replaceChildren(spinnerDiv);
 
   Http.post("/api/game/post_run", data)
     .then((resp) => resp.json())
     .then((resp) => {
       var results = resp.results;
-      var anchor = document.getElementById("game-results");
+      var sampleLog = resp.log;
       anchor.replaceChildren([]);
-
+      const title = document.createElement("h4");
+      title.innerHTML = "Event Results"
+      anchor.appendChild(title);
       for (const result of results) {
         anchor.appendChild(getResultElement(result));
       }
+      displaySampleLog(sampleLog);
     });
 }
 
@@ -190,7 +235,6 @@ function setupSimListeners() {
 }
 
 // Section: event querying parsing for passing to Game creation
-
 class EventQuery {
   constructor(
     type, // EventQueryType (string)
@@ -227,6 +271,44 @@ function parseEventQueries() {
 
   return eventQueries;
 }
+
+function setupRuleCollapseExpand(){
+  const p1CollapseExpand = document.getElementById("p1-rule-collapse");
+  const p1RuleBox = document.getElementById("player-one-conditions");
+
+  const p2CollapseExpand = document.getElementById("p2-rule-collapse");
+  const p2RuleBox = document.getElementById("player-two-conditions");
+
+  const EXPAND = "[+]";
+  const COLLAPSE = "[-]";
+
+  function collapseExpand(event, ruleBox){
+    event.preventDefault();
+    if (event.target.innerHTML === COLLAPSE){
+      ruleBox.style.display = "none";
+      event.target.innerHTML = EXPAND;
+    }
+    else if (event.target.innerHTML === EXPAND){
+      ruleBox.style.display = "";
+      event.target.innerHTML = COLLAPSE; 
+    }
+    else {
+      throw new Error("Invalid value in collapse/expand button");
+    }
+  }
+
+  p1CollapseExpand.addEventListener("click", (event) => {
+    collapseExpand(event, p1RuleBox);
+  });
+
+  p2CollapseExpand.addEventListener("click", (event) => {
+    collapseExpand(event, p2RuleBox);
+  });
+
+}
+
+// Section: UI Utility
+setupRuleCollapseExpand();
 
 // Section: Initializers
 setupSimListeners();

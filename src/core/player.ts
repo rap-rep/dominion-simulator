@@ -7,7 +7,6 @@ import { Decision, DecisionType } from "./decisions";
 import { EffectPlayer } from "./effects";
 import { Game, Phase } from "./game";
 import { PlayerHelper } from "./helpers/player_helper";
-import { EventRecordBuilder } from "./logging/event_record_builders";
 import { LogLevel } from "./logging/game_log";
 import { MetricHelper } from "./logic/metric_helpers";
 import {
@@ -132,7 +131,7 @@ export class Player {
 
   drawCard(): Card | undefined {
     if (this.deck.length == 0 && this.discard.length > 0) {
-      this.game.gamelog.shuffleDeck(this);
+      this.game.gamelog.logShuffle(this);
       this.deck = this.shuffledDeck(this.discard);
       this.discard = [];
     }
@@ -234,6 +233,22 @@ export class Player {
       this.removeCardFromHand(currentlySelectedTreasure);
       this.effectResolver.playCard(this, currentlySelectedTreasure);
     }
+  }
+
+  logHand() {
+    const handTokens: string[] = new Array();
+    for (const cardStack of this.hand.values()){
+      handTokens.push(`${cardStack.length}x${cardStack[0].name}`)
+    }
+    this.game.gamelog.log(`${this.name} hand: [${handTokens.join(", ")}]`)
+  }
+
+  logPreBuyPhase() {
+    let buyWord = "buys";
+    if (this.buys === 1){
+      buyWord = "buy";
+    }
+    this.game.gamelog.log(`${this.name} has ${this.coins} coins with ${this.buys} ${buyWord}`)
   }
 
   playBuyPhase() {

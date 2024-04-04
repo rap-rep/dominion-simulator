@@ -1,4 +1,5 @@
 import { Card } from "../card";
+import { Peddler } from "../cards/prosperity/peddler";
 import { InteractionHelper } from "../helpers/interaction_helpers";
 import { Player } from "../player";
 

@@ -67,13 +67,8 @@ export class Card {
 
   effectiveCost(
     globalReduction: number,
-    specificReductionCount?: number | undefined,
+    _specificReductionCount?: number | undefined,
   ): number {
-    if (specificReductionCount) {
-      throw new Error(
-        "Invalid state: effective cost requested with a value for specific reduction on a card with no specific reduction rule set",
-      );
-    }
     return Math.max(0, this.cost() - globalReduction);
   }
 

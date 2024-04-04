@@ -5,7 +5,7 @@ import { IUser } from "@src/models/User";
 import { IReq, IRes } from "./types/express/misc";
 import { Game } from "@src/core/game";
 import { ConditionSetList } from "@src/core/logic/ordered_condition_gaining";
-import { LogMode } from "@src/core/logging/game_log";
+import { LogLevel, LogMode } from "@src/core/logging/game_log";
 import { EventQueryInput } from "@src/core/logging/event_query";
 import { GameManager } from "@src/core/game_manager";
 
@@ -24,22 +24,25 @@ async function postGame(
     p2rules: ConditionSetList;
     eventQueries: EventQueryInput[];
     numGames: number;
+    includeSampleLog: boolean;
   }>,
   res: IRes,
 ) {
-  const { p1rules, p2rules, eventQueries, numGames } = req.body;
+  const { p1rules, p2rules, eventQueries, numGames, includeSampleLog } = req.body;
 
   const config = {
     p1gainRules: p1rules,
     p2gainRules: p2rules,
-    logMode: LogMode.SILENT,
+    logMode: includeSampleLog ? LogMode.BUFFER: LogMode.SILENT,
+    logLevel: LogLevel.INFO,
   };
 
-  const gameManager = new GameManager(config, numGames, eventQueries);
+  const gameManager = new GameManager(config, numGames, eventQueries, includeSampleLog);
   gameManager.playGames();
   return res.status(HttpStatusCodes.OK).json({
     turns: gameManager.currentGame.turn,
     results: gameManager.eventQueryManager.getJsonResults(numGames),
+    log: gameManager.sampleLog,
   });
 }
 

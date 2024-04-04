@@ -26,6 +26,8 @@ body {
 .delete-rule {
   margin-left: 5px;
   margin-right: 5px;
+  padding-left: 6px;
+  padding-right: 6px;
 }
 
 .gain-arrow-text {
@@ -48,6 +50,8 @@ body {
 
 .add-rule {
   margin-left: 5px;
+  padding-left: 6px;
+  padding-right: 6px;
 }
 
 .gain-conditions {
@@ -56,6 +60,14 @@ body {
 
 .play-game {
   margin-top: 15px;
+}
+
+.add-event-query {
+  padding-left: 6px;
+  padding-right: 6px;
+  height: 25px;
+  padding-bottom: 8px;
+  padding-top: 0px;
 }
 
 #add-event-query-div {
@@ -72,7 +84,70 @@ body {
   padding-right: 5px;
 }
 
+.query-result {
+  padding-left: 5px;
+  border-left: 2px solid black;
+}
+
 .by-turn-label {
   padding-left: 5px;
   padding-right: 5px;
 }
+
+.move-rule-down {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.move-rule-up {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.collapse-button {
+  color: gray;
+  border-radius: 4px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  height:15px;
+  padding-bottom: 12px;
+  padding-top:0px;
+  padding-left:3px;
+  padding-right:3px;
+}
+
+
+/* LOADING SPINNER */
+.lds-dual-ring {
+  /* change color here */
+  color: #1c4c5b
+}
+.lds-dual-ring,
+.lds-dual-ring:after {
+  box-sizing: border-box;
+}
+.lds-dual-ring {
+  display: inline-block;
+  margin-left: 10px;
+  width: 50px;
+  height: 50px;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6.4px solid currentColor;
+  border-color: currentColor transparent currentColor transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+/* END LOADING SPINNER */

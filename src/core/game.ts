@@ -30,7 +30,7 @@ export class Game {
   p1: Player;
   p2: Player;
   currentPlayer: Player;
-  turn: number = 0;
+  turn: number = 1;
   gamelog: GameLog;
   eventlog: ResolverLog;
   phase: Phase = Phase.START;
@@ -44,6 +44,7 @@ export class Game {
     this.cardNameMap = new CardNameMap();
     this.kingdom = new Kingdom();
     this.gamelog = new GameLog(config?.logMode, config?.logLevel);
+    this.gamelog.log("---- Setup ----")
     this.eventlog = new ResolverLog(this.gamelog);
     this.gameNumber = config?.gameNumber || 1;
     this.p1 = new Player(
@@ -66,10 +67,13 @@ export class Game {
 
   playGame(untilTurn?:number|undefined) {
     let gameOver = false;
+    this.gamelog.logTurn(this.turn, this.currentPlayer.name);
     while (!gameOver && this.turn < (untilTurn || MAX_TURNS)) {
+      this.currentPlayer.logHand();
       this.currentPlayer.playStartTurn();
       this.currentPlayer.playActionPhase();
       this.currentPlayer.playTreasurePhase();
+      this.currentPlayer.logPreBuyPhase();
       this.currentPlayer.playBuyPhase();
       this.currentPlayer.playCleanupPhase();
       gameOver = this.kingdom.gameOver();
@@ -99,6 +103,8 @@ export class Game {
   }
 
   private logGameOver(player: Player) {
+    this.gamelog.log("");
+    this.gamelog.log(`---- Game Over (${player.name}) ----`);
     this.gamelog.log(`${player.name} ending game cards: `);
     for (const card of player.allCardsMap.keys()) {
       this.gamelog.log(`${player.allCardsMap.get(card)?.length} x ${card}`);

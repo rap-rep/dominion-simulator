@@ -10,11 +10,14 @@ export class GameManager {
   currentGame: Game;
   p1Name: string;
   p2Name: string;
+  includeSampleLog: boolean;
+  sampleLog: undefined | string[];
 
   constructor(
     gameConfig: GameConfig,
     totalSims: number,
     eventQueryInput: EventQueryInput[],
+    includeSampleLog: boolean,
     p1Name: string = "p1",
     p2Name: string = "p2",
   ) {
@@ -25,6 +28,7 @@ export class GameManager {
     this.defaultGameConfig.eventQueryManager = this.eventQueryManager;
     this.totalSims = totalSims;
     this.currentGameNumber = 1;
+    this.includeSampleLog = includeSampleLog;
 
     this.p1Name = p1Name;
     this.p2Name = p2Name;
@@ -38,6 +42,11 @@ export class GameManager {
     for (let i = 0; i < this.totalSims; i++) {
       this.currentGame.playGame();
       this.writeEndOfGameMetrics();
+
+      if (this.includeSampleLog && this.sampleLog === undefined){
+        this.sampleLog = this.currentGame.gamelog.getBufferedLog();
+      }
+
       this.currentGame = new Game(this.defaultGameConfig);
     }
   }

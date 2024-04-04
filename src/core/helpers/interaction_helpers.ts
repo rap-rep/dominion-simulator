@@ -4,6 +4,9 @@ import { Player } from "../player";
 
 export class InteractionHelper {
   static effectiveCostNumber(player: Player, card: Card): number {
+    if (!player){
+      return 0;
+    }
     if (
       card.specificReductionInteraction() ===
       InteractionType.ACTIONS_IN_PLAY_DURING_BUY

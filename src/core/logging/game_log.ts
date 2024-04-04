@@ -2,14 +2,8 @@ import { Card } from "../card";
 import { NullCard } from "../cards/basic/null_card";
 import { Player } from "../player";
 
-export class LogLine {
+export type LogLine = {
   line: string;
-  indentation: number;
-
-  constructor(line: string, indentation: number = 0) {
-    this.line = line;
-    this.indentation = indentation;
-  }
 }
 
 export enum LogMode {
@@ -42,6 +36,10 @@ export class GameLog {
     }
   }
 
+  getBufferedLog(): string[]{
+    return this.loglines.map(l => l.line);
+  }
+
   log(line: string, level: LogLevel = LogLevel.INFO) {
     if (
       level === LogLevel.INFO ||
@@ -50,6 +48,9 @@ export class GameLog {
     ) {
       if (this.mode === LogMode.CONSOLE_LOG) {
         console.log(line);
+      }
+      else if (this.mode === LogMode.BUFFER) {
+        this.loglines.push({line: line});
       }
     }
   }
@@ -79,8 +80,8 @@ export class GameLog {
     this.log(`${player.name} draws a ${card.name}`);
   }
 
-  shuffleDeck(player: Player) {
-    this.log(`${player.name} shuffles their deck`);
+  logShuffle(player: Player) {
+    this.log(`${player.name} shuffles their deck (${player.discard.length} of ${player.allCardsList.length})`);
   }
 
   logDuration(player: Player, card: Card) {

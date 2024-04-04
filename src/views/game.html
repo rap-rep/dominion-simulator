@@ -19,11 +19,11 @@
   </head>
   <body>
     <div id="main">
-      <h3>p1 Rules</h3>
+      <h3>p1 Rules <sup><button id="p1-rule-collapse" class="pure-button collapse-button">[-]</button></sup></h3>
       <div id="first-player-row" class="pure-g">
         <div id="player-one-conditions" class="gain-conditions"></div>
       </div>
-      <h3>p2 Rules</h3>
+      <h3>p2 Rules <sup><button id="p2-rule-collapse" class="pure-button collapse-button">[-]</button></sup></h3>
       <div id="second-player-row" class="pure-g">
         <div id="player-two-conditions" class="gain-conditions"></div>
       </div>
@@ -31,7 +31,7 @@
       <hr />
       <h3>
         Event Queries
-        <button id="add-event-query" class="pure-button">+</button>
+        <button id="add-event-query" class="pure-button add-event-query">+ query</button>
       </h3>
 
       <div id="event-queries"></div>
@@ -39,7 +39,11 @@
         <button id="play-game-btn" class="pure-button">Sim 1</button>
         <button id="play-game-btn-100" class="pure-button">Sim 100</button>
         <button id="play-game-btn-1000" class="pure-button">Sim 1000</button>
+        <label for="sample-log-select">
+          <input checked type="checkbox" id="sample-log-select" name="sample-log-select" /> Sample Log
+        </label>
         <div id="game-results"></div>
+        <div id="sample-log"></div>
       </div>
     </div>
   </body>

@@ -5,10 +5,16 @@ import { Player } from "./player";
 import { ResolverLog } from "./logging/resolver_log";
 import { PlayerHelper } from "./helpers/player_helper";
 import { ConditionSetList } from "./logic/ordered_condition_gaining";
-import { EventQueryInput, EventQueryManager } from "./logging/event_query";
+import { EventQueryManager } from "./logging/event_query";
 import { GameHelper } from "./helpers/game_helper";
 
 const MAX_TURNS = 100;
+
+export enum Starter {
+  RANDOM = "random",
+  P1 = "p1",
+  P2 = "p2",
+}
 
 export type GameConfig = {
   logMode?: LogMode | undefined;
@@ -19,6 +25,7 @@ export type GameConfig = {
   eventQueryManager?: EventQueryManager | undefined;
   p1Name?: string | undefined;
   p2Name?: string | undefined;
+  starter?: Starter | undefined;
 };
 
 export class Game {
@@ -44,7 +51,7 @@ export class Game {
     this.cardNameMap = new CardNameMap();
     this.kingdom = new Kingdom();
     this.gamelog = new GameLog(config?.logMode, config?.logLevel);
-    this.gamelog.log("---- Setup ----")
+    this.gamelog.log("---- Setup ----");
     this.eventlog = new ResolverLog(this.gamelog);
     this.gameNumber = config?.gameNumber || 1;
     this.p1 = new Player(
@@ -61,11 +68,12 @@ export class Game {
     this.p2.setOpponent(this.p1);
     this.currentPlayer = this.p1;
     this.starter = this.currentPlayer;
+    this.setupStartPlayer(config);
     this.eventQueryManager =
       config?.eventQueryManager || new EventQueryManager();
   }
 
-  playGame(untilTurn?:number|undefined) {
+  playGame(untilTurn?: number | undefined) {
     let gameOver = false;
     this.gamelog.logTurn(this.turn, this.currentPlayer.name);
     while (!gameOver && this.turn < (untilTurn || MAX_TURNS)) {
@@ -77,6 +85,7 @@ export class Game {
       this.currentPlayer.playBuyPhase();
       this.currentPlayer.playCleanupPhase();
       gameOver = this.kingdom.gameOver();
+      this.gamelog.log(`Game over: ${gameOver}`);
       if (!gameOver) {
         this.switchPlayer();
         this.incrementTurn();
@@ -87,7 +96,30 @@ export class Game {
     this.assignWinner();
   }
 
-  private switchPlayer() {
+  private setupStartPlayer(config: GameConfig | undefined): void {
+    if (
+      config === undefined ||
+      config.starter === undefined ||
+      config.starter === Starter.P1
+    ) {
+      this.currentPlayer = this.p1;
+    } else if (config.starter === Starter.P2) {
+      this.currentPlayer = this.p2;
+    } else if (config.starter === Starter.RANDOM) {
+      if (Math.round(Math.random()) === 0) {
+        this.currentPlayer = this.p1;
+      } else {
+        this.currentPlayer = this.p2;
+      }
+    } else {
+      throw new Error(
+        `Invalid value '${config.starter}' specified for starter`,
+      );
+    }
+    this.starter = this.currentPlayer;
+  }
+
+  private switchPlayer(): void {
     if (this.currentPlayer === this.p1) {
       this.currentPlayer = this.p2;
     } else {
@@ -95,14 +127,14 @@ export class Game {
     }
   }
 
-  private incrementTurn() {
+  private incrementTurn(): void {
     if (this.currentPlayer === this.p1) {
       this.turn++;
     }
     this.gamelog.logTurn(this.turn, this.currentPlayer.name);
   }
 
-  private logGameOver(player: Player) {
+  private logGameOver(player: Player): void {
     this.gamelog.log("");
     this.gamelog.log(`---- Game Over (${player.name}) ----`);
     this.gamelog.log(`${player.name} ending game cards: `);
@@ -112,7 +144,7 @@ export class Game {
     this.gamelog.log(`Score: ${PlayerHelper.countVictoryPoints(player)}`);
   }
 
-  private assignWinner() {
+  private assignWinner(): void {
     const p1Points = PlayerHelper.countVictoryPoints(this.p1);
     const p2Points = PlayerHelper.countVictoryPoints(this.p2);
     if (p1Points === p2Points) {

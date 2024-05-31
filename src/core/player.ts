@@ -143,8 +143,8 @@ export class Player {
     }
   }
 
-  addCardToHand(card: Card, addToAllCards: boolean=false) {
-    if (addToAllCards){
+  addCardToHand(card: Card, addToAllCards: boolean = false) {
+    if (addToAllCards) {
       this.addToAllCards(card);
     }
     const in_hand_already = this.hand.get(card.name);
@@ -155,14 +155,14 @@ export class Player {
     }
   }
 
-  removeCardFromHand(card: Card, removeFromAllCards: boolean=false) {
+  removeCardFromHand(card: Card, removeFromAllCards: boolean = false) {
     const in_hand = this.hand.get(card.name);
     this.game.gamelog.log(`Removing ${card.name} from hand`, LogLevel.EXTREME);
     if (!in_hand) {
       throw new Error("Attempting to remove card that is not in hand");
     } else {
       this.removeCardFromList(card, in_hand);
-      if (removeFromAllCards){
+      if (removeFromAllCards) {
         this.removeFromAllCards(card);
       }
       if (in_hand.length === 0) {
@@ -237,18 +237,20 @@ export class Player {
 
   logHand() {
     const handTokens: string[] = new Array();
-    for (const cardStack of this.hand.values()){
-      handTokens.push(`${cardStack.length}x${cardStack[0].name}`)
+    for (const cardStack of this.hand.values()) {
+      handTokens.push(`${cardStack.length}x${cardStack[0].name}`);
     }
-    this.game.gamelog.log(`${this.name} hand: [${handTokens.join(", ")}]`)
+    this.game.gamelog.log(`${this.name} hand: [${handTokens.join(", ")}]`);
   }
 
   logPreBuyPhase() {
     let buyWord = "buys";
-    if (this.buys === 1){
+    if (this.buys === 1) {
       buyWord = "buy";
     }
-    this.game.gamelog.log(`${this.name} has ${this.coins} coins with ${this.buys} ${buyWord}`)
+    this.game.gamelog.log(
+      `${this.name} has ${this.coins} coins with ${this.buys} ${buyWord}`,
+    );
   }
 
   playBuyPhase() {

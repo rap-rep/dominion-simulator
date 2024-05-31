@@ -14,14 +14,13 @@ export enum DecisionType {
   // Selections
   SELECT_EFFECT = "Select effect",
 
-  // Card decisions
+  // Common card decisions
   TRASH_FROM_HAND = "Trash from hand",
   NAME_CARD = "Name card",
   GAIN_CARD_UP_TO = "Gain card up to",
-  GAIN_CARD_EXACTLY = "Gain card exactly",
-
-  // Less common card decisions
+  GAIN_CARD_EXACTLY = "Gain card costing exactly",
   SET_ASIDE_ON_FROM_HAND = "Set aside from hand",
+  DISCARD_TO = "Discard to",
 
   // Unique Decisions
 }

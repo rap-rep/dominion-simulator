@@ -17,6 +17,7 @@ import { Ironworks } from "./cards/intrigue/ironworks";
 import { Workshop } from "./cards/base/workshop";
 import { Peddler } from "./cards/prosperity/peddler";
 import { Watchtower } from "./cards/prosperity/watchtower";
+import { Milita } from "./cards/base/militia";
 
 export class Kingdom {
   /*
@@ -62,6 +63,7 @@ export class Kingdom {
     this.addSupplyPile(Workshop.NAME);
     this.addSupplyPile(Peddler.NAME);
     this.addSupplyPile(Watchtower.NAME);
+    this.addSupplyPile(Milita.NAME);
   }
 
   private getBasicSupply(): Map<string, Card[]> {
@@ -150,7 +152,7 @@ export class Kingdom {
 
   getTotalTrashSize() {
     let tally = 0;
-    for (const cardStack of this.trash.values()){
+    for (const cardStack of this.trash.values()) {
       tally += cardStack.length;
     }
     return tally;

@@ -153,9 +153,30 @@ function getDiffIndicatorElement() {
 function addConditionListener(addConditionSelect) {
   addConditionSelect.addEventListener("change", (event) => {
     var isFirstAdded = true;
+    var isAChangeToCurrentRule = false;
     if (event.target.parentElement.children.length > 7) {
       isFirstAdded = false;
     }
+
+    event.target.classList.remove("add-condition-selector");
+
+    if (!isFirstAdded) {
+      // Remove the existing condition (unless coming from "Add Condition" state)
+      const ruleElements = event.target.parentElement.children;
+      const thisSelectorPosition = Array.prototype.indexOf.call(
+        ruleElements,
+        event.target,
+      );
+      console.log(thisSelectorPosition);
+      if (thisSelectorPosition > 0) {
+        // Not the leftmost "Add Condition" selector
+        isAChangeToCurrentRule = true;
+        const thisSelectorRules = ruleElements[thisSelectorPosition + 1];
+        console.log(thisSelectorRules);
+        event.target.parentElement.removeChild(thisSelectorRules);
+      }
+    }
+
     const conditionDiv = document.createElement("div");
     conditionDiv.classList.add("rule-condition");
 
@@ -187,22 +208,29 @@ function addConditionListener(addConditionSelect) {
     if (!isFirstAdded) {
       conditionDiv.appendChild(getLogicalJoinerElement());
     }
+    var insertPosition = 1;
+    if (isAChangeToCurrentRule) {
+      insertPosition = 2;
+    }
     event.target.parentElement.insertBefore(
       conditionDiv,
-      event.target.parentElement.children[1],
+      event.target.parentElement.children[insertPosition],
     );
 
-    event.target.disabled = true;
-    event.target.parentElement.insertBefore(
-      getAddConditionElement(),
-      event.target.parentElement.firstChild,
-    );
+    //event.target.disabled = true;
+    if (!isAChangeToCurrentRule) {
+      event.target.parentElement.insertBefore(
+        getAddConditionElement(),
+        event.target.parentElement.firstChild,
+      );
+    }
   });
 }
 
 function getAddConditionElement() {
   var addConditionSelect = document.createElement("select");
   addConditionSelect.classList.add("select-condition");
+  addConditionSelect.classList.add("add-condition-selector");
 
   var menuTitle = document.createElement("option");
   menuTitle.value = "add_condition";

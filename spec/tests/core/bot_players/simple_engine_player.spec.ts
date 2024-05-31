@@ -1,4 +1,5 @@
 import { SimpleEnginePlayer } from "@src/core/bot_players/simple_engine_player";
+import { Province } from "@src/core/cards/basic/province";
 import { Game } from "@src/core/game";
 
 describe("A set of games between a simple engine and a default (money) bot", () => {
@@ -22,6 +23,8 @@ describe("A set of games between a simple engine and a default (money) bot", () 
   }
   it("averages less than 25 turns", () => {
     expect(turns / SIMS).toBeLessThan(25);
+    expect(game.kingdom.supplyPiles.get(Province.NAME)).toBeDefined();
+    expect(game.kingdom.supplyPiles.get(Province.NAME)?.length).toEqual(0);
     //expect(wins).toBeGreaterThan(1);
   });
 });

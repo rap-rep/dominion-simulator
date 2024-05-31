@@ -1,4 +1,4 @@
-import { Game, GameConfig } from "./game";
+import { Game, GameConfig, Starter } from "./game";
 import { EventQueryInput, EventQueryManager } from "./logging/event_query";
 import { EventRecordBuilder } from "./logging/event_record_builders";
 
@@ -39,12 +39,24 @@ export class GameManager {
   }
 
   playGames() {
+    if (this.totalSims === 1) {
+      this.defaultGameConfig.starter = Starter.RANDOM;
+    } else {
+      this.defaultGameConfig.starter = Starter.P1; // Alternating
+    }
+
     for (let i = 0; i < this.totalSims; i++) {
       this.currentGame.playGame();
       this.writeEndOfGameMetrics();
 
-      if (this.includeSampleLog && this.sampleLog === undefined){
+      if (this.includeSampleLog && this.sampleLog === undefined) {
         this.sampleLog = this.currentGame.gamelog.getBufferedLog();
+      }
+
+      if (this.defaultGameConfig.starter === Starter.P1) {
+        this.defaultGameConfig.starter = Starter.P2;
+      } else {
+        this.defaultGameConfig.starter = Starter.P1;
       }
 
       this.currentGame = new Game(this.defaultGameConfig);

@@ -25,6 +25,12 @@ export enum HeuristicType {
 
 export class CardSelector {
   player: Player;
+  /* This selector supports "up to X" and "exactly X" selection decisions
+   *
+   * The `criteriaList` is used to satisfy "up to X" selections
+   * Then, in the cases where selections are required, the `requiredCriteriaList`
+   *   is applied until the required selections are made, or all of the all cards have been selected
+   */
   criteriaList: CardSelectorCriteria[];
   requiredCriteriaList: CardSelectorCriteria[] | undefined;
   constructor(
@@ -60,6 +66,7 @@ export class CardSelector {
     }
 
     while (required > 0) {
+      // apply the "preferred" criteria list first if provided
       let selectedCard = this.getCardFromCriteria(
         searchMap,
         this.criteriaList,
@@ -127,6 +134,9 @@ export class CardSelector {
     selectionCriteria: CardSelectorCriteria,
     alreadySelectedCards: undefined | Card[],
   ): boolean {
+    if (selectionCriteria.alwaysSelect === true) {
+      return true;
+    }
     if (
       selectionCriteria.cardName === card.name &&
       (selectionCriteria.doNotSelectIfEconomyBelow === undefined ||
@@ -138,7 +148,9 @@ export class CardSelector {
     ) {
       return true;
     } else if (
-      // NOTE: if adding new CardSelectorCriteria the must be added to this first check that ensures not all relevant criteria are left undefined
+      // NOTE: if adding new CardSelectorCriteria they must be added to this first check
+      //   (starting on the next line) that ensures not all relevant criteria are left undefined
+      //   by adding "|| selectionCriteria.<name> !== undefined"
       (selectionCriteria.heuristicType !== undefined ||
         selectionCriteria.terminalType !== undefined) &&
       (selectionCriteria.heuristicType === undefined ||
@@ -180,8 +192,11 @@ export class CardSelector {
 }
 
 export type CardSelectorCriteria = {
+  alwaysSelect?: boolean | undefined;
   cardName?: string | undefined;
   terminalType?: TerminalType | undefined;
   heuristicType?: HeuristicType | undefined;
+
+  // For use in trashing decisions based on total deck economy
   doNotSelectIfEconomyBelow?: number | undefined;
 };

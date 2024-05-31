@@ -4,7 +4,7 @@ import { Player } from "../player";
 
 export type LogLine = {
   line: string;
-}
+};
 
 export enum LogMode {
   CONSOLE_LOG = "console_log",
@@ -36,8 +36,8 @@ export class GameLog {
     }
   }
 
-  getBufferedLog(): string[]{
-    return this.loglines.map(l => l.line);
+  getBufferedLog(): string[] {
+    return this.loglines.map((l) => l.line);
   }
 
   log(line: string, level: LogLevel = LogLevel.INFO) {
@@ -48,9 +48,8 @@ export class GameLog {
     ) {
       if (this.mode === LogMode.CONSOLE_LOG) {
         console.log(line);
-      }
-      else if (this.mode === LogMode.BUFFER) {
-        this.loglines.push({line: line});
+      } else if (this.mode === LogMode.BUFFER) {
+        this.loglines.push({ line: line });
       }
     }
   }
@@ -81,7 +80,9 @@ export class GameLog {
   }
 
   logShuffle(player: Player) {
-    this.log(`${player.name} shuffles their deck (${player.discard.length} of ${player.allCardsList.length})`);
+    this.log(
+      `${player.name} shuffles their deck (${player.discard.length} of ${player.allCardsList.length})`,
+    );
   }
 
   logDuration(player: Player, card: Card) {

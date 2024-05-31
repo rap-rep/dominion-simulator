@@ -108,18 +108,21 @@ body {
   color: gray;
   border-radius: 4px;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  height:15px;
+  height: 15px;
   padding-bottom: 12px;
-  padding-top:0px;
-  padding-left:3px;
-  padding-right:3px;
+  padding-top: 0px;
+  padding-left: 3px;
+  padding-right: 3px;
 }
 
+.add-condition-selector {
+  margin-right: 5px;
+}
 
 /* LOADING SPINNER */
 .lds-dual-ring {
   /* change color here */
-  color: #1c4c5b
+  color: #1c4c5b;
 }
 .lds-dual-ring,
 .lds-dual-ring:after {

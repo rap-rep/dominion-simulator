@@ -98,6 +98,8 @@ export class EffectResolver {
       this.drawCardResolver(player, effect);
     } else if (effect.effectType === EffectType.TRASH_FROM_HAND) {
       this.trashFromHandResolver(player, effect);
+    } else if (effect.effectType === EffectType.DISCARD_FROM_HAND) {
+      this.discardFromHandResolver(player, effect);
     } else if (effect.effectType === EffectType.DRAW_TO) {
       this.drawToResolver(player, effect);
     } else if (effect.effectType === EffectType.PLUS_ACTION) {
@@ -204,20 +206,48 @@ export class EffectResolver {
     if (effect.effectPlayer !== EffectPlayer.SELF) {
       throw new Error("Trashing opponent's hand not supported");
     }
-  
+
     const toTrash = effect.reference?.result as Card[];
-    if (!toTrash){
-      throw new Error("Cards to trash not defined (empty list should be specified if trashing none)");
+    if (!toTrash) {
+      throw new Error(
+        "Cards to trash not defined (empty list should be specified if trashing none)",
+      );
     }
 
-    for (const card of toTrash){
+    for (const card of toTrash) {
       player.removeCardFromHand(card, true);
       player.game.kingdom.trashCard(card);
       player.game.gamelog.log(`${player.name} trashes a ${card.name}`);
-      player.game.eventQueryManager.recordEvent(EventRecordBuilder.trash(player, effect.fromCard, card));
+      player.game.eventQueryManager.recordEvent(
+        EventRecordBuilder.trash(player, effect.fromCard, card),
+      );
     }
 
-    if (effect.reference){
+    if (effect.reference) {
+      effect.reference.result = undefined;
+    }
+  }
+
+  private discardFromHandResolver(player: Player, effect: Effect) {
+    const toDiscard = effect.reference?.result as Card[];
+    if (!toDiscard) {
+      throw new Error(
+        "Cards to discard not defined (empty list should be specified if discarding none)",
+      );
+    }
+
+    if (effect.effectPlayer === EffectPlayer.OPP && player.opponent) {
+      player = player.opponent;
+    }
+
+    for (const card of toDiscard) {
+      player.removeCardFromHand(card, true);
+      player.discard.push(card);
+      player.game.gamelog.log(`${player.name} discards a ${card.name}`);
+      // TODO Record discard event via eventQueryManager
+    }
+
+    if (effect.reference) {
       effect.reference.result = undefined;
     }
   }

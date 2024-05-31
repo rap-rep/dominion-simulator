@@ -58,7 +58,11 @@ export class EventRecordBuilder {
     };
   }
 
-  static trash(player: Player, fromCard?: Card | undefined, toCard?: Card | undefined): EventRecord {
+  static trash(
+    player: Player,
+    fromCard?: Card | undefined,
+    toCard?: Card | undefined,
+  ): EventRecord {
     return {
       playerName: player.name,
       type: EventQueryType.TRASH,

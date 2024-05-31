@@ -3,8 +3,11 @@ import { InteractionType, CardType } from "../card_types";
 import { Player } from "../player";
 
 export class InteractionHelper {
+  /*
+   * Logic for kingdom interactions
+   */
   static effectiveCostNumber(player: Player, card: Card): number {
-    if (!player){
+    if (!player) {
       return 0;
     }
     if (

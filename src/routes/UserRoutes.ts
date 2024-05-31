@@ -28,16 +28,22 @@ async function postGame(
   }>,
   res: IRes,
 ) {
-  const { p1rules, p2rules, eventQueries, numGames, includeSampleLog } = req.body;
+  const { p1rules, p2rules, eventQueries, numGames, includeSampleLog } =
+    req.body;
 
   const config = {
     p1gainRules: p1rules,
     p2gainRules: p2rules,
-    logMode: includeSampleLog ? LogMode.BUFFER: LogMode.SILENT,
+    logMode: includeSampleLog ? LogMode.BUFFER : LogMode.SILENT,
     logLevel: LogLevel.INFO,
   };
 
-  const gameManager = new GameManager(config, numGames, eventQueries, includeSampleLog);
+  const gameManager = new GameManager(
+    config,
+    numGames,
+    eventQueries,
+    includeSampleLog,
+  );
   gameManager.playGames();
   return res.status(HttpStatusCodes.OK).json({
     turns: gameManager.currentGame.turn,

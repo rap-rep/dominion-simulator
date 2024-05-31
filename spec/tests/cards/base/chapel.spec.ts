@@ -21,18 +21,24 @@ describe("Chapel", () => {
 });
 
 describe("Chapel over 9 turns", () => {
-    const game = new Game({logMode: LogMode.CONSOLE_LOG, logLevel: LogLevel.INFO});
-    const chapel = new Chapel();
-    game.p1.addCardToHand(chapel, true);
-    
-    game.playGame(9);
-
-    console.log(game.p1.allCardsList.map(u => u.name).join(","));
-
-    it("doesn't over-trash the deck below ability to buy Silver by default", () => {
-      expect(game.kingdom.getTotalTrashSize()).toBe(10);
-      expect(CardSelectorHelper.countTotalEconomy(game.p1)).toBeGreaterThanOrEqual(3);
-      expect(game.p1.allCardsMap.get(Gold.NAME)?.length).toBeGreaterThanOrEqual(1);
-    });
+  const game = new Game({
+    logMode: LogMode.SILENT,
+    logLevel: LogLevel.INFO,
   });
+  const chapel = new Chapel();
+  game.p1.addCardToHand(chapel, true);
 
+  game.playGame(12);
+
+  console.log(game.p1.allCardsList.map((u) => u.name).join(","));
+
+  it("doesn't over-trash the deck below ability to buy Silver by default", () => {
+    expect(game.kingdom.getTotalTrashSize()).toBe(10);
+    expect(
+      CardSelectorHelper.countTotalEconomy(game.p1),
+    ).toBeGreaterThanOrEqual(3);
+    expect(game.p1.allCardsMap.get(Gold.NAME)?.length).toBeGreaterThanOrEqual(
+      1,
+    );
+  });
+});

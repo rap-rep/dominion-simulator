@@ -38,8 +38,6 @@ describe("Sanity check the kingdom setup ", () => {
       provinces.pop();
     }
 
-    console.log(game.kingdom.supplyPiles.get(Province.NAME));
-
     it("ends the game", () => {
       expect(game.kingdom.gameOver()).toBe(true);
     });

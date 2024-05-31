@@ -25,7 +25,7 @@ export enum EffectType {
   DRAW_TO = "Draw to",
   TOPDECK = "Topdeck",
   TRASH_FROM_HAND = "Trash",
-  DISCARD = "Discard",
+  DISCARD_FROM_HAND = "Discard",
   GAIN_FROM_SUPPLY = "Gain",
   TYPE_BONUSES = "Type bonuses",
 

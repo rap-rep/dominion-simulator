@@ -139,35 +139,32 @@ function getResultElement(result) {
   return resultDiv;
 }
 
-function includeSampleLog(){
+function includeSampleLog() {
   var sampleLogSelect = document.getElementById("sample-log-select");
   return sampleLogSelect.checked;
 }
 
-function displaySampleLog(log){
-  if (log === undefined){
+function displaySampleLog(log) {
+  if (log === undefined) {
     return;
-  }
-  else{
+  } else {
     const anchor = document.getElementById("sample-log");
     const title = document.createElement("h4");
     title.innerHTML = "Sample Log";
     anchor.appendChild(title);
-    for (const line of log){
+    for (const line of log) {
       const lineDiv = document.createElement("div");
       lineDiv.classList.add("pure-g");
-      lineDiv.classList.add("log-line")
-      if (line === ""){
-        lineDiv.innerHTML = "&nbsp;"
-      }
-      else{
+      lineDiv.classList.add("log-line");
+      if (line === "") {
+        lineDiv.innerHTML = "&nbsp;";
+      } else {
         lineDiv.innerHTML = line;
       }
 
       anchor.appendChild(lineDiv);
     }
   }
-
 }
 
 function simGame(numGames) {
@@ -204,7 +201,7 @@ function simGame(numGames) {
       var sampleLog = resp.log;
       anchor.replaceChildren([]);
       const title = document.createElement("h4");
-      title.innerHTML = "Event Results"
+      title.innerHTML = "Event Results";
       anchor.appendChild(title);
       for (const result of results) {
         anchor.appendChild(getResultElement(result));
@@ -272,7 +269,7 @@ function parseEventQueries() {
   return eventQueries;
 }
 
-function setupRuleCollapseExpand(){
+function setupRuleCollapseExpand() {
   const p1CollapseExpand = document.getElementById("p1-rule-collapse");
   const p1RuleBox = document.getElementById("player-one-conditions");
 
@@ -282,18 +279,17 @@ function setupRuleCollapseExpand(){
   const EXPAND = "[+]";
   const COLLAPSE = "[-]";
 
-  function collapseExpand(event, ruleBox){
+  function collapseExpand(event, ruleBox) {
     event.preventDefault();
-    if (event.target.innerHTML === COLLAPSE){
+    const boxText = event.target.innerHTML.trim();
+    if (boxText === COLLAPSE) {
       ruleBox.style.display = "none";
       event.target.innerHTML = EXPAND;
-    }
-    else if (event.target.innerHTML === EXPAND){
+    } else if (boxText === EXPAND) {
       ruleBox.style.display = "";
-      event.target.innerHTML = COLLAPSE; 
-    }
-    else {
-      throw new Error("Invalid value in collapse/expand button");
+      event.target.innerHTML = COLLAPSE;
+    } else {
+      throw new Error("Invalid value in collapse/expand button: " + boxText);
     }
   }
 
@@ -304,7 +300,6 @@ function setupRuleCollapseExpand(){
   p2CollapseExpand.addEventListener("click", (event) => {
     collapseExpand(event, p2RuleBox);
   });
-
 }
 
 // Section: UI Utility

@@ -1,9 +1,6 @@
 import { Smithy } from "@src/core/cards/base/smithy";
 import { GameManager } from "@src/core/game_manager";
-import {
-  EventQueryInput,
-  EventQueryType,
-} from "@src/core/logging/event_query";
+import { EventQueryInput, EventQueryType } from "@src/core/logging/event_query";
 
 describe("Game manager with Smithy draw query for a deck with added Smithy", () => {
   const drawQueryInput: EventQueryInput = {

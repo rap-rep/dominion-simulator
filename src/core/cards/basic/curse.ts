@@ -1,6 +1,9 @@
 import { DeprecatedCardHeuristicType, CardType } from "@src/core/card_types";
 import { Card } from "../../card";
-import { HeuristicType, TerminalType } from "@src/core/logic/card_selector";
+import {
+  HeuristicType,
+  TerminalType,
+} from "@src/core/logic/card_selector_types";
 
 const Name = "Curse";
 

@@ -3,7 +3,10 @@ import { Card } from "../../card";
 import { DeprecatedCardHeuristicType, CardType } from "@src/core/card_types";
 import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 import { Decision, DecisionType } from "@src/core/decisions";
-import { HeuristicType, TerminalType } from "@src/core/logic/card_selector";
+import {
+  HeuristicType,
+  TerminalType,
+} from "@src/core/logic/card_selector_types";
 
 const Name = "Ironworks";
 

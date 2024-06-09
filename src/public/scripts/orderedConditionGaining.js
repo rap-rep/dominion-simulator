@@ -167,12 +167,10 @@ function addConditionListener(addConditionSelect) {
         ruleElements,
         event.target,
       );
-      console.log(thisSelectorPosition);
       if (thisSelectorPosition > 0) {
         // Not the leftmost "Add Condition" selector
         isAChangeToCurrentRule = true;
         const thisSelectorRules = ruleElements[thisSelectorPosition + 1];
-        console.log(thisSelectorRules);
         event.target.parentElement.removeChild(thisSelectorRules);
       }
     }

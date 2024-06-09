@@ -1,27 +1,17 @@
 import { Card } from "../card";
 import { CardSelectorHelper } from "../helpers/card_selector_helper";
+import { LogLevel } from "../logging/game_log";
 import { Player } from "../player";
-
-export enum TerminalType {
-  TERMINAL = "TERMINAL",
-  NONTERMINAL = "NONTERMINAL",
-  NONPLAYABLE = "NONPLAYABLE",
-}
-
-export enum HeuristicType {
-  TREASURE = 0,
-  CANTRIP = 1,
-  DRAW = 2,
-  DRAW_TO_X = 3,
-  PAYLOAD_COINS = 4,
-  FROM_DECK_SIFTER = 5,
-  FROM_HAND_SIFTER = 6,
-  VILLAGE = 7,
-  PAYLOAD_GAINER = 8,
-  VICTORY = 9,
-  TRASHER = 10,
-  JUNK = 11,
-}
+import {
+  HeuristicType,
+  TerminalType,
+  CardSelectorCriteria,
+} from "./card_selector_types";
+export {
+  HeuristicType,
+  TerminalType,
+  CardSelectorCriteria,
+} from "./card_selector_types";
 
 export class CardSelector {
   player: Player;
@@ -66,12 +56,15 @@ export class CardSelector {
     }
 
     while (required > 0) {
-      // apply the "preferred" criteria list first if provided
-      let selectedCard = this.getCardFromCriteria(
-        searchMap,
-        this.criteriaList,
-        selectedCards,
-      );
+      let selectedCard: Card | undefined;
+      // apply the optional criteria list first if provided (implicitly this is the "preferred" list)
+      if (this.criteriaList.length > 0) {
+        selectedCard = this.getCardFromCriteria(
+          searchMap,
+          this.criteriaList,
+          selectedCards,
+        );
+      }
       if (!selectedCard) {
         if (this.requiredCriteriaList) {
           selectedCard = this.getCardFromCriteria(
@@ -112,9 +105,12 @@ export class CardSelector {
     criteriaList: CardSelectorCriteria[],
     alreadySelectedCards?: undefined | Card[],
   ): Card | undefined {
-    for (const cardStack of searchMap.values()) {
-      for (const criteria of criteriaList) {
+    for (const criteria of criteriaList) {
+      for (const cardStack of searchMap.values()) {
+        const logline = `Checking criteria '${criteria.cardName} ${criteria.heuristicType} ${criteria.alwaysSelect}' for matching with ${cardStack[0].name}`;
+        this.player.game.gamelog.log(logline, LogLevel.EXTREME);
         if (this.matches(cardStack[0], criteria, alreadySelectedCards)) {
+          this.player.game.gamelog.log("Match found", LogLevel.EXTREME);
           if (alreadySelectedCards) {
             for (let cardPos = 0; cardPos < cardStack.length; cardPos++) {
               if (!alreadySelectedCards.includes(cardStack[cardPos])) {
@@ -190,13 +186,3 @@ export class CardSelector {
     return true;
   }
 }
-
-export type CardSelectorCriteria = {
-  alwaysSelect?: boolean | undefined;
-  cardName?: string | undefined;
-  terminalType?: TerminalType | undefined;
-  heuristicType?: HeuristicType | undefined;
-
-  // For use in trashing decisions based on total deck economy
-  doNotSelectIfEconomyBelow?: number | undefined;
-};

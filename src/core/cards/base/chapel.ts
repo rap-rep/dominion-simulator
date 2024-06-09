@@ -3,11 +3,11 @@ import { Card } from "../../card";
 import { DeprecatedCardHeuristicType, CardType } from "@src/core/card_types";
 import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 import { Decision, DecisionType } from "@src/core/decisions";
+import { CardSelector } from "@src/core/logic/card_selector";
 import {
-  CardSelector,
   HeuristicType,
   TerminalType,
-} from "@src/core/logic/card_selector";
+} from "@src/core/logic/card_selector_types";
 import { Player } from "@src/core/player";
 import { DefaultCriteria } from "@src/core/logic/default_selection_criteria";
 

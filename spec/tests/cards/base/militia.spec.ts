@@ -4,7 +4,7 @@ import { PlayerHelper } from "@src/core/helpers/player_helper";
 import { LogMode } from "@src/core/logging/game_log";
 
 describe("Militia", () => {
-  const game = new Game({ logMode: LogMode.CONSOLE_LOG });
+  const game = new Game({ logMode: LogMode.SILENT });
   game.p1.addCardToHand(new Milita());
   game.p1.playActionPhase();
   it("results in opponent discarding cards and the other expected effects", () => {

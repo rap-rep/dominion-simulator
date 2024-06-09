@@ -8,7 +8,7 @@ import {
 import { Decision } from "./decisions";
 import { Effect } from "./effects";
 import { Graph } from "./graph";
-import { HeuristicType, TerminalType } from "./logic/card_selector";
+import { HeuristicType, TerminalType } from "./logic/card_selector_types";
 
 export class Card {
   name: string;

@@ -2,12 +2,14 @@ import { Chapel } from "@src/core/cards/base/chapel";
 import { Copper } from "@src/core/cards/basic/copper";
 import { Estate } from "@src/core/cards/basic/estate";
 import { Game } from "@src/core/game";
+import { LogLevel, LogMode } from "@src/core/logging/game_log";
 import {
   CardSelector,
   CardSelectorCriteria,
   HeuristicType,
   TerminalType,
 } from "@src/core/logic/card_selector";
+import { DefaultCriteria } from "@src/core/logic/default_selection_criteria";
 
 describe("A single optional card selector", () => {
   const game = new Game();
@@ -146,5 +148,20 @@ describe("Card selector", () => {
 
   it("only trashes Estates when trashing Copper would lower economy too much", () => {
     expect(estatesInHand).toEqual(result.length);
+  });
+});
+
+
+describe("Card selector with default discard logic", () => {
+  const game = new Game({logLevel: LogLevel.EXTREME, logMode: LogMode.SILENT});
+  const forcedEstate = new Estate();
+  game.p1.addToAllCards(forcedEstate);
+  game.p1.addCardToHand(forcedEstate);
+
+  const selector = new CardSelector(game.currentPlayer, [], DefaultCriteria.discardCardsRequired());
+  const result = selector.getCardsFromCriteria(game.currentPlayer.hand, 0, 1);
+
+  it("selects Estate when Estate and Copper are available", () => {
+    expect(result[0].name).toEqual(Estate.NAME);
   });
 });

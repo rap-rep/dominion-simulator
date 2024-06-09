@@ -35,6 +35,8 @@ export class DecisionResolver {
       player.makeDecision(decision);
     } else if (decision.decisionType == DecisionType.DISCARD_TO) {
       player.makeDecision(decision);
+    } else if (decision.decisionType == DecisionType.DISCARD) {
+      player.makeDecision(decision);
     } else {
       throw new Error(
         `Unable to resolve effect of DecisionType ${decision.decisionType}`,

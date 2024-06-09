@@ -1,7 +1,9 @@
-import { Graph } from "@src/core/graph";
 import { Card } from "../../card";
 import { DeprecatedCardHeuristicType, CardType } from "@src/core/card_types";
-import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
+import {
+  HeuristicType,
+  TerminalType,
+} from "@src/core/logic/card_selector_types";
 
 const Name = "Province";
 
@@ -24,5 +26,13 @@ export class Province extends Card {
 
   cost(): number {
     return 8;
+  }
+
+  heuristicType(): HeuristicType {
+    return HeuristicType.VICTORY;
+  }
+
+  terminalType(): TerminalType {
+    return TerminalType.NONPLAYABLE;
   }
 }

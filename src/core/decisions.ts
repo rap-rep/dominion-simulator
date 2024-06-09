@@ -21,6 +21,7 @@ export enum DecisionType {
   GAIN_CARD_EXACTLY = "Gain card costing exactly",
   SET_ASIDE_ON_FROM_HAND = "Set aside from hand",
   DISCARD_TO = "Discard to",
+  DISCARD = "Discard",
 
   // Unique Decisions
 }

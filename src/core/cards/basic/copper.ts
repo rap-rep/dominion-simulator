@@ -2,7 +2,10 @@ import { Graph, PlayNode } from "@src/core/graph";
 import { Card } from "../../card";
 import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 import { DeprecatedCardHeuristicType, CardType } from "@src/core/card_types";
-import { HeuristicType, TerminalType } from "@src/core/logic/card_selector";
+import {
+  HeuristicType,
+  TerminalType,
+} from "@src/core/logic/card_selector_types";
 
 const Name = "Copper";
 

@@ -30,8 +30,6 @@ describe("Chapel over 9 turns", () => {
 
   game.playGame(12);
 
-  console.log(game.p1.allCardsList.map((u) => u.name).join(","));
-
   it("doesn't over-trash the deck below ability to buy Silver by default", () => {
     expect(game.kingdom.getTotalTrashSize()).toBe(10);
     expect(

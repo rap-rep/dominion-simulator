@@ -1,8 +1,6 @@
-import { Card } from "../card";
-import { Copper } from "../cards/basic/copper";
-import { Silver } from "../cards/basic/silver";
 import { Decision } from "../decisions";
-import { CardSelector, HeuristicType } from "../logic/card_selector";
+import { CardSelector } from "../logic/card_selector";
+import { DefaultCriteria } from "../logic/default_selection_criteria";
 import { Player } from "../player";
 import { PlayerHelper } from "./player_helper";
 
@@ -26,18 +24,29 @@ export class SharedDecisionsHelper {
     const selector = new CardSelector(
       player,
       [],
-      [
-        { heuristicType: HeuristicType.JUNK },
-        { heuristicType: HeuristicType.VICTORY },
-        { cardName: Copper.NAME },
-        { cardName: Silver.NAME },
-        { alwaysSelect: true },
-      ],
+      DefaultCriteria.discardCardsRequired(),
     );
     decision.result = selector.getCardsFromCriteria(
       player.hand,
       0,
       amountToDiscard,
     );
+  }
+
+  static discardDecision(player: Player, decision: Decision) {
+    const amountToDiscard = decision.amount;
+
+    const selector = new CardSelector(
+      player,
+      [],
+      DefaultCriteria.discardCardsRequired(),
+    );
+    decision.result = selector.getCardsFromCriteria(
+      player.hand,
+      0,
+      amountToDiscard,
+    );
+
+    console.log(decision.result);
   }
 }

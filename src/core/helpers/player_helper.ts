@@ -33,7 +33,7 @@ const NULL_CARD = new NullCard();
 export class PlayerHelper {
   static makeDefaultDecision(player: Player, decision: Decision) {
     /*
-     * This is the huge and messy Decision switchboard.
+     * This is the huge and messy Decision switchboard. TODO move this
      * At this point the Decision could reference any type,
      * but the resolution (`Decision.result`) is required to be set by function end
      *
@@ -69,6 +69,8 @@ export class PlayerHelper {
       }
     } else if (decision.decisionType === DecisionType.DISCARD_TO) {
       SharedDecisionsHelper.discardToDecision(player, decision);
+    } else if (decision.decisionType === DecisionType.DISCARD) {
+      SharedDecisionsHelper.discardDecision(player, decision);
     } else {
       throw new Error(
         `Default decision for ${decision.decisionType} not implemented. From card: ${decision.fromCard.name}`,

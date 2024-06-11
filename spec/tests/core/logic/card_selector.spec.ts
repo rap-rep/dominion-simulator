@@ -151,14 +151,20 @@ describe("Card selector", () => {
   });
 });
 
-
 describe("Card selector with default discard logic", () => {
-  const game = new Game({logLevel: LogLevel.EXTREME, logMode: LogMode.SILENT});
+  const game = new Game({
+    logLevel: LogLevel.EXTREME,
+    logMode: LogMode.SILENT,
+  });
   const forcedEstate = new Estate();
   game.p1.addToAllCards(forcedEstate);
   game.p1.addCardToHand(forcedEstate);
 
-  const selector = new CardSelector(game.currentPlayer, [], DefaultCriteria.discardCardsRequired());
+  const selector = new CardSelector(
+    game.currentPlayer,
+    [],
+    DefaultCriteria.discardCardsRequired(),
+  );
   const result = selector.getCardsFromCriteria(game.currentPlayer.hand, 0, 1);
 
   it("selects Estate when Estate and Copper are available", () => {

@@ -1,6 +1,10 @@
 import { Graph, PlayNode } from "@src/core/graph";
 import { Card } from "../../card";
-import { CardType, DeprecatedCardHeuristicType, DurationPhase } from "@src/core/card_types";
+import {
+  CardType,
+  DeprecatedCardHeuristicType,
+  DurationPhase,
+} from "@src/core/card_types";
 import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 import { Decision, DecisionType } from "@src/core/decisions";
 import {
@@ -63,7 +67,6 @@ export class Dungeon extends Card {
     graph.addEdge(discard, discardApply);
     return graph;
   }
-
 
   durationPlayGraph(): Graph {
     const graph = new Graph();

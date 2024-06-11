@@ -241,7 +241,7 @@ export class EffectResolver {
     }
 
     for (const card of toDiscard) {
-      player.removeCardFromHand(card, true);
+      player.removeCardFromHand(card);
       player.discard.push(card);
       player.game.gamelog.log(`${player.name} discards a ${card.name}`);
       // TODO Record discard event via eventQueryManager

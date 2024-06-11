@@ -54,7 +54,11 @@ export class Card {
   }
 
   staysInPlay(): boolean {
-    return false;
+    if (this.durationPhase === DurationPhase.REMAINS_IN_PLAY) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   cost(): number {

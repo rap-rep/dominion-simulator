@@ -35,14 +35,6 @@ export class Gear extends Card {
     return DeprecatedCardHeuristicType.TERMINAL_DRAW;
   }
 
-  staysInPlay(): boolean {
-    if (this.durationPhase === DurationPhase.REMAINS_IN_PLAY) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   playGraph(): Graph {
     if (!this.setAsideDecision) {
       throw new Error("Set aside decision not specified");

@@ -40,14 +40,6 @@ export class Wharf extends Card {
     return DeprecatedCardHeuristicType.TERMINAL_DRAW;
   }
 
-  staysInPlay(): boolean {
-    if (this.durationPhase === DurationPhase.REMAINS_IN_PLAY) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   playGraph(): Graph {
     const graph = new Graph();
     const draw = new PlayNode(

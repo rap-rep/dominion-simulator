@@ -46,7 +46,5 @@ export class SharedDecisionsHelper {
       0,
       amountToDiscard,
     );
-
-    console.log(decision.result);
   }
 }

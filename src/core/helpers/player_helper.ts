@@ -1,4 +1,4 @@
-import { Card } from "../card";
+import { Card, NULL_CARD_NAME } from "../card";
 import { DeprecatedCardHeuristicType, CardType } from "../card_types";
 import { Gear } from "../cards/adventures/gear";
 import { Chapel } from "../cards/base/chapel";
@@ -7,7 +7,6 @@ import { Curse } from "../cards/basic/curse";
 import { Duchy } from "../cards/basic/duchy";
 import { Estate } from "../cards/basic/estate";
 import { Gold } from "../cards/basic/gold";
-import { NullCard } from "../cards/basic/null_card";
 import { Province } from "../cards/basic/province";
 import { Silver } from "../cards/basic/silver";
 import { Watchtower } from "../cards/prosperity/watchtower";
@@ -26,9 +25,9 @@ import {
   ThresholdType,
 } from "../logic/ordered_condition_gaining";
 import { Player } from "../player";
-import { SharedDecisionsHelper } from "./shared_decisions_helper";
+import { SharedDefaultDecisions } from "./shared_decisions_helper";
 
-const NULL_CARD = new NullCard();
+const NULL_CARD = new Card(NULL_CARD_NAME, [CardType.NULL]);
 
 export class PlayerHelper {
   static makeDefaultDecision(player: Player, decision: Decision) {
@@ -68,9 +67,11 @@ export class PlayerHelper {
         );
       }
     } else if (decision.decisionType === DecisionType.DISCARD_TO) {
-      SharedDecisionsHelper.discardToDecision(player, decision);
+      SharedDefaultDecisions.discardToDecision(player, decision);
     } else if (decision.decisionType === DecisionType.DISCARD) {
-      SharedDecisionsHelper.discardDecision(player, decision);
+      SharedDefaultDecisions.discardDecision(player, decision);
+    } else if (decision.decisionType === DecisionType.EXILE_DISCARD) {
+      SharedDefaultDecisions.exileDiscardDecision(player, decision);
     } else {
       throw new Error(
         `Default decision for ${decision.decisionType} not implemented. From card: ${decision.fromCard.name}`,

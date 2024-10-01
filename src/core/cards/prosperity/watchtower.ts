@@ -51,6 +51,10 @@ export class Watchtower extends Card {
     return Name;
   }
 
+  static factoryGenerator(): Watchtower {
+    return new Watchtower();
+  }
+
   deprecatedHeuristicType(): DeprecatedCardHeuristicType {
     return DeprecatedCardHeuristicType.TERMINAL_DRAW;
   }
@@ -64,7 +68,7 @@ export class Watchtower extends Card {
     return graph;
   }
 
-  inHandWhileGaining(card: Card): Decision | undefined {
+  whenInHandWhileGaining(card: Card): Decision | undefined {
     for (let i = 0; i < 3; i++) {
       const effect = this.selectionMap.get(i);
       if (!effect) {

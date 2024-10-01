@@ -8,6 +8,7 @@ import { DecisionResolver } from "./decision_resolver";
 import { PlayerHelper } from "../helpers/player_helper";
 import { DurationPhase } from "../card_types";
 import { EventRecordBuilder } from "../logging/event_record_builders";
+import e from "express";
 
 export class EffectResolver {
   decisionResolver: DecisionResolver;
@@ -63,9 +64,14 @@ export class EffectResolver {
   }
 
   gainCard(player: Player, card_name: string): Card {
+    // TODO this does not currently support selecting the order that decisions are made in
+    // This is a pretty major unimplemented aspect of Dominion; need to add a decision buffer/selector
     const gainedCard = player.game.kingdom.getTopOrError(card_name);
     player.game.kingdom.removeFromTop(gainedCard);
     player.game.gamelog.logGain(player, gainedCard);
+
+    this.whenGainResolver(player, gainedCard);
+
     const handEffectResolution = this.handEffectGainResolver(
       player,
       gainedCard,
@@ -112,6 +118,10 @@ export class EffectResolver {
       this.awardTypeBonuses(player, effect);
     } else if (effect.effectType === EffectType.IN_HAND_FROM_SET_ASIDE) {
       this.putInHandFromSetAside(player, effect);
+    } else if (effect.effectType === EffectType.EXILE_DISCARD) {
+      this.discardExileResolver(player, effect);
+    } else if (effect.effectType === EffectType.EXILE_FROM_PLAY) {
+      this.exileFromPlayResolver(player, effect);
     } else {
       throw new Error(
         `Unable to resolve effect of EffectAction type ${effect.effectType}`,
@@ -170,6 +180,14 @@ export class EffectResolver {
     const amount = effect.affects as number;
     if (effect.effectPlayer == EffectPlayer.SELF) {
       player.buys += amount;
+    }
+  }
+
+  private whenGainResolver(player: Player, card: Card) {
+    const node = card.whenGainedGraph.getStartNode();
+    if (node) {
+      this.resolveNode(player, node.node);
+      this.playChildrenNodes(player, card, node);
     }
   }
 
@@ -293,7 +311,7 @@ export class EffectResolver {
     for (const handCardStack of player.hand.values()) {
       if (handCardStack.length > 0) {
         const inHandCard = handCardStack[0];
-        const decision = inHandCard.inHandWhileGaining(card);
+        const decision = inHandCard.whenInHandWhileGaining(card);
         if (decision) {
           this.decisionResolver.resolveDecision(player, decision);
           if (
@@ -303,6 +321,35 @@ export class EffectResolver {
             return decision.result as EffectType;
           }
         }
+      }
+    }
+  }
+
+  private exileFromPlayResolver(player: Player, effect: Effect): void {
+    player.inPlay = player.inPlay.filter(item => item !== effect.fromCard);
+    this.addToExile(player, effect.fromCard);
+  }
+
+  private addToExile(player: Player, card: Card){
+    const exileStack = player.exile.get(card.name);
+    if (exileStack){
+      exileStack.push(card);
+    }
+    else{
+      player.exile.set(card.name, [card]);
+    }
+  }
+
+  private discardExileResolver(player: Player, exileEffect: Effect): void {
+    const discardFromExile = exileEffect.reference?.result as boolean;
+    if (discardFromExile) {
+      const cardName = exileEffect.fromCard.name;
+      const exiledCardStack = player.exile.get(cardName);
+      if (exiledCardStack) {
+        for (const card of exiledCardStack) {
+          player.discard.push(card);
+        }
+        player.exile.delete(cardName);
       }
     }
   }

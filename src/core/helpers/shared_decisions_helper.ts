@@ -1,13 +1,15 @@
 import { Decision } from "../decisions";
-import { CardSelector } from "../logic/card_selector";
+import { CardSelector, HeuristicType } from "../logic/card_selector";
 import { DefaultCriteria } from "../logic/default_selection_criteria";
 import { Player } from "../player";
 import { PlayerHelper } from "./player_helper";
 
-export class SharedDecisionsHelper {
+export class SharedDefaultDecisions {
   /*
    * Logic for default decisions that would ordinarily go on a Card,
    * but since cards can share the same Decision requirements, shared implementations go here
+   *
+   * Decisions are applied by mutating the decision object to include a result value
    */
   static discardToDecision(player: Player, decision: Decision) {
     const discardToAmount = decision.amount;
@@ -46,5 +48,17 @@ export class SharedDecisionsHelper {
       0,
       amountToDiscard,
     );
+  }
+
+  static exileDiscardDecision(player: Player, decision: Decision) {
+    if (!player.exile.has(decision.fromCard.name)) {
+      decision.result = false;
+      return;
+    }
+
+    const dontDiscard = [HeuristicType.JUNK, HeuristicType.VICTORY];
+    if (!dontDiscard.includes(decision.fromCard.heuristicType())) {
+      decision.result = true;
+    }
   }
 }

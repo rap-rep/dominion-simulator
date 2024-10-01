@@ -1,5 +1,4 @@
-import { Card } from "../card";
-import { NullCard } from "../cards/basic/null_card";
+import { Card, NULL_CARD_NAME } from "../card";
 import { Player } from "../player";
 
 export type LogLine = {
@@ -64,7 +63,7 @@ export class GameLog {
   }
 
   logBuy(player: Player, card: string) {
-    if (card === NullCard.NAME) {
+    if (card === NULL_CARD_NAME) {
       this.log(`${player.name} buys nothing`);
     } else {
       this.log(`${player.name} buys a ${card}`);

@@ -5,10 +5,10 @@ import {
   parseExpression,
   evaluateExpression,
 } from "expression-engine";
-import { NullCard } from "../cards/basic/null_card";
 import { MetricHelper } from "./metric_helpers";
 import { PlayerHelper } from "../helpers/player_helper";
 import { LogLevel, LogMode } from "../logging/game_log";
+import { NULL_CARD_NAME } from "../card";
 
 // JSON import type
 export type ConditionSetList = {
@@ -245,6 +245,6 @@ export class OrderedConditionGainSelector {
         return conditionSet.card;
       }
     }
-    return NullCard.NAME;
+    return NULL_CARD_NAME;
   }
 }

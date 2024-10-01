@@ -19,6 +19,10 @@ export class Workshop extends Card {
     return Name;
   }
 
+  static factoryGenerator(): Workshop {
+    return new Workshop();
+  }
+
   deprecatedHeuristicType(): DeprecatedCardHeuristicType {
     return DeprecatedCardHeuristicType.TERMINAL_GAINER;
   }

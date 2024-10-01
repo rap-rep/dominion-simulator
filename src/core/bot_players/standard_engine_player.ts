@@ -1,5 +1,6 @@
 import { Village } from "../cards/base/village";
 import { Duchy } from "../cards/basic/duchy";
+import { Gold } from "../cards/basic/gold";
 import { Province } from "../cards/basic/province";
 import { Silver } from "../cards/basic/silver";
 import { Wharf } from "../cards/seaside/wharf";
@@ -13,14 +14,20 @@ import {
 } from "../logic/ordered_condition_gaining";
 import { Player } from "../player";
 
-export class SimpleEnginePlayer extends Player {
+export class StandardEnginePlayer extends Player {
+  analyzeKingdom() {
+    // trashing
+    // draw
+    // actions
+    // payload
+  }
+
   /*
-   * Extremely basic player that plays only Wharf/Village using gain rules
-   * Not intended to be used for anything serious.
+   * Core engine bot player
    */
   gainCardDecision(decision: Decision): string {
     if (decision.decisionType === DecisionType.BUY_CARD) {
-      const toGain = SimpleEnginePlayer.defaultGainDecision(this, this.coins);
+      const toGain = StandardEnginePlayer.defaultGainDecision(this, this.coins);
       this.game.gamelog.logBuy(this, toGain);
       return toGain;
     } else if (decision.decisionType == DecisionType.GAIN_CARD_UP_TO) {
@@ -29,7 +36,7 @@ export class SimpleEnginePlayer extends Player {
           "Decision amount required but not provided for gain effect",
         );
       }
-      const decisionResult = SimpleEnginePlayer.defaultGainDecision(
+      const decisionResult = StandardEnginePlayer.defaultGainDecision(
         this,
         decision.amount,
       );
@@ -53,47 +60,7 @@ export class SimpleEnginePlayer extends Player {
       ),
       Province.NAME,
     );
-    selector.addCondition(
-      new OrderedGainCondition(
-        GainMetric.CARD_IN_DECK_COUNT,
-        ThresholdType.GREATER_OR_EQUAL,
-        3,
-        undefined,
-        undefined,
-        undefined,
-        [Province.NAME],
-      ),
-      Duchy.NAME,
-    );
-    selector.addCondition(
-      new OrderedGainCondition(
-        GainMetric.CARD_IN_DECK_COUNT,
-        ThresholdType.GREATER_OR_EQUAL,
-        3,
-        undefined,
-        undefined,
-        undefined,
-        [Wharf.NAME, Village.NAME],
-      ),
-      Village.NAME,
-    );
-    selector.addGainAlwaysCondition(Wharf.NAME);
-    selector.addCondition(
-      new OrderedGainCondition(
-        GainMetric.CARD_IN_DECK_COUNT,
-        ThresholdType.GREATER_OR_EQUAL,
-        1,
-        undefined,
-        undefined,
-        undefined,
-        [Wharf.NAME, Village.NAME],
-      ),
-      Village.NAME,
-    );
-    selector.addCondition(
-      new OrderedGainCondition(GainMetric.TURN, ThresholdType.LESS_OR_EQUAL, 2),
-      Silver.NAME,
-    );
+    selector.addGainAlwaysCondition(Gold.NAME);
     selector.addGainAlwaysCondition(Silver.NAME);
     return selector;
   }

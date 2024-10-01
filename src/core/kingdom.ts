@@ -18,6 +18,7 @@ import { Workshop } from "./cards/base/workshop";
 import { Peddler } from "./cards/prosperity/peddler";
 import { Watchtower } from "./cards/prosperity/watchtower";
 import { Milita } from "./cards/base/militia";
+import { Stockpile } from "./cards/menagerie/stockpile";
 
 export class Kingdom {
   /*
@@ -40,6 +41,9 @@ export class Kingdom {
 
   private addSupplyPile(name: string) {
     const generatorMethod = this.cardNameMap.nameMap.get(name);
+    if (!generatorMethod){
+      throw new Error(`Could not generator for ${name}`);
+    }
     if (generatorMethod) {
       if (generatorMethod().name !== name) {
         throw new Error(`Generator did not generate a real card for ${name}`);
@@ -64,6 +68,7 @@ export class Kingdom {
     this.addSupplyPile(Peddler.NAME);
     this.addSupplyPile(Watchtower.NAME);
     this.addSupplyPile(Milita.NAME);
+    this.addSupplyPile(Stockpile.NAME);
   }
 
   private getBasicSupply(): Map<string, Card[]> {

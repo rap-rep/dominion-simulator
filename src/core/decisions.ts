@@ -1,9 +1,8 @@
 import { Card } from "./card";
-import { NullCard } from "./cards/basic/null_card";
+import { CardType } from "./card_types";
 import { Effect, EffectPlayer } from "./effects";
 import { NodeType } from "./graph";
 
-const NULL_CARD = new NullCard();
 
 export enum DecisionType {
   // Standard play decisions
@@ -23,7 +22,10 @@ export enum DecisionType {
   DISCARD_TO = "Discard to",
   DISCARD = "Discard",
 
-  // Unique Decisions
+  // Set mechanic based card decisions
+  EXILE_DISCARD = "Discard from exile",
+
+  // Unique to the card decisions
 }
 
 export class Decision {
@@ -32,8 +34,8 @@ export class Decision {
   amount: number | undefined;
   amountMinimum: number | undefined;
   nodeType: NodeType;
-  result: string | Card | Card[] | undefined | number | number[];
-  fromCard: Card = NULL_CARD;
+  result: string | Card | Card[] | undefined | number | number[] | boolean;
+  fromCard: Card;
   selectionMap?: Map<number, Effect>;
 
   constructor(
@@ -52,6 +54,9 @@ export class Decision {
     this.selectionMap = selectionMap;
     if (fromCard) {
       this.fromCard = fromCard;
+    }
+    else{
+      this.fromCard = new Card("NULL", [CardType.NULL]);
     }
   }
 }

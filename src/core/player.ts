@@ -1,8 +1,7 @@
-import { Card } from "./card";
+import { Card, NULL_CARD_NAME } from "./card";
 import { CardType, DurationPhase } from "./card_types";
 import { Copper } from "./cards/basic/copper";
 import { Estate } from "./cards/basic/estate";
-import { NullCard } from "./cards/basic/null_card";
 import { Decision, DecisionType } from "./decisions";
 import { EffectPlayer } from "./effects";
 import { Game, Phase } from "./game";
@@ -36,6 +35,7 @@ export class Player {
   inPlay: Card[];
   deck: Card[];
   discard: Card[];
+  exile: Map<string, Card[]>;
   opponent: Player | undefined;
 
   actions: number = 1;
@@ -53,6 +53,7 @@ export class Player {
     this.discard = [];
     this.allCardsList = [];
     this.allCardsMap = new Map();
+    this.exile = new Map();
     this.deck = this.defaultStartingDeck();
 
     this.drawHand();
@@ -213,7 +214,7 @@ export class Player {
     let currentlySelectedAction: Card;
     while (this.actions > 0) {
       currentlySelectedAction = PlayerHelper.selectBestActionByHeuristic(this);
-      if (currentlySelectedAction.name === NullCard.NAME) {
+      if (currentlySelectedAction.name === NULL_CARD_NAME) {
         break;
       }
       this.removeCardFromHand(currentlySelectedAction);
@@ -227,7 +228,7 @@ export class Player {
     let currentlySelectedTreasure: Card;
     while (true) {
       currentlySelectedTreasure = PlayerHelper.selectAnyTreasure(this);
-      if (currentlySelectedTreasure.name === NullCard.NAME) {
+      if (currentlySelectedTreasure.name === NULL_CARD_NAME) {
         break;
       }
       this.removeCardFromHand(currentlySelectedTreasure);
@@ -260,7 +261,7 @@ export class Player {
       currentlySelectedCard = this.gainCardDecision(
         new Decision(DecisionType.BUY_CARD, EffectPlayer.SELF),
       );
-      if (currentlySelectedCard === NullCard.NAME) {
+      if (currentlySelectedCard === NULL_CARD_NAME) {
         break;
       } else {
         this.buys -= 1;

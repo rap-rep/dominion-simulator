@@ -19,6 +19,10 @@ export class Ironworks extends Card {
     return Name;
   }
 
+  static factoryGenerator(): Ironworks {
+    return new Ironworks();
+  }
+
   deprecatedHeuristicType(): DeprecatedCardHeuristicType {
     return DeprecatedCardHeuristicType.NONTERMINAL_GAINER;
   }

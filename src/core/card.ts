@@ -5,10 +5,12 @@ import {
   CardType,
   DurationPhase,
 } from "./card_types";
-import { Decision } from "./decisions";
-import { Effect } from "./effects";
-import { Graph } from "./graph";
+import { Decision, DecisionType } from "./decisions";
+import { Effect, EffectPlayer, EffectType } from "./effects";
+import { Graph, PlayNode } from "./graph";
 import { HeuristicType, TerminalType } from "./logic/card_selector_types";
+
+export const NULL_CARD_NAME = "NULL";
 
 export class Card {
   name: string;
@@ -18,11 +20,14 @@ export class Card {
   durationGraph: Graph | undefined;
   durationPhase: DurationPhase | undefined;
 
+  whenGainedGraph: Graph;
   setAsideDecision: Decision | undefined;
 
   constructor(name: string, types: CardType[]) {
     this.name = name;
     this.types = types;
+
+    this.whenGainedGraph = this.baseWhenGainedGraph();
   }
 
   public static get NAME(): string {
@@ -84,11 +89,40 @@ export class Card {
     return 0;
   }
 
-  inHandWhileGaining(_card: Card): Decision | undefined {
+  // section: card effects that can be triggered by game events
+  whenInHandWhileGaining(_card: Card): Decision | undefined {
     return undefined;
   }
 
+  // section: relatively rare effect definitions
   typeBonusMap(): Map<CardType, Effect> {
     return new Map();
   }
+
+
+  private baseWhenGainedGraph(): Graph {
+      const graph = new Graph();
+  
+      const exileDecision = new Decision(
+        DecisionType.EXILE_DISCARD,
+        EffectPlayer.SELF,
+        undefined,
+        this,
+      );
+      const exileDecisionNode = new PlayNode(exileDecision);
+      const exileDiscardEffect = new Effect(
+        EffectType.EXILE_DISCARD,
+        EffectPlayer.SELF,
+        undefined,
+        exileDecision,
+        this,
+      );
+      const exileDiscardNode = new PlayNode(exileDiscardEffect);
+  
+      graph.addNode(exileDecisionNode);
+      graph.addNode(exileDiscardNode);
+      graph.addEdge(exileDecisionNode, exileDiscardNode);
+  
+      return graph;
+    }
 }

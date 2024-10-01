@@ -1,4 +1,4 @@
-import { NullCard } from "@src/core/cards/basic/null_card";
+import { NULL_CARD_NAME } from "@src/core/card";
 import { Province } from "@src/core/cards/basic/province";
 import { Silver } from "@src/core/cards/basic/silver";
 import { Peddler } from "@src/core/cards/prosperity/peddler";
@@ -15,7 +15,7 @@ import {
 describe("Default action selection", () => {
   const game = new Game();
   it("Returns null if no action available", () => {
-    expect(PlayerHelper.selectAnyAction(game.p1)?.name).toBe(NullCard.NAME);
+    expect(PlayerHelper.selectAnyAction(game.p1)?.name).toBe(NULL_CARD_NAME);
   });
 });
 

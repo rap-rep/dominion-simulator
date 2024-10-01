@@ -1,9 +1,7 @@
 import { Card } from "@src/core/card";
 import { Decision } from "./decisions";
 import { NodeType } from "./graph";
-import { NullCard } from "./cards/basic/null_card";
-
-const NULL_CARD = new NullCard();
+import { CardType } from "./card_types";
 
 /* Effects are everything that changes the game state
  * Effects are completely tokenized so that cards can simply report what they intend to do
@@ -39,6 +37,10 @@ export enum EffectType {
   // Reveals
   REVEAL_DECK = "Reveal deck",
   REVEAL_HAND = "Reveal hand",
+
+  // Set specific
+  EXILE_FROM_PLAY = "Exile",
+  EXILE_DISCARD = "Discard from exile",
 }
 
 export enum EffectPlayer {
@@ -53,7 +55,7 @@ export class Effect {
   reference: Decision | Effect | undefined;
   nodeType: NodeType;
   result: string | Card | undefined;
-  fromCard: Card = NULL_CARD;
+  fromCard: Card;
   referenceIndex: number | undefined;
 
   constructor(
@@ -71,6 +73,9 @@ export class Effect {
     this.nodeType = NodeType.EFFECT;
     if (fromCard) {
       this.fromCard = fromCard;
+    }
+    else{
+      this.fromCard = new Card("NULL", [CardType.NULL]);
     }
     this.referenceIndex = referenceIndex;
   }

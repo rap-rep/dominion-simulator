@@ -1,8 +1,8 @@
+import { NULL_CARD_NAME } from "@src/core/card";
 import { Smithy } from "@src/core/cards/base/smithy";
 import { Village } from "@src/core/cards/base/village";
 import { Copper } from "@src/core/cards/basic/copper";
 import { Duchy } from "@src/core/cards/basic/duchy";
-import { NullCard } from "@src/core/cards/basic/null_card";
 import { Province } from "@src/core/cards/basic/province";
 import { Silver } from "@src/core/cards/basic/silver";
 import { Game } from "@src/core/game";
@@ -46,7 +46,7 @@ describe("A single rule to buy silver with more than 3", () => {
   game.p1.coins = 2;
   const card = gainRules.getGainName(game.p1, 2);
   it("selects nothing when 2 is available", () => {
-    expect(card).toEqual(NullCard.NAME);
+    expect(card).toEqual(NULL_CARD_NAME);
   });
 });
 
@@ -72,7 +72,7 @@ describe("A single rule with multiple conditionals", () => {
   game.p1.coins = 5;
   const card = gainRules.getGainName(game.p1, 5);
   it("selects nothing when coin is available but turn is too early", () => {
-    expect(card).toEqual(NullCard.NAME);
+    expect(card).toEqual(NULL_CARD_NAME);
   });
 });
 
@@ -181,7 +181,7 @@ describe("Buy rule", () => {
   game.p1.coins = 2;
   const card = gainRules.getGainName(game.p1, 2);
   it("does not lead to buying a card that can not be bought", () => {
-    expect(card).toEqual(NullCard.NAME);
+    expect(card).toEqual(NULL_CARD_NAME);
   });
 });
 
@@ -227,7 +227,7 @@ describe("Buy rule based on cards in deck", () => {
   game.p1.coins = coins;
   const card = gainRules.getGainName(game.p1, coins);
   it("buys nothing if required amount of copper is not in the deck", () => {
-    expect(card).toEqual(NullCard.NAME);
+    expect(card).toEqual(NULL_CARD_NAME);
   });
 });
 
@@ -253,7 +253,7 @@ describe("Buy rule based on cards diff", () => {
   game.p1.coins = coins;
   const card = gainRules.getGainName(game.p1, coins);
   it("does not buy the card if the diff is not great enough", () => {
-    expect(card).toEqual(NullCard.NAME);
+    expect(card).toEqual(NULL_CARD_NAME);
   });
 });
 

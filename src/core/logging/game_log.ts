@@ -99,4 +99,12 @@ export class GameLog {
       this.log(`${player.name} discards ${card.name} from hand`);
     }
   }
+
+  logExile(player: Player, card: Card, ) {
+    this.log(`${player.name} exiles a ${card.name}`);
+  }
+
+  logExileDiscard(player: Player, card: Card, amount: number) {
+    this.log(`${player.name} discards ${amount} ${card.name} from exile`);
+  }
 }

@@ -98,6 +98,7 @@ export class EffectResolver {
     }
 
     const effect = effectNode as Effect;
+    // TODO: make a function map rather than this huge conditional block
     if (effect.effectType == EffectType.PLUS_COIN) {
       this.plusCoinResolver(player, effect);
     } else if (effect.effectType === EffectType.DRAW_CARD) {
@@ -122,6 +123,10 @@ export class EffectResolver {
       this.discardExileResolver(player, effect);
     } else if (effect.effectType === EffectType.EXILE_FROM_PLAY) {
       this.exileFromPlayResolver(player, effect);
+    } else if (effect.effectType === EffectType.FLIP_JOURNEY) {
+      this.flipJourneyResolver(player, effect);
+    } else if (effect.effectType === EffectType.DRAW_IF_JOURNEY_UP) {
+      this.drawIfJourneyUpResolver(player, effect);
     } else {
       throw new Error(
         `Unable to resolve effect of EffectAction type ${effect.effectType}`,
@@ -330,6 +335,21 @@ export class EffectResolver {
     this.addToExile(player, effect.fromCard);
   }
 
+  private flipJourneyResolver(player: Player, _effect: Effect): void {
+    if (player.journeyTokenUp){
+      player.journeyTokenUp = false;
+    }
+    else{
+      player.journeyTokenUp = true;
+    }
+  }
+
+  private drawIfJourneyUpResolver(player: Player, effect: Effect): void {
+    if (player.journeyTokenUp){
+      this.drawCardResolver(player, effect);
+    }
+  }
+
   private addToExile(player: Player, card: Card){
     const exileStack = player.exile.get(card.name);
     if (exileStack){
@@ -345,6 +365,7 @@ export class EffectResolver {
     if (discardFromExile) {
       const cardName = exileEffect.fromCard.name;
       const exiledCardStack = player.exile.get(cardName);
+      player.game.gamelog.logExileDiscard(player, exileEffect.fromCard, exiledCardStack?.length || 0);
       if (exiledCardStack) {
         for (const card of exiledCardStack) {
           player.discard.push(card);

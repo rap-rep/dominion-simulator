@@ -44,6 +44,8 @@ export class Player {
   effectResolver = new EffectResolver();
   selector: OrderedConditionGainSelector;
 
+  journeyTokenUp: boolean;
+
   constructor(name: string, game: Game, gainRules?: ConditionSetList) {
     this.name = name;
     this.game = game;
@@ -55,6 +57,8 @@ export class Player {
     this.allCardsMap = new Map();
     this.exile = new Map();
     this.deck = this.defaultStartingDeck();
+
+    this.journeyTokenUp = true;
 
     this.drawHand();
     this.playStartTurn();

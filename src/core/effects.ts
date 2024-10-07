@@ -38,9 +38,14 @@ export enum EffectType {
   REVEAL_DECK = "Reveal deck",
   REVEAL_HAND = "Reveal hand",
 
-  // Set specific
+  //// Set specific
+  // adventures
+  FLIP_JOURNEY = "Flip journey token",
+  DRAW_IF_JOURNEY_UP = "Draw (if journey up)",
+  // menagerie
   EXILE_FROM_PLAY = "Exile",
   EXILE_DISCARD = "Discard from exile",
+
 }
 
 export enum EffectPlayer {

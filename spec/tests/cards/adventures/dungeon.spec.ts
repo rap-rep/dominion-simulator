@@ -19,7 +19,7 @@ describe("Dungeon", () => {
 
 describe("Dungeon", () => {
   const game = new Game({
-    logMode: LogMode.CONSOLE_LOG,
+    logMode: LogMode.SILENT,
     logLevel: LogLevel.INFO,
   });
   game.p1.addCardToHand(new Dungeon());

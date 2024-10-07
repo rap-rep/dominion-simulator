@@ -1,8 +1,9 @@
 import { Stockpile } from "@src/core/cards/menagerie/stockpile";
 import { Game } from "@src/core/game";
+import { LogLevel, LogMode } from "@src/core/logging/game_log";
 
 describe("Stockpile", () => {
-  const game = new Game();
+  const game = new Game({logLevel: LogLevel.INFO, logMode: LogMode.SILENT});
   game.p1.hand = new Map();
   game.p1.addCardToHand(new Stockpile());
   game.p1.playTreasurePhase();
@@ -15,7 +16,7 @@ describe("Stockpile", () => {
 });
 
 describe("Stockpile", () => {
-  const game = new Game();
+  const game = new Game({logLevel: LogLevel.INFO, logMode: LogMode.SILENT});
   game.p1.hand = new Map();
   game.p1.exile.set(Stockpile.NAME, [new Stockpile()]);
 

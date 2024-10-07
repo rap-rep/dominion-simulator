@@ -7,9 +7,9 @@ import {
   TerminalType,
 } from "@src/core/logic/card_selector_types";
 
-const Name = "Smithy";
+const Name = "Ranger";
 
-export class Smithy extends Card {
+export class Ranger extends Card {
   constructor() {
     super(Name, [CardType.ACTION]);
   }
@@ -18,8 +18,8 @@ export class Smithy extends Card {
     return Name;
   }
 
-  static factoryGenerator(): Smithy {
-    return new Smithy();
+  static factoryGenerator(): Ranger {
+    return new Ranger();
   }
 
   deprecatedHeuristicType(): DeprecatedCardHeuristicType {
@@ -36,10 +36,25 @@ export class Smithy extends Card {
 
   playGraph(): Graph {
     const graph = new Graph();
-    const draw = new PlayNode(
-      new Effect(EffectType.DRAW_CARD, EffectPlayer.SELF, 3, undefined, this),
+
+    const buy = new PlayNode(
+        new Effect(EffectType.PLUS_BUY, EffectPlayer.SELF, 1, undefined, this),
     );
-    graph.addNode(draw);
+
+    const flipJourney = new PlayNode(
+        new Effect(EffectType.FLIP_JOURNEY, EffectPlayer.SELF, undefined, undefined, this),
+      ); 
+
+    const drawConditional = new PlayNode(
+      new Effect(EffectType.DRAW_IF_JOURNEY_UP, EffectPlayer.SELF, 5, undefined, this),
+    );
+
+    graph.addNode(buy);
+    graph.addNode(flipJourney);
+    graph.addNode(drawConditional);
+
+    graph.addEdge(buy, flipJourney);
+    graph.addEdge(flipJourney, drawConditional);
     return graph;
   }
 

@@ -45,7 +45,6 @@ export enum EffectType {
   // menagerie
   EXILE_FROM_PLAY = "Exile",
   EXILE_DISCARD = "Discard from exile",
-
 }
 
 export enum EffectPlayer {
@@ -78,8 +77,7 @@ export class Effect {
     this.nodeType = NodeType.EFFECT;
     if (fromCard) {
       this.fromCard = fromCard;
-    }
-    else{
+    } else {
       this.fromCard = new Card("NULL", [CardType.NULL]);
     }
     this.referenceIndex = referenceIndex;

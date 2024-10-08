@@ -20,7 +20,7 @@
   <body>
     <div id="main">
       <h3>
-        p1 Rules
+        p1
         <sup
           ><button id="p1-rule-collapse" class="pure-button collapse-button">
             [-]
@@ -28,10 +28,22 @@
         >
       </h3>
       <div id="first-player-row" class="pure-g">
-        <div id="player-one-conditions" class="gain-conditions"></div>
+        <div id="player-one-conditions" class="gain-conditions">
+          <div id="player-one-starting-deck" class="starting-deck">
+            <form class="pure-form">
+              <input
+                name="p1-starting-deck"
+                id="p1-starting-deck"
+                class="starting-deck-input"
+                type="text"
+                value="7 Copper, 3 Estate"
+              />
+            </form>
+          </div>
+        </div>
       </div>
       <h3>
-        p2 Rules
+        p2
         <sup
           ><button id="p2-rule-collapse" class="pure-button collapse-button">
             [-]
@@ -39,7 +51,20 @@
         >
       </h3>
       <div id="second-player-row" class="pure-g">
-        <div id="player-two-conditions" class="gain-conditions"></div>
+        <div id="player-one-starting-deck" class="starting-deck"></div>
+        <div id="player-two-conditions" class="gain-conditions">
+          <div id="player-one-starting-deck" class="starting-deck">
+            <form class="pure-form">
+              <input
+                name="p2-starting-deck"
+                id="p2-starting-deck"
+                class="starting-deck-input"
+                type="text"
+                value="7 Copper, 3 Estate"
+              />
+            </form>
+          </div>
+        </div>
       </div>
 
       <hr />
@@ -63,6 +88,17 @@
             name="sample-log-select"
           />
           Sample Log
+        </label>
+
+        <label for="sample-log-select">
+          <input
+            name="turn-limit"
+            id="game-turn-limit"
+            class="number-input-raw"
+            type="number"
+            value="99"
+          />
+          Turn Limit
         </label>
         <div id="game-results"></div>
         <div id="sample-log"></div>

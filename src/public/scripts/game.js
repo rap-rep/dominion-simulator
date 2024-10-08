@@ -144,6 +144,25 @@ function includeSampleLog() {
   return sampleLogSelect.checked;
 }
 
+function parseStartingCards(inputElementId) {
+  cards = document.getElementById(inputElementId);
+  list = cards.value.split(",");
+  cardArray = new Array();
+  for (card of list) {
+    cardElems = card.trim().split(" ");
+    cardAmount = Number(cardElems[0]);
+    cardName = cardElems.slice(1, cardElems.length + 1).join(" ");
+    cardArray.push(new Array(cardName, cardAmount));
+  }
+  return cardArray;
+}
+
+function parseTurnLimit() {
+  turnLimitElement = document.getElementById("game-turn-limit");
+  turnLimit = turnLimitElement.value;
+  return turnLimit;
+}
+
 function displaySampleLog(log) {
   if (log === undefined) {
     return;
@@ -178,12 +197,20 @@ function simGame(numGames) {
 
   const includeSampleLogResult = includeSampleLog();
 
+  const p1cards = parseStartingCards("p1-starting-deck");
+  const p2cards = parseStartingCards("p2-starting-deck");
+
+  const turnLimit = parseTurnLimit();
+
   data = {
     p1rules: p1rules,
     p2rules: p2rules,
     eventQueries: eventQueries,
     numGames: numGames,
     includeSampleLog: includeSampleLogResult,
+    p1cards: p1cards,
+    p2cards: p2cards,
+    turnLimit: turnLimit,
   };
 
   var anchor = document.getElementById("game-results");

@@ -38,7 +38,13 @@ export class Stockpile extends Card {
     );
 
     const exileSelf = new PlayNode(
-      new Effect(EffectType.EXILE_FROM_PLAY, EffectPlayer.SELF, undefined, undefined, this),
+      new Effect(
+        EffectType.EXILE_FROM_PLAY,
+        EffectPlayer.SELF,
+        undefined,
+        undefined,
+        this,
+      ),
     );
 
     graph.addNode(coins);

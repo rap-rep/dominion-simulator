@@ -18,6 +18,10 @@ export class Silver extends Card {
     return Name;
   }
 
+  static factoryGenerator(): Silver {
+    return new Silver();
+  }
+
   deprecatedHeuristicType(): DeprecatedCardHeuristicType {
     return DeprecatedCardHeuristicType.TREASURE;
   }

@@ -1,12 +1,19 @@
 import { Card } from "../card";
 import { Dungeon } from "./adventures/dungeon";
 import { Gear } from "./adventures/gear";
+import { Ranger } from "./adventures/ranger";
 import { Chapel } from "./base/chapel";
 import { Market } from "./base/market";
 import { Milita } from "./base/militia";
 import { Smithy } from "./base/smithy";
 import { Village } from "./base/village";
 import { Workshop } from "./base/workshop";
+import { Copper } from "./basic/copper";
+import { Duchy } from "./basic/duchy";
+import { Estate } from "./basic/estate";
+import { Gold } from "./basic/gold";
+import { Province } from "./basic/province";
+import { Silver } from "./basic/silver";
 import { Ironworks } from "./intrigue/ironworks";
 import { Stockpile } from "./menagerie/stockpile";
 import { Peddler } from "./prosperity/peddler";
@@ -40,5 +47,13 @@ export class CardNameMap {
     this.nameMap.set(Workshop.NAME, Workshop.factoryGenerator);
     this.nameMap.set(Watchtower.NAME, Watchtower.factoryGenerator);
     this.nameMap.set(Milita.NAME, Milita.factoryGenerator);
+    this.nameMap.set(Ranger.NAME, Ranger.factoryGenerator);
+
+    this.nameMap.set(Copper.NAME, Copper.factoryGenerator);
+    this.nameMap.set(Silver.NAME, Silver.factoryGenerator);
+    this.nameMap.set(Gold.NAME, Gold.factoryGenerator);
+    this.nameMap.set(Estate.NAME, Estate.factoryGenerator);
+    this.nameMap.set(Duchy.NAME, Duchy.factoryGenerator);
+    this.nameMap.set(Province.NAME, Province.factoryGenerator);
   }
 }

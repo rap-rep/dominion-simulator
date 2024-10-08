@@ -23,6 +23,11 @@ body {
   width: 55px;
 }
 
+/* for input that isn't styled with `pure` forms */
+.number-input-raw {
+  width: 40px;
+}
+
 .delete-rule {
   margin-left: 5px;
   margin-right: 5px;
@@ -117,6 +122,11 @@ body {
 
 .add-condition-selector {
   margin-right: 5px;
+}
+
+.starting-deck-input {
+  margin-bottom: 10px;
+  width: 100%;
 }
 
 /* LOADING SPINNER */

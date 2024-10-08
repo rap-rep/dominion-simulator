@@ -8,7 +8,7 @@ import { ConditionSetList } from "./logic/ordered_condition_gaining";
 import { EventQueryManager } from "./logging/event_query";
 import { GameHelper } from "./helpers/game_helper";
 
-const MAX_TURNS = 100;
+const DEFAULT_MAX_TURNS = 100;
 
 export enum Starter {
   RANDOM = "random",
@@ -26,12 +26,14 @@ export type GameConfig = {
   p1Name?: string | undefined;
   p2Name?: string | undefined;
   starter?: Starter | undefined;
+  p1cards?: Array<Array<number | string>>;
+  p2cards?: Array<Array<number | string>>;
+  turnLimit?: number;
 };
 
 export class Game {
   /*
-   * Where the core game of Dominion is played
-   * Cards are unsleeved and shuffled recklessly
+   * Where the core game of Dominion, one at a time, is played
    */
   kingdom: Kingdom;
   p1: Player;
@@ -46,6 +48,7 @@ export class Game {
   starter: Player;
   gameNumber: number;
   eventQueryManager: EventQueryManager;
+  maxTurns: number;
 
   constructor(config?: GameConfig | undefined) {
     this.cardNameMap = new CardNameMap();
@@ -58,17 +61,20 @@ export class Game {
       config?.p1Name || "player one",
       this,
       config?.p1gainRules,
+      config?.p1cards,
     );
     this.p2 = new Player(
       config?.p2Name || "player two",
       this,
       config?.p2gainRules,
+      config?.p2cards,
     );
     this.p1.setOpponent(this.p2);
     this.p2.setOpponent(this.p1);
     this.currentPlayer = this.p1;
     this.starter = this.currentPlayer;
     this.setupStartPlayer(config);
+    this.maxTurns = this.getSafeMaxTurns(config?.turnLimit);
     this.eventQueryManager =
       config?.eventQueryManager || new EventQueryManager();
   }
@@ -76,7 +82,7 @@ export class Game {
   playGame(untilTurn?: number | undefined) {
     let gameOver = false;
     this.gamelog.logTurn(this.turn, this.currentPlayer.name);
-    while (!gameOver && this.turn < (untilTurn || MAX_TURNS)) {
+    while (!gameOver && (this.turn - 1) < (untilTurn || this.maxTurns)) {
       this.currentPlayer.logHand();
       this.currentPlayer.playStartTurn();
       this.currentPlayer.playActionPhase();
@@ -85,7 +91,6 @@ export class Game {
       this.currentPlayer.playBuyPhase();
       this.currentPlayer.playCleanupPhase();
       gameOver = this.kingdom.gameOver();
-      this.gamelog.log(`Game over: ${gameOver}`);
       if (!gameOver) {
         this.switchPlayer();
         this.incrementTurn();
@@ -117,6 +122,13 @@ export class Game {
       );
     }
     this.starter = this.currentPlayer;
+  }
+
+  private getSafeMaxTurns(configLimit: number | undefined): number {
+    if (!configLimit || configLimit < 1 || configLimit > DEFAULT_MAX_TURNS) {
+      return DEFAULT_MAX_TURNS;
+    }
+    return configLimit;
   }
 
   private switchPlayer(): void {

@@ -19,7 +19,7 @@ describe("Two ranger plays", () => {
   const game = new Game();
   game.p1.hand = new Map();
   game.p1.actions = 2;
-  for (let i=0; i<2; i++){
+  for (let i = 0; i < 2; i++) {
     game.p1.addCardToHand(new Ranger());
   }
   game.p1.playActionPhase();
@@ -33,14 +33,14 @@ describe("Two ranger plays", () => {
 describe("Five ranger plays with a large deck and token starting down", () => {
   const game = new Game();
   game.p1.hand = new Map();
-  for (let i=0; i<30; i++){
+  for (let i = 0; i < 30; i++) {
     const copper = new Copper();
     game.p1.addToAllCards(copper);
     game.p1.discard.push(copper);
   }
   game.p1.journeyTokenUp = false;
   game.p1.actions = 10;
-  for (let i=0; i < 5; i++){
+  for (let i = 0; i < 5; i++) {
     game.p1.addCardToHand(new Ranger());
   }
 

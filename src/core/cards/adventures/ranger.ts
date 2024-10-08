@@ -38,15 +38,27 @@ export class Ranger extends Card {
     const graph = new Graph();
 
     const buy = new PlayNode(
-        new Effect(EffectType.PLUS_BUY, EffectPlayer.SELF, 1, undefined, this),
+      new Effect(EffectType.PLUS_BUY, EffectPlayer.SELF, 1, undefined, this),
     );
 
     const flipJourney = new PlayNode(
-        new Effect(EffectType.FLIP_JOURNEY, EffectPlayer.SELF, undefined, undefined, this),
-      ); 
+      new Effect(
+        EffectType.FLIP_JOURNEY,
+        EffectPlayer.SELF,
+        undefined,
+        undefined,
+        this,
+      ),
+    );
 
     const drawConditional = new PlayNode(
-      new Effect(EffectType.DRAW_IF_JOURNEY_UP, EffectPlayer.SELF, 5, undefined, this),
+      new Effect(
+        EffectType.DRAW_IF_JOURNEY_UP,
+        EffectPlayer.SELF,
+        5,
+        undefined,
+        this,
+      ),
     );
 
     graph.addNode(buy);

@@ -12,6 +12,10 @@ export class Duchy extends Card {
     super(Name, [CardType.VICTORY]);
   }
 
+  static factoryGenerator(): Duchy {
+    return new Duchy();
+  }
+
   public static get NAME(): string {
     return Name;
   }

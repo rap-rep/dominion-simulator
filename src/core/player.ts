@@ -2,6 +2,7 @@ import { Card, NULL_CARD_NAME } from "./card";
 import { CardType, DurationPhase } from "./card_types";
 import { Copper } from "./cards/basic/copper";
 import { Estate } from "./cards/basic/estate";
+import { CardNameMap } from "./cards/name_map";
 import { Decision, DecisionType } from "./decisions";
 import { EffectPlayer } from "./effects";
 import { Game, Phase } from "./game";
@@ -46,7 +47,12 @@ export class Player {
 
   journeyTokenUp: boolean;
 
-  constructor(name: string, game: Game, gainRules?: ConditionSetList) {
+  constructor(
+    name: string,
+    game: Game,
+    gainRules?: ConditionSetList,
+    cards?: Array<Array<number | string>>,
+  ) {
     this.name = name;
     this.game = game;
     this.selector = this.loadSelectorFromConditionSet(gainRules);
@@ -56,7 +62,11 @@ export class Player {
     this.allCardsList = [];
     this.allCardsMap = new Map();
     this.exile = new Map();
-    this.deck = this.defaultStartingDeck();
+    if (!cards) {
+      this.deck = this.defaultStartingDeck();
+    } else {
+      this.deck = this.customStartingDeck(cards);
+    }
 
     this.journeyTokenUp = true;
 
@@ -122,6 +132,30 @@ export class Player {
       deck.push(estate);
       this.addToAllCards(estate);
     }
+    return this.shuffledDeck(deck);
+  }
+
+  customStartingDeck(cards: Array<Array<number | string>>): Card[] {
+    const deck: Card[] = [];
+
+    const cardNameMap = new CardNameMap();
+
+    for (const cardInput of cards) {
+      const cardName = cardInput[0] as string;
+      const cardAmount = cardInput[1] as number;
+      const cardGenerator = cardNameMap.nameMap.get(cardName);
+
+      if (!cardGenerator) {
+        throw new Error(`Unable to find generator for card: ${cardName}`);
+      }
+
+      for (let i = 0; i < cardAmount; i++) {
+        const card = cardGenerator();
+        deck.push(card);
+        this.addToAllCards(card);
+      }
+    }
+
     return this.shuffledDeck(deck);
   }
 

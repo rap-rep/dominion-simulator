@@ -331,31 +331,29 @@ export class EffectResolver {
   }
 
   private exileFromPlayResolver(player: Player, effect: Effect): void {
-    player.inPlay = player.inPlay.filter(item => item !== effect.fromCard);
+    player.inPlay = player.inPlay.filter((item) => item !== effect.fromCard);
     this.addToExile(player, effect.fromCard);
   }
 
   private flipJourneyResolver(player: Player, _effect: Effect): void {
-    if (player.journeyTokenUp){
+    if (player.journeyTokenUp) {
       player.journeyTokenUp = false;
-    }
-    else{
+    } else {
       player.journeyTokenUp = true;
     }
   }
 
   private drawIfJourneyUpResolver(player: Player, effect: Effect): void {
-    if (player.journeyTokenUp){
+    if (player.journeyTokenUp) {
       this.drawCardResolver(player, effect);
     }
   }
 
-  private addToExile(player: Player, card: Card){
+  private addToExile(player: Player, card: Card) {
     const exileStack = player.exile.get(card.name);
-    if (exileStack){
+    if (exileStack) {
       exileStack.push(card);
-    }
-    else{
+    } else {
       player.exile.set(card.name, [card]);
     }
   }
@@ -365,7 +363,11 @@ export class EffectResolver {
     if (discardFromExile) {
       const cardName = exileEffect.fromCard.name;
       const exiledCardStack = player.exile.get(cardName);
-      player.game.gamelog.logExileDiscard(player, exileEffect.fromCard, exiledCardStack?.length || 0);
+      player.game.gamelog.logExileDiscard(
+        player,
+        exileEffect.fromCard,
+        exiledCardStack?.length || 0,
+      );
       if (exiledCardStack) {
         for (const card of exiledCardStack) {
           player.discard.push(card);

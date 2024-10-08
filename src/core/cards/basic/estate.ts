@@ -16,6 +16,10 @@ export class Estate extends Card {
     return Name;
   }
 
+  static factoryGenerator(): Estate {
+    return new Estate();
+  }
+
   victoryPoints(): number {
     return 1;
   }

@@ -25,17 +25,31 @@ async function postGame(
     eventQueries: EventQueryInput[];
     numGames: number;
     includeSampleLog: boolean;
+    p1cards: Array<Array<number | string>>;
+    p2cards: Array<Array<number | string>>;
+    turnLimit: number;
   }>,
   res: IRes,
 ) {
-  const { p1rules, p2rules, eventQueries, numGames, includeSampleLog } =
-    req.body;
+  const {
+    p1rules,
+    p2rules,
+    eventQueries,
+    numGames,
+    includeSampleLog,
+    p1cards,
+    p2cards,
+    turnLimit,
+  } = req.body;
 
   const config = {
     p1gainRules: p1rules,
     p2gainRules: p2rules,
     logMode: includeSampleLog ? LogMode.BUFFER : LogMode.SILENT,
     logLevel: LogLevel.INFO,
+    p1cards: p1cards,
+    p2cards: p2cards,
+    turnLimit: turnLimit,
   };
 
   const gameManager = new GameManager(

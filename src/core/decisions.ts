@@ -3,7 +3,6 @@ import { CardType } from "./card_types";
 import { Effect, EffectPlayer } from "./effects";
 import { NodeType } from "./graph";
 
-
 export enum DecisionType {
   // Standard play decisions
   PLAY_ACTION = "Play action",
@@ -54,8 +53,7 @@ export class Decision {
     this.selectionMap = selectionMap;
     if (fromCard) {
       this.fromCard = fromCard;
-    }
-    else{
+    } else {
       this.fromCard = new Card("NULL", [CardType.NULL]);
     }
   }

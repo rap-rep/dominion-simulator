@@ -100,7 +100,7 @@ export class GameLog {
     }
   }
 
-  logExile(player: Player, card: Card, ) {
+  logExile(player: Player, card: Card) {
     this.log(`${player.name} exiles a ${card.name}`);
   }
 

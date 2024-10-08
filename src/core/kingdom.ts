@@ -41,7 +41,7 @@ export class Kingdom {
 
   private addSupplyPile(name: string) {
     const generatorMethod = this.cardNameMap.nameMap.get(name);
-    if (!generatorMethod){
+    if (!generatorMethod) {
       throw new Error(`Could not generator for ${name}`);
     }
     if (generatorMethod) {

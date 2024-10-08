@@ -16,6 +16,10 @@ export class Province extends Card {
     return Name;
   }
 
+  static factoryGenerator(): Province {
+    return new Province();
+  }
+
   victoryPoints(): number {
     return 6;
   }

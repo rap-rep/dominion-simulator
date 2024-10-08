@@ -99,30 +99,29 @@ export class Card {
     return new Map();
   }
 
-
   private baseWhenGainedGraph(): Graph {
-      const graph = new Graph();
-  
-      const exileDecision = new Decision(
-        DecisionType.EXILE_DISCARD,
-        EffectPlayer.SELF,
-        undefined,
-        this,
-      );
-      const exileDecisionNode = new PlayNode(exileDecision);
-      const exileDiscardEffect = new Effect(
-        EffectType.EXILE_DISCARD,
-        EffectPlayer.SELF,
-        undefined,
-        exileDecision,
-        this,
-      );
-      const exileDiscardNode = new PlayNode(exileDiscardEffect);
-  
-      graph.addNode(exileDecisionNode);
-      graph.addNode(exileDiscardNode);
-      graph.addEdge(exileDecisionNode, exileDiscardNode);
-  
-      return graph;
-    }
+    const graph = new Graph();
+
+    const exileDecision = new Decision(
+      DecisionType.EXILE_DISCARD,
+      EffectPlayer.SELF,
+      undefined,
+      this,
+    );
+    const exileDecisionNode = new PlayNode(exileDecision);
+    const exileDiscardEffect = new Effect(
+      EffectType.EXILE_DISCARD,
+      EffectPlayer.SELF,
+      undefined,
+      exileDecision,
+      this,
+    );
+    const exileDiscardNode = new PlayNode(exileDiscardEffect);
+
+    graph.addNode(exileDecisionNode);
+    graph.addNode(exileDiscardNode);
+    graph.addEdge(exileDecisionNode, exileDiscardNode);
+
+    return graph;
+  }
 }

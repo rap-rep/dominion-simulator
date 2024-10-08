@@ -18,6 +18,10 @@ export class Gold extends Card {
     return Name;
   }
 
+  static factoryGenerator(): Gold {
+    return new Gold();
+  }
+
   deprecatedHeuristicType(): DeprecatedCardHeuristicType {
     return DeprecatedCardHeuristicType.TREASURE;
   }

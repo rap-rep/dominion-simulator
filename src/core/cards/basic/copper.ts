@@ -18,6 +18,10 @@ export class Copper extends Card {
     return Name;
   }
 
+  static factoryGenerator(): Copper {
+    return new Copper();
+  }
+
   deprecatedHeuristicType(): DeprecatedCardHeuristicType {
     return DeprecatedCardHeuristicType.TREASURE;
   }

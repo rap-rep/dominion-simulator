@@ -22,7 +22,7 @@ export enum EventQueryType {
   DRAW_CARD = "cards drawn",
   VP = "vp",
   TRASH = "trash",
-  // PLUS_COIN = "+ coin",
+  PLUS_COINS = "coins",
 }
 
 export type EventRecord = {

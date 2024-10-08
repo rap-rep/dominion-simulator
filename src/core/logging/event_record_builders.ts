@@ -16,6 +16,18 @@ export class EventRecordBuilder {
     };
   }
 
+  static coins(player: Player, fromCard: Card, amount: number): EventRecord {
+    return {
+      playerName: player.name,
+      type: EventQueryType.PLUS_COINS,
+      gameNumber: player.game.gameNumber,
+      amount: amount,
+      fromCard: fromCard.name,
+      toCard: undefined,
+      turn: player.game.turn,
+    };
+  }
+
   private static winnerRecord(player: Player, amount: number): EventRecord {
     return {
       playerName: player.name,

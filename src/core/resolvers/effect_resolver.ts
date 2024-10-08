@@ -8,7 +8,6 @@ import { DecisionResolver } from "./decision_resolver";
 import { PlayerHelper } from "../helpers/player_helper";
 import { DurationPhase } from "../card_types";
 import { EventRecordBuilder } from "../logging/event_record_builders";
-import e from "express";
 
 export class EffectResolver {
   decisionResolver: DecisionResolver;
@@ -171,6 +170,9 @@ export class EffectResolver {
 
     if (effect.effectPlayer == EffectPlayer.SELF) {
       player.coins += amount;
+      player.game.eventQueryManager.recordEvent(
+        EventRecordBuilder.coins(player, effect.fromCard, amount),
+      );
     }
   }
 

@@ -2,6 +2,7 @@ const EventQueryType = {
   WINS: "wins",
   VP: "vp",
   DRAW_CARD: "cards drawn",
+  PLUS_COINS: "coins",
 };
 
 const ANY_CARD = "All";
@@ -87,6 +88,18 @@ function addQueryListener(addQuerySelect) {
       const cardInput = cardInputElements[1];
       parent.appendChild(cardInput);
       parent.insertBefore(cardLabel, cardInput);
+    } else if (event.target.value === EventQueryType.PLUS_COINS) {
+      const cardInputElements = getEventCardInputElements();
+      const cardLabel = cardInputElements[0];
+      const cardInput = cardInputElements[1];
+      parent.appendChild(cardInput);
+      parent.insertBefore(cardLabel, cardInput);
+
+      const turnInputElements = getByTurnInputElements();
+      const turnLabel = turnInputElements[0];
+      const turnInput = turnInputElements[1];
+      parent.appendChild(turnInput);
+      parent.insertBefore(turnLabel, turnInput);
     } else {
       throw new Error(
         `Unable to handle EventQueryType value '${event.target.value}''`,

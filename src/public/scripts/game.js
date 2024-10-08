@@ -132,6 +132,8 @@ function getResultElement(result) {
     resultDiv.innerHTML = `${result.playerName} win ratio${optionalClauses.join(" ")}: ${result.average}`;
   } else if (result.type === EventQueryType.VP) {
     resultDiv.innerHTML = `${result.playerName} average VP${optionalClauses.join(" ")}: ${result.average}`;
+  } else if (result.type === EventQueryType.PLUS_COINS) {
+    resultDiv.innerHTML = `${result.playerName} average coins${optionalClauses.join(" ")}: ${result.average}`; 
   } else {
     throw new Error(`'${result.type}' result type not supported`);
   }
@@ -256,6 +258,12 @@ function setupSimListeners() {
     event.preventDefault();
     simGame(1000);
   });
+
+  var playButton10000 = document.getElementById("play-game-btn-10000");
+  playButton10000.addEventListener("click", (event) => {
+    event.preventDefault();
+    simGame(10000);
+  });
 }
 
 // Section: event querying parsing for passing to Game creation
@@ -280,7 +288,7 @@ function parseEventQueries() {
   for (const queryForm of queryDiv.children) {
     const formElements = queryForm.children[0].children;
     const selectionType = formElements[0].value;
-    if (selectionType === EventQueryType.DRAW_CARD) {
+    if (selectionType === EventQueryType.DRAW_CARD || selectionType === EventQueryType.PLUS_COINS) {
       fromCard = formElements[2].value;
       byTurn = parseInt(formElements[4].value);
       eventQueries.push(new EventQuery(selectionType, fromCard, byTurn));

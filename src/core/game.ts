@@ -82,7 +82,7 @@ export class Game {
   playGame(untilTurn?: number | undefined) {
     let gameOver = false;
     this.gamelog.logTurn(this.turn, this.currentPlayer.name);
-    while (!gameOver && (this.turn - 1) < (untilTurn || this.maxTurns)) {
+    while (!gameOver && this.turn - 1 < (untilTurn || this.maxTurns)) {
       this.currentPlayer.logHand();
       this.currentPlayer.playStartTurn();
       this.currentPlayer.playActionPhase();

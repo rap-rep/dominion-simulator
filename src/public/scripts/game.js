@@ -133,7 +133,7 @@ function getResultElement(result) {
   } else if (result.type === EventQueryType.VP) {
     resultDiv.innerHTML = `${result.playerName} average VP${optionalClauses.join(" ")}: ${result.average}`;
   } else if (result.type === EventQueryType.PLUS_COINS) {
-    resultDiv.innerHTML = `${result.playerName} average coins${optionalClauses.join(" ")}: ${result.average}`; 
+    resultDiv.innerHTML = `${result.playerName} average coins${optionalClauses.join(" ")}: ${result.average}`;
   } else {
     throw new Error(`'${result.type}' result type not supported`);
   }
@@ -288,7 +288,10 @@ function parseEventQueries() {
   for (const queryForm of queryDiv.children) {
     const formElements = queryForm.children[0].children;
     const selectionType = formElements[0].value;
-    if (selectionType === EventQueryType.DRAW_CARD || selectionType === EventQueryType.PLUS_COINS) {
+    if (
+      selectionType === EventQueryType.DRAW_CARD ||
+      selectionType === EventQueryType.PLUS_COINS
+    ) {
       fromCard = formElements[2].value;
       byTurn = parseInt(formElements[4].value);
       eventQueries.push(new EventQuery(selectionType, fromCard, byTurn));

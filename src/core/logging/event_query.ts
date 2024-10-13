@@ -6,7 +6,13 @@ export type EventQueryInput = {
   fromCard?: string | undefined;
   byTurn?: number | undefined;
   toCard?: string | undefined;
+  byTurnModifier?: ByTurnModifier | undefined;
 };
+
+export enum ByTurnModifier {
+  DEFAULT = "by",
+  ON_TURN = "on",
+}
 
 export type EventQueryResult = {
   type: EventQueryType;
@@ -59,6 +65,7 @@ export class EventQueryManager {
             inputQuery.byTurn,
             inputQuery.toCard,
             playerName,
+            inputQuery.byTurnModifier,
           ),
         );
       }
@@ -90,6 +97,7 @@ export class EventQuery {
   fromCard: string | undefined;
   toCard: string | undefined;
   byTurn: number | undefined;
+  byTurnModifier: ByTurnModifier | undefined;
   playerName: string | undefined;
   effectRecords: Map<number, EventRecord[]>;
   constructor(
@@ -98,10 +106,12 @@ export class EventQuery {
     byTurn?: number,
     toCard?: string,
     playerName?: string,
+    byTurnModifier?: ByTurnModifier,
   ) {
     this.type = type;
     this.fromCard = fromCard;
     this.byTurn = byTurn;
+    this.byTurnModifier = byTurnModifier;
     this.toCard = toCard;
     this.playerName = playerName;
     this.effectRecords = new Map();
@@ -129,7 +139,12 @@ export class EventQuery {
       (!this.toCard ||
         this.toCard === ANY_CARD ||
         this.toCard === effectRecord.toCard) &&
-      (this.byTurn === undefined || effectRecord.turn <= this.byTurn)
+      (this.byTurn === undefined ||
+        ((!this.byTurnModifier ||
+          this.byTurnModifier === ByTurnModifier.DEFAULT) &&
+          effectRecord.turn <= this.byTurn) ||
+        (this.byTurnModifier === ByTurnModifier.ON_TURN &&
+          effectRecord.turn === this.byTurn))
     );
   }
 

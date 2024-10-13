@@ -21,6 +21,7 @@ export type EventQueryResult = {
   toCard: string | undefined;
   average: number;
   playerName: string | undefined;
+  byTurnModifier: string | undefined;
 };
 
 export enum EventQueryType {
@@ -125,6 +126,7 @@ export class EventQuery {
       byTurn: this.byTurn || 99,
       average: this.getAverage(numGames),
       playerName: this.playerName,
+      byTurnModifier: this.byTurnModifier,
     };
   }
 

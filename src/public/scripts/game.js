@@ -115,8 +115,8 @@ function getResultElement(result) {
   }
 
   let byTurnClause = undefined;
-  if (result.byTurn && result.byTurn < 99) {
-    byTurnClause = ` by turn ${result.byTurn}`;
+  if (result.byTurn && result.byTurnModifier !== ByTurnModifier.DEFAULT || result.byTurn < 99){
+    byTurnClause = ` ${result.byTurnModifier} turn ${result.byTurn}`;
   }
 
   const optionalClauses = [];
@@ -270,14 +270,16 @@ function setupSimListeners() {
 class EventQuery {
   constructor(
     type, // EventQueryType (string)
-    fromCard, // string
-    byTurn, // number
+    fromCard, // string (optional)
+    byTurn, // number (optional)
     toCard, // string (optional)
+    byTurnModifier, // ByTurnModifier (optional)
   ) {
     this.type = type;
     this.fromCard = fromCard;
     this.byTurn = byTurn;
     this.toCard = toCard;
+    this.byTurnModifier = byTurnModifier;
   }
 }
 
@@ -293,11 +295,14 @@ function parseEventQueries() {
       selectionType === EventQueryType.PLUS_COINS
     ) {
       fromCard = formElements[2].value;
-      byTurn = parseInt(formElements[4].value);
-      eventQueries.push(new EventQuery(selectionType, fromCard, byTurn));
+      byTurnModifier= formElements[3].value;
+      byTurn = parseInt(formElements[5].value);
+      eventQueries.push(new EventQuery(selectionType, fromCard, byTurn, undefined, byTurnModifier));
     } else if (selectionType === EventQueryType.WINS) {
-      byTurn = parseInt(formElements[2].value);
-      eventQueries.push(new EventQuery(selectionType, undefined, byTurn));
+      byTurnModifier=formElements[1].value;
+      byTurn = parseInt(formElements[3].value);
+      console.log(byTurn);
+      eventQueries.push(new EventQuery(selectionType, undefined, byTurn, undefined, byTurnModifier));
     } else if (selectionType === EventQueryType.VP) {
       fromCard = formElements[2].value;
       eventQueries.push(new EventQuery(selectionType, fromCard));

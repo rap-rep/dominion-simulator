@@ -5,6 +5,11 @@ const EventQueryType = {
   PLUS_COINS: "coins",
 };
 
+const ByTurnModifier = {
+  DEFAULT: "by",
+  ON_TURN: "on",
+};
+
 const ANY_CARD = "All";
 
 function guidGenerator() {
@@ -47,6 +52,16 @@ function getByTurnInputElements() {
   var numberInput = document.createElement("input");
   numberInput.classList.add("number-input");
 
+  var byTurnModSelect = document.createElement("select");
+  byTurnModSelect.classList.add("by-turn-mod");
+
+  for (const byTurnMod of Object.values(ByTurnModifier)) {
+    var option = document.createElement("option");
+    option.value = byTurnMod;
+    option.text = byTurnMod;
+    byTurnModSelect.appendChild(option);
+  }
+
   const inputId = guidGenerator();
   numberInput.id = inputId;
   numberInput.type = "number";
@@ -55,9 +70,9 @@ function getByTurnInputElements() {
   var label = document.createElement("label");
   label.classList.add("by-turn-label");
   label.for = inputId;
-  label.innerHTML = " by turn ";
+  label.innerHTML = " turn ";
 
-  return [label, numberInput];
+  return [byTurnModSelect, label, numberInput];
 }
 
 function addQueryListener(addQuerySelect) {
@@ -72,16 +87,21 @@ function addQueryListener(addQuerySelect) {
       parent.insertBefore(cardLabel, cardInput);
 
       const turnInputElements = getByTurnInputElements();
-      const turnLabel = turnInputElements[0];
-      const turnInput = turnInputElements[1];
+      const turnModType = turnInputElements[0];
+      const turnLabel = turnInputElements[1];
+      const turnInput = turnInputElements[2];
+      parent.appendChild(turnModType);
+      parent.appendChild(turnLabel);
       parent.appendChild(turnInput);
-      parent.insertBefore(turnLabel, turnInput);
     } else if (event.target.value === EventQueryType.WINS) {
       const turnInputElements = getByTurnInputElements();
-      const turnLabel = turnInputElements[0];
-      const turnInput = turnInputElements[1];
+      const turnModType = turnInputElements[0];
+      const turnLabel = turnInputElements[1];
+      const turnInput = turnInputElements[2];
+      parent.appendChild(turnModType);
+      parent.appendChild(turnLabel);
       parent.appendChild(turnInput);
-      parent.insertBefore(turnLabel, turnInput);
+      parent.appendChild(turnModType);
     } else if (event.target.value === EventQueryType.VP) {
       const cardInputElements = getEventCardInputElements();
       const cardLabel = cardInputElements[0];
@@ -96,10 +116,12 @@ function addQueryListener(addQuerySelect) {
       parent.insertBefore(cardLabel, cardInput);
 
       const turnInputElements = getByTurnInputElements();
-      const turnLabel = turnInputElements[0];
-      const turnInput = turnInputElements[1];
+      const turnModType = turnInputElements[0];
+      const turnLabel = turnInputElements[1];
+      const turnInput = turnInputElements[2];
+      parent.appendChild(turnModType);
+      parent.appendChild(turnLabel);
       parent.appendChild(turnInput);
-      parent.insertBefore(turnLabel, turnInput);
     } else {
       throw new Error(
         `Unable to handle EventQueryType value '${event.target.value}''`,
@@ -132,10 +154,12 @@ function getAddQueryElement() {
   formDiv.appendChild(addQuerySelect);
 
   const turnInputElements = getByTurnInputElements();
-  const turnLabel = turnInputElements[0];
-  const turnInput = turnInputElements[1];
+  const turnModType = turnInputElements[0];
+  const turnLabel = turnInputElements[1];
+  const turnInput = turnInputElements[2];
+  formDiv.appendChild(turnModType);
+  formDiv.appendChild(turnLabel);
   formDiv.appendChild(turnInput);
-  formDiv.insertBefore(turnLabel, turnInput);
 
   form.appendChild(formDiv);
   return form;

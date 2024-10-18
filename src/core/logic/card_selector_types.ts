@@ -24,6 +24,7 @@ export type CardSelectorCriteria = {
   cardName?: string | undefined;
   terminalType?: TerminalType | undefined;
   heuristicType?: HeuristicType | undefined;
+  actionsGE?: number | undefined;
 
   // For use in trashing decisions based on total deck economy
   doNotSelectIfEconomyBelow?: number | undefined;

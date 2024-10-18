@@ -9,6 +9,7 @@ import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 import { Decision, DecisionType } from "@src/core/decisions";
 import { PlayerHelper } from "@src/core/helpers/player_helper";
 import { Player } from "@src/core/player";
+import { HeuristicType, TerminalType } from "@src/core/logic/card_selector_types";
 
 const Name = "Gear";
 
@@ -29,6 +30,14 @@ export class Gear extends Card {
 
   public static get NAME(): string {
     return Name;
+  }
+
+  heuristicType(): HeuristicType {
+    return HeuristicType.DRAW;
+  }
+
+  terminalType(): TerminalType {
+    return TerminalType.TERMINAL;
   }
 
   deprecatedHeuristicType(): DeprecatedCardHeuristicType {

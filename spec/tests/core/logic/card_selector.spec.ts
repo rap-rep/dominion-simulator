@@ -1,4 +1,6 @@
 import { Chapel } from "@src/core/cards/base/chapel";
+import { Smithy } from "@src/core/cards/base/smithy";
+import { Village } from "@src/core/cards/base/village";
 import { Copper } from "@src/core/cards/basic/copper";
 import { Estate } from "@src/core/cards/basic/estate";
 import { Game } from "@src/core/game";
@@ -170,4 +172,38 @@ describe("Card selector with default discard logic", () => {
   it("selects Estate when Estate and Copper are available", () => {
     expect(result[0].name).toEqual(Estate.NAME);
   });
+});
+
+describe("Card selector with multiple villages and a draw card", () => {
+  const game = new Game({
+    logLevel: LogLevel.EXTREME,
+    logMode: LogMode.CONSOLE_LOG,
+    p1cards: [["Village", 2], ["Smithy", 1], ["Copper", 2]],
+  });
+
+  game.p1.actions = 1;
+
+  for (let i=0; i<10; i++){
+    const copper = new Copper();
+    game.p1.addToAllCards(copper);
+    game.p1.deck.push(copper);
+  }
+
+  const selector = new CardSelector(
+    game.currentPlayer,
+    [],
+    DefaultCriteria.playTurnDefault(),
+  );
+  const result = selector.getCardsFromCriteria(game.currentPlayer.hand, 0, 1);
+
+  game.p1.actions = 2;
+  const result2 = selector.getCardsFromCriteria(game.currentPlayer.hand, 0, 1);
+
+  it("selects correct card based on number of actions available", () => {
+    expect(result[0].name).toEqual(Village.NAME);
+    expect(result2[0].name).toEqual(Smithy.NAME);
+  });
+
+
+
 });

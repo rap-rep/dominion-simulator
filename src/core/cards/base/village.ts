@@ -44,7 +44,7 @@ export class Village extends Card {
   }
 
   heuristicType(): HeuristicType {
-    return HeuristicType.CANTRIP;
+    return HeuristicType.VILLAGE;
   }
 
   terminalType(): TerminalType {

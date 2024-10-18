@@ -48,7 +48,7 @@ describe("Game manager with Smithy & Wharf draw query for all", () => {
   it("includes all records", () => {
     expect(jsonResults.length).toEqual(2);
     expect(jsonResults[0].playerName).toEqual("p1");
-    expect(jsonResults[0].average).toBeGreaterThan(11);
+    expect(jsonResults[0].average).toBeGreaterThan(8);
     expect(jsonResults[1].average).toBeGreaterThanOrEqual(16);
     expect(jsonResults[1].playerName).toEqual("p2");
   });

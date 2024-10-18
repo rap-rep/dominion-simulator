@@ -8,6 +8,8 @@ import { EffectPlayer } from "./effects";
 import { Game, Phase } from "./game";
 import { PlayerHelper } from "./helpers/player_helper";
 import { LogLevel } from "./logging/game_log";
+import { CardSelector } from "./logic/card_selector";
+import { DefaultCriteria } from "./logic/default_selection_criteria";
 import { MetricHelper } from "./logic/metric_helpers";
 import {
   ConditionSetList,
@@ -248,11 +250,13 @@ export class Player {
   }
 
   playActionPhase() {
+    const selector = new CardSelector(this, DefaultCriteria.playTurnDefault()); 
+
     this.game.phase = Phase.ACTION;
-    let currentlySelectedAction: Card;
+    let currentlySelectedAction: Card | undefined;
     while (this.actions > 0) {
-      currentlySelectedAction = PlayerHelper.selectBestActionByHeuristic(this);
-      if (currentlySelectedAction.name === NULL_CARD_NAME) {
+      currentlySelectedAction = selector.getCardFromCriteria(this.hand, selector.criteriaList); // PlayerHelper.selectBestActionByHeuristic(this);
+      if (!currentlySelectedAction || currentlySelectedAction.name === NULL_CARD_NAME) {
         break;
       }
       this.removeCardFromHand(currentlySelectedAction);

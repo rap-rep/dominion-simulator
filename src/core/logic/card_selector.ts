@@ -107,7 +107,7 @@ export class CardSelector {
   ): Card | undefined {
     for (const criteria of criteriaList) {
       for (const cardStack of searchMap.values()) {
-        const logline = `Checking criteria '${criteria.cardName} ${criteria.heuristicType} ${criteria.alwaysSelect}' for matching with ${cardStack[0].name}`;
+        const logline = `Checking criteria '${criteria.cardName} ${criteria.heuristicType} ${criteria.alwaysSelect} ${criteria.terminalType} ${criteria.actionsGE}' for matching with ${cardStack[0].name}`;
         this.player.game.gamelog.log(logline, LogLevel.EXTREME);
         if (this.matches(cardStack[0], criteria, alreadySelectedCards)) {
           this.player.game.gamelog.log("Match found", LogLevel.EXTREME);
@@ -133,36 +133,42 @@ export class CardSelector {
     if (selectionCriteria.alwaysSelect === true) {
       return true;
     }
-    if (
-      selectionCriteria.cardName === card.name &&
-      (selectionCriteria.doNotSelectIfEconomyBelow === undefined ||
-        this.economyOKafterTrashing(
-          selectionCriteria.doNotSelectIfEconomyBelow,
-          card,
-          alreadySelectedCards,
-        ))
-    ) {
-      return true;
-    } else if (
-      // NOTE: if adding new CardSelectorCriteria they must be added to this first check
-      //   (starting on the next line) that ensures not all relevant criteria are left undefined
-      //   by adding "|| selectionCriteria.<name> !== undefined"
-      (selectionCriteria.heuristicType !== undefined ||
-        selectionCriteria.terminalType !== undefined) &&
-      (selectionCriteria.heuristicType === undefined ||
-        (selectionCriteria.heuristicType === card.heuristicType() &&
-          selectionCriteria.terminalType === undefined) ||
-        selectionCriteria.heuristicType === card.heuristicType()) &&
-      (selectionCriteria.doNotSelectIfEconomyBelow === undefined ||
-        this.economyOKafterTrashing(
-          selectionCriteria.doNotSelectIfEconomyBelow,
-          card,
-          alreadySelectedCards,
-        ))
-    ) {
-      return true;
+    if (selectionCriteria.actionsGE){
+      if (this.player.game.currentPlayer.actions < selectionCriteria.actionsGE){
+        return false;
+      }
     }
-    return false;
+
+    if (selectionCriteria.cardName){
+      if (selectionCriteria.cardName !== card.name){
+        return false;
+      }
+    }
+
+
+    if (selectionCriteria.terminalType){
+      if (selectionCriteria.terminalType !== card.terminalType()){
+        return false;
+      }
+    }
+    
+    if (selectionCriteria.heuristicType){
+      if (selectionCriteria.heuristicType !== card.heuristicType()){
+        return false;
+      }
+    }
+    
+    if (
+      (selectionCriteria.doNotSelectIfEconomyBelow && 
+        !this.economyOKafterTrashing(
+          selectionCriteria.doNotSelectIfEconomyBelow,
+          card,
+          alreadySelectedCards,
+        ))
+    ) {
+      return false;
+    }
+    return true;
   }
 
   private economyOKafterTrashing(

@@ -6,6 +6,7 @@ import {
   HeuristicType,
   TerminalType,
 } from "@src/core/logic/card_selector_types";
+import { Player } from "@src/core/player";
 
 const Name = "Market";
 
@@ -59,6 +60,10 @@ export class Market extends Card {
   }
 
   economyHeuristicValue(): number {
+    return 1;
+  }
+
+  drawHeuristicValue(_player: Player): number {
     return 1;
   }
 

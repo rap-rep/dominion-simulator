@@ -7,8 +7,10 @@ import {
 } from "./card_types";
 import { Decision, DecisionType } from "./decisions";
 import { Effect, EffectPlayer, EffectType } from "./effects";
+import { Game } from "./game";
 import { Graph, PlayNode } from "./graph";
 import { HeuristicType, TerminalType } from "./logic/card_selector_types";
+import { Player } from "./player";
 
 export const NULL_CARD_NAME = "NULL";
 
@@ -86,6 +88,10 @@ export class Card {
   }
 
   economyHeuristicValue(): number {
+    return 0;
+  }
+
+  drawHeuristicValue(_player?: Player): number {
     return 0;
   }
 

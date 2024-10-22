@@ -19,6 +19,7 @@ import { Peddler } from "./cards/prosperity/peddler";
 import { Watchtower } from "./cards/prosperity/watchtower";
 import { Milita } from "./cards/base/militia";
 import { Stockpile } from "./cards/menagerie/stockpile";
+import { Laboratory } from "./cards/base/laboratory";
 
 export class Kingdom {
   /*
@@ -56,7 +57,7 @@ export class Kingdom {
   }
 
   private generateKingdom() {
-    // TODO: add dynamic kingdom generation
+    // TODO: add dynamic kingdom generation to avoid the need for this
     this.addSupplyPile(Village.NAME);
     this.addSupplyPile(Market.NAME);
     this.addSupplyPile(Wharf.NAME);
@@ -69,6 +70,7 @@ export class Kingdom {
     this.addSupplyPile(Watchtower.NAME);
     this.addSupplyPile(Milita.NAME);
     this.addSupplyPile(Stockpile.NAME);
+    this.addSupplyPile(Laboratory.NAME);
   }
 
   private getBasicSupply(): Map<string, Card[]> {

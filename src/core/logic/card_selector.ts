@@ -1,5 +1,6 @@
 import { Card } from "../card";
 import { CardSelectorHelper } from "../helpers/card_selector_helper";
+import { PlayerHelper } from "../helpers/player_helper";
 import { LogLevel } from "../logging/game_log";
 import { Player } from "../player";
 import {
@@ -145,7 +146,6 @@ export class CardSelector {
       }
     }
 
-
     if (selectionCriteria.terminalType){
       if (selectionCriteria.terminalType !== card.terminalType()){
         return false;
@@ -155,6 +155,21 @@ export class CardSelector {
     if (selectionCriteria.heuristicType){
       if (selectionCriteria.heuristicType !== card.heuristicType()){
         return false;
+      }
+    }
+
+    if (selectionCriteria.drawCriteria){
+      if (selectionCriteria.drawCriteria.atLeastOne){
+        if (card.drawHeuristicValue(this.player) < 1 || PlayerHelper.totalDrawableCards(this.player) < 1){
+          return false;
+        }
+      }
+      if (selectionCriteria.drawCriteria.allPotential){
+        const cardDraws = card.drawHeuristicValue(this.player);
+        const totalDrawable = PlayerHelper.totalDrawableCards(this.player);
+        if (cardDraws > totalDrawable){
+          return false;
+        }
       }
     }
     

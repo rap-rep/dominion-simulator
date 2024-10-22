@@ -8,9 +8,9 @@ import {
 } from "@src/core/logic/card_selector_types";
 import { Player } from "@src/core/player";
 
-const Name = "Smithy";
+const Name = "Laboratory";
 
-export class Smithy extends Card {
+export class Laboratory extends Card {
   constructor() {
     super(Name, [CardType.ACTION]);
   }
@@ -19,36 +19,44 @@ export class Smithy extends Card {
     return Name;
   }
 
-  static factoryGenerator(): Smithy {
-    return new Smithy();
+  deprecatedHeuristicType(): DeprecatedCardHeuristicType {
+    return DeprecatedCardHeuristicType.NONTERMINAL_DRAW;
   }
 
-  deprecatedHeuristicType(): DeprecatedCardHeuristicType {
-    return DeprecatedCardHeuristicType.TERMINAL_DRAW;
+  static factoryGenerator(): Laboratory {
+    return new Laboratory();
+  }
+
+  playGraph(): Graph {
+    const graph = new Graph();
+
+    const draw = new PlayNode(
+      new Effect(EffectType.DRAW_CARD, EffectPlayer.SELF, 2, undefined, this),
+    );
+    const action = new PlayNode(
+      new Effect(EffectType.PLUS_ACTION, EffectPlayer.SELF, 1, undefined, this),
+    );
+
+    graph.addNode(draw);
+    graph.addNode(action);
+    graph.addEdge(draw, action);
+
+    return graph;
   }
 
   heuristicType(): HeuristicType {
     return HeuristicType.DRAW;
   }
 
-  drawHeuristicValue(_player: Player): number {
-    return 3;
-  }
-
   terminalType(): TerminalType {
-    return TerminalType.TERMINAL;
+    return TerminalType.NONTERMINAL;
   }
 
-  playGraph(): Graph {
-    const graph = new Graph();
-    const draw = new PlayNode(
-      new Effect(EffectType.DRAW_CARD, EffectPlayer.SELF, 3, undefined, this),
-    );
-    graph.addNode(draw);
-    return graph;
+  drawHeuristicValue(_player: Player): number {
+    return 2;
   }
 
   cost(): number {
-    return 4;
+    return 5;
   }
 }

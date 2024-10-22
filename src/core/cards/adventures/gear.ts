@@ -155,4 +155,8 @@ export class Gear extends Card {
     }
     return undefined;
   }
+
+  drawHeuristicValue(_player: Player): number {
+    return 2;
+  }
 }

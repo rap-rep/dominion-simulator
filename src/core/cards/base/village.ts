@@ -6,6 +6,7 @@ import {
   HeuristicType,
   TerminalType,
 } from "@src/core/logic/card_selector_types";
+import { Player } from "@src/core/player";
 
 const Name = "Village";
 
@@ -49,6 +50,10 @@ export class Village extends Card {
 
   terminalType(): TerminalType {
     return TerminalType.NONTERMINAL;
+  }
+
+  drawHeuristicValue(_player: Player): number {
+    return 1;
   }
 
   cost(): number {

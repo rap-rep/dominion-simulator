@@ -248,6 +248,11 @@ export class PlayerHelper {
     return player.allCardsMap.get(card)?.length || 0;
   }
 
+  static totalDrawableCards(player: Player): number {
+    return player.deck.length + player.discard.length;
+  }
+
+
   static diffOfCardsInDeck(
     player: Player,
     card1: string,

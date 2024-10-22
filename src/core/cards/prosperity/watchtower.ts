@@ -7,6 +7,8 @@ import {
   HeuristicType,
   TerminalType,
 } from "@src/core/logic/card_selector_types";
+import { PlayerHelper } from "@src/core/helpers/player_helper";
+import { Player } from "@src/core/player";
 
 const Name = "Watchtower";
 
@@ -97,5 +99,10 @@ export class Watchtower extends Card {
 
   terminalType(): TerminalType {
     return TerminalType.TERMINAL;
+  }
+
+  drawHeuristicValue(player: Player): number {
+    // TODO update to use owner rather than current player
+    return Math.max(0, 7 - PlayerHelper.countHandSize(player));
   }
 }

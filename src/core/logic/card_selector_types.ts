@@ -19,12 +19,18 @@ export enum HeuristicType {
   JUNK = "JUNK",
 }
 
+export type SelectorDrawCriteria = {
+  allPotential?: boolean | undefined;
+  atLeastOne?: boolean | undefined;
+}
+
 export type CardSelectorCriteria = {
   alwaysSelect?: boolean | undefined;
   cardName?: string | undefined;
   terminalType?: TerminalType | undefined;
   heuristicType?: HeuristicType | undefined;
   actionsGE?: number | undefined;
+  drawCriteria?: SelectorDrawCriteria | undefined;
 
   // For use in trashing decisions based on total deck economy
   doNotSelectIfEconomyBelow?: number | undefined;

@@ -3,6 +3,7 @@ import { Dungeon } from "./adventures/dungeon";
 import { Gear } from "./adventures/gear";
 import { Ranger } from "./adventures/ranger";
 import { Chapel } from "./base/chapel";
+import { Laboratory } from "./base/laboratory";
 import { Market } from "./base/market";
 import { Milita } from "./base/militia";
 import { Smithy } from "./base/smithy";
@@ -48,6 +49,8 @@ export class CardNameMap {
     this.nameMap.set(Watchtower.NAME, Watchtower.factoryGenerator);
     this.nameMap.set(Milita.NAME, Milita.factoryGenerator);
     this.nameMap.set(Ranger.NAME, Ranger.factoryGenerator);
+
+    this.nameMap.set(Laboratory.NAME, Laboratory.factoryGenerator);
 
     this.nameMap.set(Copper.NAME, Copper.factoryGenerator);
     this.nameMap.set(Silver.NAME, Silver.factoryGenerator);

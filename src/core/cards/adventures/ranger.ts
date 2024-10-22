@@ -6,6 +6,8 @@ import {
   HeuristicType,
   TerminalType,
 } from "@src/core/logic/card_selector_types";
+import { Game } from "@src/core/game";
+import { Player } from "@src/core/player";
 
 const Name = "Ranger";
 
@@ -73,4 +75,13 @@ export class Ranger extends Card {
   cost(): number {
     return 4;
   }
+
+  drawHeuristicValue(player: Player): number {
+    // TODO update this to use owner's token rather than just current player
+    if (player.journeyTokenUp){
+      return 4;
+    }
+    return 0;
+  }
+
 }

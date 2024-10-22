@@ -1,8 +1,10 @@
 import { Chapel } from "@src/core/cards/base/chapel";
+import { Laboratory } from "@src/core/cards/base/laboratory";
 import { Smithy } from "@src/core/cards/base/smithy";
 import { Village } from "@src/core/cards/base/village";
 import { Copper } from "@src/core/cards/basic/copper";
 import { Estate } from "@src/core/cards/basic/estate";
+import { Ironworks } from "@src/core/cards/intrigue/ironworks";
 import { Game } from "@src/core/game";
 import { LogLevel, LogMode } from "@src/core/logging/game_log";
 import {
@@ -11,6 +13,7 @@ import {
   HeuristicType,
   TerminalType,
 } from "@src/core/logic/card_selector";
+import { SelectorDrawCriteria } from "@src/core/logic/card_selector_types";
 import { DefaultCriteria } from "@src/core/logic/default_selection_criteria";
 
 describe("A single optional card selector", () => {
@@ -177,7 +180,7 @@ describe("Card selector with default discard logic", () => {
 describe("Card selector with multiple villages and a draw card", () => {
   const game = new Game({
     logLevel: LogLevel.EXTREME,
-    logMode: LogMode.CONSOLE_LOG,
+    logMode: LogMode.SILENT,
     p1cards: [["Village", 2], ["Smithy", 1], ["Copper", 2]],
   });
 
@@ -205,5 +208,86 @@ describe("Card selector with multiple villages and a draw card", () => {
   });
 
 
+
+});
+
+describe("Card selector with draw conditions to play a gainer if deck is drawn", () => {
+  const game = new Game({
+    logLevel: LogLevel.EXTREME,
+    logMode: LogMode.SILENT,
+    p1cards: [["Laboratory", 1], ["Ironworks", 1]],
+  });
+
+  const selectorCriteria: Array<CardSelectorCriteria> = [
+    {
+      heuristicType: HeuristicType.DRAW,
+      terminalType: TerminalType.NONTERMINAL,
+      drawCriteria: {atLeastOne: true}
+    },
+    {
+      heuristicType: HeuristicType.PAYLOAD_GAINER,
+    },
+    {
+      heuristicType: HeuristicType.DRAW,
+    },
+  ]
+
+  const selector = new CardSelector(
+    game.currentPlayer,
+    [],
+    selectorCriteria,
+  );
+  const result = selector.getCardFromCriteria(game.currentPlayer.hand, selectorCriteria);
+
+  const copper = new Copper();
+  game.p1.addToAllCards(copper);
+  game.p1.discard.push(copper);
+
+  const resultLab = selector.getCardFromCriteria(game.currentPlayer.hand, selectorCriteria);
+
+  it("will play a non-terminal gainer before drawing if the deck is drawn", () => {
+    expect(result?.name).toEqual(Ironworks.NAME);
+  });
+
+  it("will play draw before a gainer if there is a card to be drawn", () => {
+    expect(resultLab?.name).toEqual(Laboratory.NAME);
+  });
+});
+
+describe("Card selector with draw conditions to only play draw if all will be used", () => {
+  const game = new Game({
+    logLevel: LogLevel.EXTREME,
+    logMode: LogMode.SILENT,
+    p1cards: [["Laboratory", 1], ["Ironworks", 1]],
+  });
+
+  const selectorCriteria: Array<CardSelectorCriteria> = [
+    {
+      heuristicType: HeuristicType.DRAW,
+      terminalType: TerminalType.NONTERMINAL,
+      drawCriteria: {allPotential: true}
+    },
+    {
+      heuristicType: HeuristicType.PAYLOAD_GAINER,
+    },
+    {
+      heuristicType: HeuristicType.DRAW,
+    },
+  ]
+
+  const selector = new CardSelector(
+    game.currentPlayer,
+    [],
+    selectorCriteria,
+  );
+
+  const copper = new Copper();
+  game.p1.addToAllCards(copper);
+  game.p1.discard.push(copper);
+
+  const result = selector.getCardFromCriteria(game.currentPlayer.hand, selectorCriteria);
+  it("selects ironworks with only one card in the discard and lab in hand", () => {
+    expect(result?.name).toEqual(Ironworks.NAME);
+  });
 
 });

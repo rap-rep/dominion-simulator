@@ -2,6 +2,7 @@ import { Chapel } from "@src/core/cards/base/chapel";
 import { Laboratory } from "@src/core/cards/base/laboratory";
 import { Smithy } from "@src/core/cards/base/smithy";
 import { Village } from "@src/core/cards/base/village";
+import { Workshop } from "@src/core/cards/base/workshop";
 import { Copper } from "@src/core/cards/basic/copper";
 import { Estate } from "@src/core/cards/basic/estate";
 import { Ironworks } from "@src/core/cards/intrigue/ironworks";
@@ -177,11 +178,11 @@ describe("Card selector with default discard logic", () => {
   });
 });
 
-describe("Card selector with multiple villages and a draw card", () => {
+describe("Card selector with a draw card and a payload card", () => {
   const game = new Game({
     logLevel: LogLevel.EXTREME,
     logMode: LogMode.SILENT,
-    p1cards: [["Village", 2], ["Smithy", 1], ["Copper", 2]],
+    p1cards: [["Smithy", 1], ["Workshop", 1], ["Copper", 3]],
   });
 
   game.p1.actions = 1;
@@ -203,7 +204,7 @@ describe("Card selector with multiple villages and a draw card", () => {
   const result2 = selector.getCardsFromCriteria(game.currentPlayer.hand, 0, 1);
 
   it("selects correct card based on number of actions available", () => {
-    expect(result[0].name).toEqual(Village.NAME);
+    expect(result[0].name).toEqual(Workshop.NAME);
     expect(result2[0].name).toEqual(Smithy.NAME);
   });
 

@@ -15,20 +15,21 @@ export class DefaultCriteria {
 
   static playTurnDefault(): CardSelectorCriteria[] {
     return [
-      { heuristicType: HeuristicType.DRAW, terminalType: TerminalType.NONTERMINAL },
+      { heuristicType: HeuristicType.DRAW, terminalType: TerminalType.NONTERMINAL, drawCriteria: {atLeastOne: true}  },
       { heuristicType: HeuristicType.FROM_DECK_SIFTER, terminalType: TerminalType.NONTERMINAL },
-      { heuristicType: HeuristicType.DRAW, terminalType: TerminalType.TERMINAL, actionsGE: 2},
       { heuristicType: HeuristicType.VILLAGE },
       { heuristicType: HeuristicType.CANTRIP },
+      { heuristicType: HeuristicType.DRAW, terminalType: TerminalType.TERMINAL, actionsGE: 2, drawCriteria: {atLeastOne: true}},
+      { heuristicType: HeuristicType.DRAW_TO_X, terminalType: TerminalType.TERMINAL, actionsGE: 2, drawCriteria: {atLeastOne: true}}, // TODO something much more elegant for dtx
       { heuristicType: HeuristicType.PAYLOAD_GAINER, terminalType: TerminalType.NONTERMINAL},
       { heuristicType: HeuristicType.PAYLOAD_COINS, terminalType: TerminalType.NONTERMINAL},
       { heuristicType: HeuristicType.FROM_DECK_SIFTER },
       { heuristicType: HeuristicType.FROM_HAND_SIFTER },
       { heuristicType: HeuristicType.TRASHER },
-      { heuristicType: HeuristicType.DRAW },
-      { heuristicType: HeuristicType.DRAW_TO_X },
       { heuristicType: HeuristicType.PAYLOAD_GAINER, terminalType: TerminalType.TERMINAL},
       { heuristicType: HeuristicType.PAYLOAD_COINS, terminalType: TerminalType.TERMINAL},
+      { heuristicType: HeuristicType.DRAW },
+      { heuristicType: HeuristicType.DRAW_TO_X },
     ];
   }
 
@@ -41,4 +42,5 @@ export class DefaultCriteria {
       { alwaysSelect: true },
     ];
   }
+
 }

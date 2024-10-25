@@ -11,6 +11,7 @@ import {
   HeuristicType,
   TerminalType,
 } from "@src/core/logic/card_selector_types";
+import { Player } from "@src/core/player";
 
 const Name = "Wharf";
 
@@ -80,5 +81,9 @@ export class Wharf extends Card {
 
   terminalType(): TerminalType {
     return TerminalType.TERMINAL;
+  }
+
+  drawHeuristicValue(_player?: Player | undefined): number {
+    return 2;
   }
 }

@@ -2,6 +2,7 @@ import { Copper } from "../cards/basic/copper";
 import { Curse } from "../cards/basic/curse";
 import { Estate } from "../cards/basic/estate";
 import { Silver } from "../cards/basic/silver";
+import { CardSelectorHelper } from "../helpers/card_selector_helper";
 import { HeuristicType, CardSelectorCriteria, TerminalType } from "./card_selector_types";
 
 export class DefaultCriteria {
@@ -19,7 +20,7 @@ export class DefaultCriteria {
       { heuristicType: HeuristicType.FROM_DECK_SIFTER, terminalType: TerminalType.NONTERMINAL },
       { heuristicType: HeuristicType.VILLAGE },
       { heuristicType: HeuristicType.CANTRIP },
-      { heuristicType: HeuristicType.DRAW, terminalType: TerminalType.TERMINAL, actionsGE: 2, drawCriteria: {atLeastOne: true}},
+      { heuristicType: HeuristicType.DRAW, terminalType: TerminalType.TERMINAL, actionsGE: 2, drawCriteria: {atLeastOne: true}, sortByValueFn: CardSelectorHelper.sortByValueFnDraw},
       { heuristicType: HeuristicType.DRAW_TO_X, terminalType: TerminalType.TERMINAL, actionsGE: 2, drawCriteria: {atLeastOne: true}}, // TODO something much more elegant for dtx
       { heuristicType: HeuristicType.PAYLOAD_GAINER, terminalType: TerminalType.NONTERMINAL},
       { heuristicType: HeuristicType.PAYLOAD_COINS, terminalType: TerminalType.NONTERMINAL},
@@ -28,7 +29,7 @@ export class DefaultCriteria {
       { heuristicType: HeuristicType.TRASHER },
       { heuristicType: HeuristicType.PAYLOAD_GAINER, terminalType: TerminalType.TERMINAL},
       { heuristicType: HeuristicType.PAYLOAD_COINS, terminalType: TerminalType.TERMINAL},
-      { heuristicType: HeuristicType.DRAW },
+      { heuristicType: HeuristicType.DRAW, sortByValueFn: CardSelectorHelper.sortByValueFnDraw},
       { heuristicType: HeuristicType.DRAW_TO_X },
     ];
   }

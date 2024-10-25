@@ -1,3 +1,4 @@
+import { Card } from "../card";
 import { Player } from "../player";
 
 export class CardSelectorHelper {
@@ -8,4 +9,9 @@ export class CardSelectorHelper {
     }
     return tally;
   }
+
+  static sortByValueFnDraw(card: Card, player: Player){
+    return card.drawHeuristicValue(player);
+  }
+
 }

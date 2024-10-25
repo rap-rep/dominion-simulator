@@ -1,3 +1,6 @@
+import { Card } from "../card";
+import { Player } from "../player";
+
 export enum TerminalType {
   TERMINAL = "TERMINAL",
   NONTERMINAL = "NONTERMINAL",
@@ -25,6 +28,8 @@ export type SelectorDrawCriteria = {
 }
 
 export type CardSelectorCriteria = {
+  sortByValueFn?: ((card: Card, player: Player)  => number) | undefined;
+
   alwaysSelect?: boolean | undefined;
   cardName?: string | undefined;
   terminalType?: TerminalType | undefined;

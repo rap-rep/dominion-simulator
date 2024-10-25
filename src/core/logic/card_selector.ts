@@ -107,6 +107,7 @@ export class CardSelector {
     alreadySelectedCards?: undefined | Card[],
   ): Card | undefined {
     for (const criteria of criteriaList) {
+      const matchList: Card[] = []; // collect all candidates if criteria.sortFn defined
       for (const cardStack of searchMap.values()) {
         const logline = `Checking criteria '${criteria.cardName} ${criteria.heuristicType} ${criteria.alwaysSelect} ${criteria.terminalType} ${criteria.actionsGE}' for matching with ${cardStack[0].name}`;
         this.player.game.gamelog.log(logline, LogLevel.EXTREME);
@@ -115,15 +116,29 @@ export class CardSelector {
           if (alreadySelectedCards) {
             for (let cardPos = 0; cardPos < cardStack.length; cardPos++) {
               if (!alreadySelectedCards.includes(cardStack[cardPos])) {
-                return cardStack[cardPos];
+                if (criteria.sortByValueFn){
+                  matchList.push(cardStack[cardPos]);
+                }
+                else{
+                  return cardStack[cardPos];
+                }
               }
             }
           } else {
-            return cardStack[0];
+            if (criteria.sortByValueFn){
+              matchList.push(cardStack[0]);
+            }
+            else{
+              return cardStack[0];
+            }
           }
         }
       }
+      if (matchList.length > 0 && criteria.sortByValueFn){
+        return this.highest(matchList, criteria.sortByValueFn);
+      }
     }
+    return undefined;
   }
 
   private matches(
@@ -184,6 +199,21 @@ export class CardSelector {
       return false;
     }
     return true;
+  }
+
+  private highest(cards: Card[], sortByValueFn: (card: Card, player: Player) => number): Card | undefined {
+    let currentHighest: Card | undefined = undefined;
+    let currentHighestValue = -100;
+
+    for (let cardPos=0; cardPos<cards.length; cardPos++){
+      const currentValue = sortByValueFn(cards[cardPos], this.player);
+      if (!currentHighest || currentValue > currentHighestValue){
+        currentHighest = cards[cardPos];
+        currentHighestValue = currentValue;
+      }
+    }
+
+    return currentHighest;
   }
 
   private economyOKafterTrashing(

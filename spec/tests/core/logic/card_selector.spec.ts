@@ -1,3 +1,4 @@
+import { Ranger } from "@src/core/cards/adventures/ranger";
 import { Chapel } from "@src/core/cards/base/chapel";
 import { Laboratory } from "@src/core/cards/base/laboratory";
 import { Smithy } from "@src/core/cards/base/smithy";
@@ -292,3 +293,66 @@ describe("Card selector with draw conditions to only play draw if all will be us
   });
 
 });
+
+describe("Card selector with multiple draw cards in hand", () => {
+  const game = new Game({
+    logLevel: LogLevel.EXTREME,
+    logMode: LogMode.SILENT,
+    p1cards: [["Wharf", 3], ["Smithy", 1], ["Copper", 1]],
+  });
+
+  game.p1.actions = 1;
+
+  for (let i=0; i<10; i++){
+    const copper = new Copper();
+    game.p1.addToAllCards(copper);
+    game.p1.deck.push(copper);
+  }
+
+  const selector = new CardSelector(
+    game.currentPlayer,
+    [],
+    DefaultCriteria.playTurnDefault(),
+  );
+  const result = selector.getCardsFromCriteria(game.currentPlayer.hand, 0, 1);
+
+
+  it("will play a smithy over a gear with a simple rule to draw the most cards now", () => {
+    expect(result[0].name).toEqual(Smithy.NAME);
+  });
+}); 
+
+describe("Card selector with different ranger token states", () => {
+  const game = new Game({
+    logLevel: LogLevel.EXTREME,
+    logMode: LogMode.SILENT,
+    p1cards: [["Ranger", 2], ["Smithy", 2], ["Copper", 1]],
+  });
+
+  game.p1.actions = 1;
+
+  for (let i=0; i<10; i++){
+    const copper = new Copper();
+    game.p1.addToAllCards(copper);
+    game.p1.deck.push(copper);
+  }
+
+  const selector = new CardSelector(
+    game.currentPlayer,
+    [],
+    DefaultCriteria.playTurnDefault(),
+  );
+  game.p1.journeyTokenUp = true;
+  const result = selector.getCardsFromCriteria(game.currentPlayer.hand, 0, 1);
+
+  game.p1.journeyTokenUp = false;
+  const result2 = selector.getCardsFromCriteria(game.currentPlayer.hand, 0, 1);
+
+  it("will play ranger before smithy if the ranger will draw", () => {
+    expect(result[0].name).toEqual(Ranger.NAME);
+  });
+
+  it("will play smithy before ranger if the ranger will not draw", () => {
+    expect(result2[0].name).toEqual(Smithy.NAME);
+  });
+}); 

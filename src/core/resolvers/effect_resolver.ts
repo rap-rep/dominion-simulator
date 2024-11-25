@@ -3,11 +3,12 @@ import { Card } from "../card";
 import { Effect, EffectType, EffectPlayer } from "../effects";
 import { NodeType, PlayNode } from "../graph";
 import { Player } from "../player";
-import { Decision } from "../decisions";
+import { Decision, DecisionType } from "../decisions";
 import { DecisionResolver } from "./decision_resolver";
 import { PlayerHelper } from "../helpers/player_helper";
-import { DurationPhase } from "../card_types";
+import { CardType, DurationPhase } from "../card_types";
 import { EventRecordBuilder } from "../logging/event_record_builders";
+import { CardLocation } from "../kingdom";
 
 export class EffectResolver {
   decisionResolver: DecisionResolver;
@@ -62,11 +63,15 @@ export class EffectResolver {
     }
   }
 
-  gainCard(player: Player, card_name: string): Card {
+  gainCard(player: Player, card_name: string, location: CardLocation = CardLocation.SUPPLY): Card | undefined {
     // TODO this does not currently support selecting the order that decisions are made in
     // This is a pretty major unimplemented aspect of Dominion; need to add a decision buffer/selector
-    const gainedCard = player.game.kingdom.getTopOrError(card_name);
-    player.game.kingdom.removeFromTop(gainedCard);
+    // This should allow for multiple Effects/Decisions to be discovered and present a "which of these" decision first
+    const gainedCard = player.game.kingdom.getTopOrNothing(card_name, location);
+    if (!gainedCard){
+      return;
+    }
+    player.game.kingdom.removeFromTop(gainedCard, location);
     player.game.gamelog.logGain(player, gainedCard);
 
     this.whenGainResolver(player, gainedCard);
@@ -114,6 +119,8 @@ export class EffectResolver {
       this.plusBuyResolver(player, effect);
     } else if (effect.effectType === EffectType.GAIN_FROM_SUPPLY) {
       this.gainFromSupply(player, effect);
+    } else if (effect.effectType === EffectType.GAIN_FROM_NON_SUPPLY) {
+      this.gainFromNonSupply(player, effect);
     } else if (effect.effectType === EffectType.TYPE_BONUSES) {
       this.awardTypeBonuses(player, effect);
     } else if (effect.effectType === EffectType.IN_HAND_FROM_SET_ASIDE) {
@@ -122,6 +129,8 @@ export class EffectResolver {
       this.discardExileResolver(player, effect);
     } else if (effect.effectType === EffectType.EXILE_FROM_PLAY) {
       this.exileFromPlayResolver(player, effect);
+    } else if (effect.effectType === EffectType.RETURN_TO_NON_SUPPLY_PILE) {
+      this.returnToNonSupplyPileResolver(player, effect);
     } else if (effect.effectType === EffectType.FLIP_JOURNEY) {
       this.flipJourneyResolver(player, effect);
     } else if (effect.effectType === EffectType.DRAW_IF_JOURNEY_UP) {
@@ -137,6 +146,13 @@ export class EffectResolver {
   private gainFromSupply(player: Player, effect: Effect) {
     const cardToGain = effect.reference?.result as string;
     const gainedCard = this.gainCard(player, cardToGain);
+    effect.result = gainedCard;
+    effect.affects = gainedCard;
+  }
+
+  private gainFromNonSupply(player: Player, effect: Effect) {
+    const cardToGain = effect.reference?.result as string;
+    const gainedCard = this.gainCard(player, cardToGain, CardLocation.NON_SUPPLY);
     effect.result = gainedCard;
     effect.affects = gainedCard;
   }
@@ -376,6 +392,20 @@ export class EffectResolver {
         }
         player.exile.delete(cardName);
       }
+    }
+  }
+
+  private returnToNonSupplyPileResolver(player: Player, effect: Effect): void {
+    const fromCard = effect.fromCard;
+
+    const pile = player.game.kingdom.nonSupplyPiles.get(fromCard.name);
+    if (pile){
+      player.inPlay = player.inPlay.filter((item) => item !== fromCard);
+      pile.push(fromCard);
+      player.game.gamelog.logReturnCard(player, fromCard);
+    }
+    else{
+      player.game.gamelog.logFailReturnCard(player, fromCard); 
     }
   }
 

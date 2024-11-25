@@ -107,7 +107,7 @@ export class PlayerHelper {
     return NULL_CARD;
   }
 
-  // TODO This really should have unit testing
+  // TODO This really should have fine-grained unit testing
   static createSelector(
     conditionSetList: ConditionSetList,
     player: Player,
@@ -251,7 +251,6 @@ export class PlayerHelper {
   static totalDrawableCards(player: Player): number {
     return player.deck.length + player.discard.length;
   }
-
 
   static diffOfCardsInDeck(
     player: Player,

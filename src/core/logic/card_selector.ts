@@ -116,25 +116,23 @@ export class CardSelector {
           if (alreadySelectedCards) {
             for (let cardPos = 0; cardPos < cardStack.length; cardPos++) {
               if (!alreadySelectedCards.includes(cardStack[cardPos])) {
-                if (criteria.sortByValueFn){
+                if (criteria.sortByValueFn) {
                   matchList.push(cardStack[cardPos]);
-                }
-                else{
+                } else {
                   return cardStack[cardPos];
                 }
               }
             }
           } else {
-            if (criteria.sortByValueFn){
+            if (criteria.sortByValueFn) {
               matchList.push(cardStack[0]);
-            }
-            else{
+            } else {
               return cardStack[0];
             }
           }
         }
       }
-      if (matchList.length > 0 && criteria.sortByValueFn){
+      if (matchList.length > 0 && criteria.sortByValueFn) {
         return this.highest(matchList, criteria.sortByValueFn);
       }
     }
@@ -149,65 +147,73 @@ export class CardSelector {
     if (selectionCriteria.alwaysSelect === true) {
       return true;
     }
-    if (selectionCriteria.actionsGE){
-      if (this.player.game.currentPlayer.actions < selectionCriteria.actionsGE){
+    if (selectionCriteria.actionsGE) {
+      if (
+        this.player.game.currentPlayer.actions < selectionCriteria.actionsGE
+      ) {
         return false;
       }
     }
 
-    if (selectionCriteria.cardName){
-      if (selectionCriteria.cardName !== card.name){
+    if (selectionCriteria.cardName) {
+      if (selectionCriteria.cardName !== card.name) {
         return false;
       }
     }
 
-    if (selectionCriteria.terminalType){
-      if (selectionCriteria.terminalType !== card.terminalType()){
-        return false;
-      }
-    }
-    
-    if (selectionCriteria.heuristicType){
-      if (selectionCriteria.heuristicType !== card.heuristicType()){
+    if (selectionCriteria.terminalType) {
+      if (selectionCriteria.terminalType !== card.terminalType()) {
         return false;
       }
     }
 
-    if (selectionCriteria.drawCriteria){
-      if (selectionCriteria.drawCriteria.atLeastOne){
-        if (card.drawHeuristicValue(this.player) < 1 || PlayerHelper.totalDrawableCards(this.player) < 1){
+    if (selectionCriteria.heuristicType) {
+      if (selectionCriteria.heuristicType !== card.heuristicType()) {
+        return false;
+      }
+    }
+
+    if (selectionCriteria.drawCriteria) {
+      if (selectionCriteria.drawCriteria.atLeastOne) {
+        if (
+          card.drawHeuristicValue(this.player) < 1 ||
+          PlayerHelper.totalDrawableCards(this.player) < 1
+        ) {
           return false;
         }
       }
-      if (selectionCriteria.drawCriteria.allPotential){
+      if (selectionCriteria.drawCriteria.allPotential) {
         const cardDraws = card.drawHeuristicValue(this.player);
         const totalDrawable = PlayerHelper.totalDrawableCards(this.player);
-        if (cardDraws > totalDrawable){
+        if (cardDraws > totalDrawable) {
           return false;
         }
       }
     }
-    
+
     if (
-      (selectionCriteria.doNotSelectIfEconomyBelow && 
-        !this.economyOKafterTrashing(
-          selectionCriteria.doNotSelectIfEconomyBelow,
-          card,
-          alreadySelectedCards,
-        ))
+      selectionCriteria.doNotSelectIfEconomyBelow &&
+      !this.economyOKafterTrashing(
+        selectionCriteria.doNotSelectIfEconomyBelow,
+        card,
+        alreadySelectedCards,
+      )
     ) {
       return false;
     }
     return true;
   }
 
-  private highest(cards: Card[], sortByValueFn: (card: Card, player: Player) => number): Card | undefined {
+  private highest(
+    cards: Card[],
+    sortByValueFn: (card: Card, player: Player) => number,
+  ): Card | undefined {
     let currentHighest: Card | undefined = undefined;
     let currentHighestValue = -100;
 
-    for (let cardPos=0; cardPos<cards.length; cardPos++){
+    for (let cardPos = 0; cardPos < cards.length; cardPos++) {
       const currentValue = sortByValueFn(cards[cardPos], this.player);
-      if (!currentHighest || currentValue > currentHighestValue){
+      if (!currentHighest || currentValue > currentHighestValue) {
         currentHighest = cards[cardPos];
         currentHighestValue = currentValue;
       }

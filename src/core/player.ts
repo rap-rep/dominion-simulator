@@ -250,13 +250,19 @@ export class Player {
   }
 
   playActionPhase() {
-    const selector = new CardSelector(this, DefaultCriteria.playTurnDefault()); 
+    const selector = new CardSelector(this, DefaultCriteria.playTurnDefault());
 
     this.game.phase = Phase.ACTION;
     let currentlySelectedAction: Card | undefined;
     while (this.actions > 0) {
-      currentlySelectedAction = selector.getCardFromCriteria(this.hand, selector.criteriaList); // PlayerHelper.selectBestActionByHeuristic(this);
-      if (!currentlySelectedAction || currentlySelectedAction.name === NULL_CARD_NAME) {
+      currentlySelectedAction = selector.getCardFromCriteria(
+        this.hand,
+        selector.criteriaList,
+      ); // PlayerHelper.selectBestActionByHeuristic(this);
+      if (
+        !currentlySelectedAction ||
+        currentlySelectedAction.name === NULL_CARD_NAME
+      ) {
         break;
       }
       this.removeCardFromHand(currentlySelectedAction);
@@ -311,6 +317,9 @@ export class Player {
           this,
           currentlySelectedCard,
         );
+        if (!gained){
+          throw new Error("Failed to gain selected card in the buy phase for unexpected reasons");
+        }
         this.coins -= MetricHelper.effectiveCostOfCard(this, gained);
       }
     }

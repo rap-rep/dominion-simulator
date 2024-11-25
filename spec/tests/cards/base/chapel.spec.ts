@@ -20,7 +20,7 @@ describe("Chapel", () => {
   });
 });
 
-describe("Chapel over 10 turns", () => {
+describe("Chapel over 12 turns", () => {
   const game = new Game({
     logMode: LogMode.SILENT,
     logLevel: LogLevel.INFO,
@@ -28,9 +28,9 @@ describe("Chapel over 10 turns", () => {
   const chapel = new Chapel();
   game.p1.addCardToHand(chapel, true);
 
-  game.playGame(10);
+  game.playGame(12);
 
-  it("doesn't over-trash the deck below ability to buy Silver, so gains a Gold", () => {
+  it("trashes, but doesn't over-trash the deck below ability to buy Silver, and gains a Gold", () => {
     expect(game.kingdom.getTotalTrashSize()).toBeGreaterThan(7);
     expect(
       CardSelectorHelper.countTotalEconomy(game.p1),

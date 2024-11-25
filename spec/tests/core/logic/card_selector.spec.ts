@@ -2,7 +2,6 @@ import { Ranger } from "@src/core/cards/adventures/ranger";
 import { Chapel } from "@src/core/cards/base/chapel";
 import { Laboratory } from "@src/core/cards/base/laboratory";
 import { Smithy } from "@src/core/cards/base/smithy";
-import { Village } from "@src/core/cards/base/village";
 import { Workshop } from "@src/core/cards/base/workshop";
 import { Copper } from "@src/core/cards/basic/copper";
 import { Estate } from "@src/core/cards/basic/estate";
@@ -15,7 +14,6 @@ import {
   HeuristicType,
   TerminalType,
 } from "@src/core/logic/card_selector";
-import { SelectorDrawCriteria } from "@src/core/logic/card_selector_types";
 import { DefaultCriteria } from "@src/core/logic/default_selection_criteria";
 
 describe("A single optional card selector", () => {
@@ -183,12 +181,16 @@ describe("Card selector with a draw card and a payload card", () => {
   const game = new Game({
     logLevel: LogLevel.EXTREME,
     logMode: LogMode.SILENT,
-    p1cards: [["Smithy", 1], ["Workshop", 1], ["Copper", 3]],
+    p1cards: [
+      ["Smithy", 1],
+      ["Workshop", 1],
+      ["Copper", 3],
+    ],
   });
 
   game.p1.actions = 1;
 
-  for (let i=0; i<10; i++){
+  for (let i = 0; i < 10; i++) {
     const copper = new Copper();
     game.p1.addToAllCards(copper);
     game.p1.deck.push(copper);
@@ -208,23 +210,23 @@ describe("Card selector with a draw card and a payload card", () => {
     expect(result[0].name).toEqual(Workshop.NAME);
     expect(result2[0].name).toEqual(Smithy.NAME);
   });
-
-
-
 });
 
 describe("Card selector with draw conditions to play a gainer if deck is drawn", () => {
   const game = new Game({
     logLevel: LogLevel.EXTREME,
     logMode: LogMode.SILENT,
-    p1cards: [["Laboratory", 1], ["Ironworks", 1]],
+    p1cards: [
+      ["Laboratory", 1],
+      ["Ironworks", 1],
+    ],
   });
 
   const selectorCriteria: Array<CardSelectorCriteria> = [
     {
       heuristicType: HeuristicType.DRAW,
       terminalType: TerminalType.NONTERMINAL,
-      drawCriteria: {atLeastOne: true}
+      drawCriteria: { atLeastOne: true },
     },
     {
       heuristicType: HeuristicType.PAYLOAD_GAINER,
@@ -232,20 +234,22 @@ describe("Card selector with draw conditions to play a gainer if deck is drawn",
     {
       heuristicType: HeuristicType.DRAW,
     },
-  ]
+  ];
 
-  const selector = new CardSelector(
-    game.currentPlayer,
-    [],
+  const selector = new CardSelector(game.currentPlayer, [], selectorCriteria);
+  const result = selector.getCardFromCriteria(
+    game.currentPlayer.hand,
     selectorCriteria,
   );
-  const result = selector.getCardFromCriteria(game.currentPlayer.hand, selectorCriteria);
 
   const copper = new Copper();
   game.p1.addToAllCards(copper);
   game.p1.discard.push(copper);
 
-  const resultLab = selector.getCardFromCriteria(game.currentPlayer.hand, selectorCriteria);
+  const resultLab = selector.getCardFromCriteria(
+    game.currentPlayer.hand,
+    selectorCriteria,
+  );
 
   it("will play a non-terminal gainer before drawing if the deck is drawn", () => {
     expect(result?.name).toEqual(Ironworks.NAME);
@@ -260,14 +264,17 @@ describe("Card selector with draw conditions to only play draw if all will be us
   const game = new Game({
     logLevel: LogLevel.EXTREME,
     logMode: LogMode.SILENT,
-    p1cards: [["Laboratory", 1], ["Ironworks", 1]],
+    p1cards: [
+      ["Laboratory", 1],
+      ["Ironworks", 1],
+    ],
   });
 
   const selectorCriteria: Array<CardSelectorCriteria> = [
     {
       heuristicType: HeuristicType.DRAW,
       terminalType: TerminalType.NONTERMINAL,
-      drawCriteria: {allPotential: true}
+      drawCriteria: { allPotential: true },
     },
     {
       heuristicType: HeuristicType.PAYLOAD_GAINER,
@@ -275,35 +282,37 @@ describe("Card selector with draw conditions to only play draw if all will be us
     {
       heuristicType: HeuristicType.DRAW,
     },
-  ]
+  ];
 
-  const selector = new CardSelector(
-    game.currentPlayer,
-    [],
-    selectorCriteria,
-  );
+  const selector = new CardSelector(game.currentPlayer, [], selectorCriteria);
 
   const copper = new Copper();
   game.p1.addToAllCards(copper);
   game.p1.discard.push(copper);
 
-  const result = selector.getCardFromCriteria(game.currentPlayer.hand, selectorCriteria);
+  const result = selector.getCardFromCriteria(
+    game.currentPlayer.hand,
+    selectorCriteria,
+  );
   it("selects ironworks with only one card in the discard and lab in hand", () => {
     expect(result?.name).toEqual(Ironworks.NAME);
   });
-
 });
 
 describe("Card selector with multiple draw cards in hand", () => {
   const game = new Game({
     logLevel: LogLevel.EXTREME,
     logMode: LogMode.SILENT,
-    p1cards: [["Wharf", 3], ["Smithy", 1], ["Copper", 1]],
+    p1cards: [
+      ["Wharf", 3],
+      ["Smithy", 1],
+      ["Copper", 1],
+    ],
   });
 
   game.p1.actions = 1;
 
-  for (let i=0; i<10; i++){
+  for (let i = 0; i < 10; i++) {
     const copper = new Copper();
     game.p1.addToAllCards(copper);
     game.p1.deck.push(copper);
@@ -316,22 +325,25 @@ describe("Card selector with multiple draw cards in hand", () => {
   );
   const result = selector.getCardsFromCriteria(game.currentPlayer.hand, 0, 1);
 
-
   it("will play a smithy over a gear with a simple rule to draw the most cards now", () => {
     expect(result[0].name).toEqual(Smithy.NAME);
   });
-}); 
+});
 
 describe("Card selector with different ranger token states", () => {
   const game = new Game({
     logLevel: LogLevel.EXTREME,
     logMode: LogMode.SILENT,
-    p1cards: [["Ranger", 2], ["Smithy", 2], ["Copper", 1]],
+    p1cards: [
+      ["Ranger", 2],
+      ["Smithy", 2],
+      ["Copper", 1],
+    ],
   });
 
   game.p1.actions = 1;
 
-  for (let i=0; i<10; i++){
+  for (let i = 0; i < 10; i++) {
     const copper = new Copper();
     game.p1.addToAllCards(copper);
     game.p1.deck.push(copper);
@@ -355,4 +367,4 @@ describe("Card selector with different ranger token states", () => {
   it("will play smithy before ranger if the ranger will not draw", () => {
     expect(result2[0].name).toEqual(Smithy.NAME);
   });
-}); 
+});

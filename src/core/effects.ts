@@ -25,7 +25,9 @@ export enum EffectType {
   TRASH_FROM_HAND = "Trash",
   DISCARD_FROM_HAND = "Discard",
   GAIN_FROM_SUPPLY = "Gain",
+  GAIN_FROM_NON_SUPPLY = "Gain from non supply",
   TYPE_BONUSES = "Type bonuses",
+  RETURN_TO_NON_SUPPLY_PILE = "Returns",
 
   // Token counter changes
   PLUS_VILLAGER = "+ Villager",

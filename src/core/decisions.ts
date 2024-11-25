@@ -25,6 +25,11 @@ export enum DecisionType {
   EXILE_DISCARD = "Discard from exile",
 
   // Unique to the card decisions
+
+
+  // Other types of Decision
+  // for when a decision object is expected, but there is no decision needed
+  PLACEHOLDER = "Placeholder", 
 }
 
 export class Decision {

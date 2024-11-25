@@ -9,7 +9,10 @@ import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 import { Decision, DecisionType } from "@src/core/decisions";
 import { PlayerHelper } from "@src/core/helpers/player_helper";
 import { Player } from "@src/core/player";
-import { HeuristicType, TerminalType } from "@src/core/logic/card_selector_types";
+import {
+  HeuristicType,
+  TerminalType,
+} from "@src/core/logic/card_selector_types";
 
 const Name = "Gear";
 

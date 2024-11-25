@@ -107,4 +107,12 @@ export class GameLog {
   logExileDiscard(player: Player, card: Card, amount: number) {
     this.log(`${player.name} discards ${amount} ${card.name} from exile`);
   }
+
+  logReturnCard(player: Player, card: Card) {
+    this.log(`${player.name} returns ${card.name}`);
+  }
+
+  logFailReturnCard(player: Player, card: Card) {
+    this.log(`${player.name} failed to return ${card.name}`);
+  }
 }

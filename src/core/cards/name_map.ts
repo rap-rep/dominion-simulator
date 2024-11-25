@@ -16,6 +16,8 @@ import { Gold } from "./basic/gold";
 import { Province } from "./basic/province";
 import { Silver } from "./basic/silver";
 import { Ironworks } from "./intrigue/ironworks";
+import { Groom } from "./menagerie/groom";
+import { Horse } from "./menagerie/horse";
 import { Stockpile } from "./menagerie/stockpile";
 import { Peddler } from "./prosperity/peddler";
 import { Watchtower } from "./prosperity/watchtower";
@@ -25,7 +27,7 @@ import { Wharf } from "./seaside/wharf";
 /*
  * In order to use cards in a kingdom, they MUST be added here
  *
- * This can probably be made better, but in order to generate
+ * This can probably be automated, but in order to generate
  * cards on the fly every Card class is required to have a generator method
  * which is defined here, and mapped by a key of the card name
  */
@@ -49,6 +51,10 @@ export class CardNameMap {
     this.nameMap.set(Watchtower.NAME, Watchtower.factoryGenerator);
     this.nameMap.set(Milita.NAME, Milita.factoryGenerator);
     this.nameMap.set(Ranger.NAME, Ranger.factoryGenerator);
+
+
+    this.nameMap.set(Groom.NAME, Groom.factoryGenerator);
+    this.nameMap.set(Horse.NAME, Horse.factoryGenerator);
 
     this.nameMap.set(Laboratory.NAME, Laboratory.factoryGenerator);
 

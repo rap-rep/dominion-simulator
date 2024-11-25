@@ -25,10 +25,10 @@ export enum HeuristicType {
 export type SelectorDrawCriteria = {
   allPotential?: boolean | undefined;
   atLeastOne?: boolean | undefined;
-}
+};
 
 export type CardSelectorCriteria = {
-  sortByValueFn?: ((card: Card, player: Player)  => number) | undefined;
+  sortByValueFn?: ((card: Card, player: Player) => number) | undefined;
 
   alwaysSelect?: boolean | undefined;
   cardName?: string | undefined;

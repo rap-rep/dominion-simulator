@@ -10,8 +10,7 @@ export class CardSelectorHelper {
     return tally;
   }
 
-  static sortByValueFnDraw(card: Card, player: Player){
+  static sortByValueFnDraw(card: Card, player: Player) {
     return card.drawHeuristicValue(player);
   }
-
 }

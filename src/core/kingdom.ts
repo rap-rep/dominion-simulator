@@ -20,6 +20,12 @@ import { Watchtower } from "./cards/prosperity/watchtower";
 import { Milita } from "./cards/base/militia";
 import { Stockpile } from "./cards/menagerie/stockpile";
 import { Laboratory } from "./cards/base/laboratory";
+import { Horse } from "./cards/menagerie/horse";
+
+export enum CardLocation {
+  SUPPLY = 0,
+  NON_SUPPLY = 1,
+}
 
 export class Kingdom {
   /*
@@ -40,7 +46,7 @@ export class Kingdom {
     this.generateKingdom();
   }
 
-  private addSupplyPile(name: string) {
+  private addSupplyPile(name: string, amount: number = 10) {
     const generatorMethod = this.cardNameMap.nameMap.get(name);
     if (!generatorMethod) {
       throw new Error(`Could not generator for ${name}`);
@@ -49,10 +55,26 @@ export class Kingdom {
       if (generatorMethod().name !== name) {
         throw new Error(`Generator did not generate a real card for ${name}`);
       }
-      const newPile = Array(10)
+      const newPile = Array(amount)
         .fill(undefined)
         .map((_u) => generatorMethod());
       this.supplyPiles.set(name, newPile);
+    }
+  }
+
+  private addNonSupplyPile(name: string, amount: number = 10) {
+    const generatorMethod = this.cardNameMap.nameMap.get(name);
+    if (!generatorMethod) {
+      throw new Error(`Could not generator for ${name}`);
+    }
+    if (generatorMethod) {
+      if (generatorMethod().name !== name) {
+        throw new Error(`Generator did not generate a real card for ${name}`);
+      }
+      const newPile = Array(amount)
+        .fill(undefined)
+        .map((_u) => generatorMethod());
+      this.nonSupplyPiles.set(name, newPile);
     }
   }
 
@@ -71,6 +93,7 @@ export class Kingdom {
     this.addSupplyPile(Milita.NAME);
     this.addSupplyPile(Stockpile.NAME);
     this.addSupplyPile(Laboratory.NAME);
+    this.addNonSupplyPile(Horse.NAME, 30);
   }
 
   private getBasicSupply(): Map<string, Card[]> {
@@ -131,6 +154,22 @@ export class Kingdom {
     }
   }
 
+
+  getTopOrNothing(card_name: string, location: CardLocation = CardLocation.SUPPLY): Card | undefined {
+    let pile: Card[] | undefined = undefined;
+    if (location === CardLocation.SUPPLY){
+      pile = this.supplyPiles.get(card_name);
+    }
+    else if (location === CardLocation.NON_SUPPLY){
+      pile = this.nonSupplyPiles.get(card_name); 
+    }
+    if (!pile || pile.length === 0) {
+      return undefined;
+    } else {
+      return pile[0];
+    }
+  }
+
   pileEmpty(card_name: string) {
     const pile = this.supplyPiles.get(card_name);
     if (!pile || pile.length === 0) {
@@ -139,8 +178,14 @@ export class Kingdom {
     return false;
   }
 
-  removeFromTop(card: Card) {
-    const pile = this.supplyPiles.get(card.name);
+  removeFromTop(card: Card, location: CardLocation = CardLocation.SUPPLY) {
+    let pile: Card[] | undefined = undefined;
+    if (location === CardLocation.SUPPLY){
+      pile = this.supplyPiles.get(card.name);
+    }
+    else if (location === CardLocation.NON_SUPPLY){
+      pile = this.nonSupplyPiles.get(card.name); 
+    }
     if (!pile || pile.length === 0) {
       throw new Error(`No card ${card.name} to remove`);
     } else {

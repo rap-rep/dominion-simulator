@@ -78,10 +78,9 @@ export class Ranger extends Card {
 
   drawHeuristicValue(player: Player): number {
     // TODO update this to use owner's token rather than just current player
-    if (player.journeyTokenUp){
+    if (player.journeyTokenUp) {
       return 4;
     }
     return 0;
   }
-
 }

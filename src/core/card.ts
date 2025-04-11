@@ -7,7 +7,6 @@ import {
 } from "./card_types";
 import { Decision, DecisionType } from "./decisions";
 import { Effect, EffectPlayer, EffectType } from "./effects";
-import { Game } from "./game";
 import { Graph, PlayNode } from "./graph";
 import { HeuristicType, TerminalType } from "./logic/card_selector_types";
 import { Player } from "./player";
@@ -34,6 +33,14 @@ export class Card {
 
   public static get NAME(): string {
     return "Name not implemented";
+  }
+
+  toString(): string {
+    return this.name;
+  }
+
+  [Symbol.for('nodejs.util.inspect.custom')](): string {
+    return this.name;
   }
 
   playGraph(): Graph {

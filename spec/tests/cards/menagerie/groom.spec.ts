@@ -40,7 +40,7 @@ describe("Groom gains an Estate", () => {
 
 
   describe("Groom gains a Village", () => {
-    const game = new Game({logLevel: LogLevel.INFO, logMode: LogMode.CONSOLE_LOG});
+    const game = new Game({logLevel: LogLevel.INFO, logMode: LogMode.SILENT});
 
     // Simplified version of the API type used to create buy rules
     type ConditionSetList = {

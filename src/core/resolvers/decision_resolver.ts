@@ -4,6 +4,8 @@ import { NodeType } from "../graph";
 import { Player } from "../player";
 import { Decision, DecisionType } from "../decisions";
 import { EffectResolver } from "./effect_resolver";
+import { CardType, DurationPhase } from "../card_types";
+import { Card } from "../card";
 
 export class DecisionResolver {
   effectResolver: EffectResolver;
@@ -33,6 +35,12 @@ export class DecisionResolver {
       player.makeDecision(decision);
     } else if (decision.decisionType == DecisionType.SET_ASIDE_ON_FROM_HAND) {
       player.makeDecision(decision);
+      if (decision.fromCard.types.includes(CardType.DURATION)){
+        const decisionResult = decision.result as Card[];
+        if (decisionResult.length === 0){
+          decision.fromCard.durationPhase = DurationPhase.PREPARED_FOR_CLEANUP;
+        }
+      }
     } else if (decision.decisionType == DecisionType.DISCARD_TO) {
       player.makeDecision(decision);
     } else if (decision.decisionType == DecisionType.DISCARD) {

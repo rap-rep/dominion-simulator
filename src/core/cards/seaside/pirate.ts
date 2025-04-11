@@ -12,6 +12,7 @@ import {
   TerminalType,
 } from "@src/core/logic/card_selector_types";
 import { Player } from "@src/core/player";
+import { Gold } from "../basic/gold";
 
 const Name = "Wharf";
 
@@ -19,6 +20,7 @@ export class Wharf extends Card {
   durationPhase: DurationPhase | undefined;
   constructor() {
     super(Name, [CardType.ACTION, CardType.DURATION]);
+
     this.durationPhase = DurationPhase.REMAINS_IN_PLAY;
   }
 
@@ -36,30 +38,27 @@ export class Wharf extends Card {
 
   playGraph(): Graph {
     const graph = new Graph();
-    const draw = new PlayNode(
-      new Effect(EffectType.DRAW_CARD, EffectPlayer.SELF, 2, undefined, this),
-    );
-    const buy = new PlayNode(
-      new Effect(EffectType.PLUS_BUY, EffectPlayer.SELF, 1, undefined, this),
-    );
-
-    graph.addNode(draw);
-    graph.addNode(buy);
-    graph.addEdge(draw, buy);
     return graph;
   }
 
   durationPlayGraph(): Graph {
     const graph = new Graph();
-    const draw = new PlayNode(
-      new Effect(EffectType.DRAW_CARD, EffectPlayer.SELF, 2, undefined, this),
+
+    const gainGold = new Effect(
+      EffectType.GAIN_FROM_SUPPLY,
+      EffectPlayer.SELF,
+      1,
+      undefined,
+      this,
     );
-    const buy = new PlayNode(
-      new Effect(EffectType.PLUS_BUY, EffectPlayer.SELF, 1, undefined, this),
+    gainGold.reference = new Decision(
+      DecisionType.PLACEHOLDER,
+      EffectPlayer.SELF,
+      undefined,
+      this,
     );
-    graph.addNode(draw);
-    graph.addNode(buy);
-    graph.addEdge(draw, buy);
+    gainGold.reference.result = Gold.NAME;
+
 
     return graph;
   }

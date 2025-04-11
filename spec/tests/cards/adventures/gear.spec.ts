@@ -4,6 +4,7 @@ import { Market } from "@src/core/cards/base/market";
 import { Copper } from "@src/core/cards/basic/copper";
 import { Estate } from "@src/core/cards/basic/estate";
 import { Game } from "@src/core/game";
+import { LogLevel, LogMode } from "@src/core/logging/game_log";
 
 describe("Gear with a standard hand", () => {
   const game = new Game();
@@ -59,6 +60,24 @@ describe("Terminal gear", () => {
     expect(game.p1.deck.length).toBe(3);
     expect(resultList.length).toBe(1);
     expect(resultList[0].name).toEqual(Market.NAME);
+  });
+});
+
+describe("Gear setting aside nothing", () => {
+  const game = new Game({logLevel: LogLevel.INFO, logMode: LogMode.SILENT, p1cards: []});
+
+  const gear = new Gear();
+  game.p1.addCardToHand(gear, true);
+
+  game.p1.playActionPhase();
+  const resultList: Card[] = gear?.setAsideDecision?.result as Card[];
+  game.p1.playCleanupPhase();
+
+  it("gets cleaned up from play", () => {
+    expect(gear).toBeDefined();
+    expect(game.p1.hand.size).toBe(1);
+    expect(resultList.length).toBe(0);
+    expect(game.p1.inPlay.length).toBe(0);
   });
 });
 

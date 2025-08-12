@@ -11,7 +11,8 @@ import { Decision, DecisionType } from "@src/core/decisions";
 
 const Name = "Wishing Well";
 
-export class WishingWell extends Card { // TODO WARNING: NotImplemented
+export class WishingWell extends Card {
+  // TODO WARNING: NotImplemented
   constructor() {
     super(Name, [CardType.ACTION]);
   }
@@ -39,12 +40,12 @@ export class WishingWell extends Card { // TODO WARNING: NotImplemented
     );
 
     const guessDrawDecision = new Decision(
-        DecisionType.GUESS_CARD_TO_DRAW,
-        EffectPlayer.SELF,
-        undefined,
-        this,
-      );
-      const decisionNode = new PlayNode(guessDrawDecision);
+      DecisionType.GUESS_CARD_TO_DRAW,
+      EffectPlayer.SELF,
+      undefined,
+      this,
+    );
+    const decisionNode = new PlayNode(guessDrawDecision);
 
     graph.addNode(draw);
     graph.addNode(action);

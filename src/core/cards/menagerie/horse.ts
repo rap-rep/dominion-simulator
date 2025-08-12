@@ -37,7 +37,13 @@ export class Horse extends Card {
       new Effect(EffectType.PLUS_ACTION, EffectPlayer.SELF, 1, undefined, this),
     );
     const returnCard = new PlayNode(
-        new Effect(EffectType.RETURN_TO_NON_SUPPLY_PILE, EffectPlayer.SELF, 1, undefined, this),
+      new Effect(
+        EffectType.RETURN_TO_NON_SUPPLY_PILE,
+        EffectPlayer.SELF,
+        1,
+        undefined,
+        this,
+      ),
     );
 
     graph.addNode(draw);

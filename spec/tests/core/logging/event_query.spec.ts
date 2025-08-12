@@ -43,14 +43,8 @@ describe("Game manager with Smithy & Wharf draw query for all", () => {
   const gameManager = new GameManager({}, 1, [drawQueryInput], false);
 
   gameManager.currentGame.currentPlayer.addCard(new Smithy(), true);
-  gameManager.currentGame.currentPlayer.opponent?.addCard(
-    new Wharf(),
-    true,
-  );
-  gameManager.currentGame.currentPlayer.opponent?.addCard(
-    new Wharf(),
-    true,
-  );
+  gameManager.currentGame.currentPlayer.opponent?.addCard(new Wharf(), true);
+  gameManager.currentGame.currentPlayer.opponent?.addCard(new Wharf(), true);
   gameManager.playGames();
 
   const jsonResults = gameManager.eventQueryManager.getJsonResults(1);

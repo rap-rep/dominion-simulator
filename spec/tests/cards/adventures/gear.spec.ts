@@ -64,7 +64,11 @@ describe("Terminal gear", () => {
 });
 
 describe("Gear setting aside nothing", () => {
-  const game = new Game({logLevel: LogLevel.INFO, logMode: LogMode.SILENT, p1cards: []});
+  const game = new Game({
+    logLevel: LogLevel.INFO,
+    logMode: LogMode.SILENT,
+    p1cards: [],
+  });
 
   const gear = new Gear();
   game.p1.addCard(gear, true);

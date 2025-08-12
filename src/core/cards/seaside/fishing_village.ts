@@ -1,9 +1,9 @@
 import { Graph, PlayNode } from "@src/core/graph";
 import { Card } from "../../card";
-import { 
-  DeprecatedCardHeuristicType, 
+import {
+  DeprecatedCardHeuristicType,
   CardType,
-  DurationPhase 
+  DurationPhase,
 } from "@src/core/card_types";
 import { Effect, EffectType, EffectPlayer } from "@src/core/effects";
 import {
@@ -16,7 +16,7 @@ const Name = "Fishing Village";
 
 export class FishingVillage extends Card {
   durationPhase: DurationPhase | undefined;
-  
+
   constructor() {
     super(Name, [CardType.ACTION, CardType.DURATION]);
     this.durationPhase = DurationPhase.REMAINS_IN_PLAY;
@@ -36,7 +36,7 @@ export class FishingVillage extends Card {
 
   playGraph(): Graph {
     const graph = new Graph();
-    
+
     const coin = new PlayNode(
       new Effect(EffectType.PLUS_COIN, EffectPlayer.SELF, 1, undefined, this),
     );
@@ -51,10 +51,10 @@ export class FishingVillage extends Card {
 
     return graph;
   }
-  
+
   durationPlayGraph(): Graph {
     const graph = new Graph();
-    
+
     const coin = new PlayNode(
       new Effect(EffectType.PLUS_COIN, EffectPlayer.SELF, 1, undefined, this),
     );

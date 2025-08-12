@@ -32,13 +32,19 @@ export class Bureaucrat extends Card {
     const graph = new Graph();
 
     const gainReference = new Decision(
-        DecisionType.PLACEHOLDER,
-        EffectPlayer.SELF,
-    )
+      DecisionType.PLACEHOLDER,
+      EffectPlayer.SELF,
+    );
     gainReference.result = Silver.NAME;
 
     const gainSilver = new PlayNode(
-      new Effect(EffectType.GAIN_FROM_SUPPLY_TO_DECK, EffectPlayer.SELF, undefined, gainReference, this),
+      new Effect(
+        EffectType.GAIN_FROM_SUPPLY_TO_DECK,
+        EffectPlayer.SELF,
+        undefined,
+        gainReference,
+        this,
+      ),
     );
     const topdeckDecision = new Decision(
       DecisionType.TOPDECK_VICTORY,

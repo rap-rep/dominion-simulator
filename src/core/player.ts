@@ -184,35 +184,38 @@ export class Player {
     }
   }
 
-  addCard(card: Card, addToAllCards: boolean = false, to: GainLocation = GainLocation.HAND) {
+  addCard(
+    card: Card,
+    addToAllCards: boolean = false,
+    to: GainLocation = GainLocation.HAND,
+  ) {
     if (addToAllCards) {
       this.addToAllCards(card);
     }
-    
-    if (to === GainLocation.HAND){
+
+    if (to === GainLocation.HAND) {
       const in_hand_already = this.hand.get(card.name);
       if (!in_hand_already) {
         this.hand.set(card.name, [card]);
       } else {
         in_hand_already.push(card);
       }
-    }
-    else if (to === GainLocation.DECK) {
+    } else if (to === GainLocation.DECK) {
       this.deck.push(card);
-    }
-    else if (to === GainLocation.DISCARD){
+    } else if (to === GainLocation.DISCARD) {
       this.discard.push(card);
+    } else {
+      throw new Error(`${to} GainLocation not handled`);
     }
-    else {
-      throw new Error(`${to} GainLocation not handled`)
-    }
- }
+  }
 
   removeCardFromHand(card: Card, removeFromAllCards: boolean = false) {
     const in_hand = this.hand.get(card.name);
     this.game.gamelog.log(`Removing ${card.name} from hand`, LogLevel.EXTREME);
     if (!in_hand) {
-      throw new Error(`Attempting to remove card ${card.name} that is not in hand`);
+      throw new Error(
+        `Attempting to remove card ${card.name} that is not in hand`,
+      );
     } else {
       this.removeCardFromList(card, in_hand);
       if (removeFromAllCards) {
@@ -329,8 +332,10 @@ export class Player {
           this,
           currentlySelectedCard,
         );
-        if (!gained){
-          throw new Error("Failed to gain selected card in the buy phase for unexpected reasons");
+        if (!gained) {
+          throw new Error(
+            "Failed to gain selected card in the buy phase for unexpected reasons",
+          );
         }
         this.coins -= MetricHelper.effectiveCostOfCard(this, gained);
       }

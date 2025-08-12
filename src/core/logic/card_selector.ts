@@ -75,7 +75,7 @@ export class CardSelector {
             selectedCards,
           );
           if (!selectedCard) {
-            if (pickAnyCardAfterCriteria){
+            if (pickAnyCardAfterCriteria) {
               selectedCard = this.getAnyCard(searchMap);
             }
             if (!selectedCard) {
@@ -86,7 +86,9 @@ export class CardSelector {
         }
       }
       if (!selectedCard) {
-        throw new Error("card selector function should have broken, but did not.");
+        throw new Error(
+          "card selector function should have broken, but did not.",
+        );
       } else {
         selectedCards.push(selectedCard);
         choices--;

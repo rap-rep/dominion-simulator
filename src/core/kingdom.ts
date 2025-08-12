@@ -154,14 +154,15 @@ export class Kingdom {
     }
   }
 
-
-  getTopOrNothing(card_name: string, location: CardLocation = CardLocation.SUPPLY): Card | undefined {
+  getTopOrNothing(
+    card_name: string,
+    location: CardLocation = CardLocation.SUPPLY,
+  ): Card | undefined {
     let pile: Card[] | undefined = undefined;
-    if (location === CardLocation.SUPPLY){
+    if (location === CardLocation.SUPPLY) {
       pile = this.supplyPiles.get(card_name);
-    }
-    else if (location === CardLocation.NON_SUPPLY){
-      pile = this.nonSupplyPiles.get(card_name); 
+    } else if (location === CardLocation.NON_SUPPLY) {
+      pile = this.nonSupplyPiles.get(card_name);
     }
     if (!pile || pile.length === 0) {
       return undefined;
@@ -180,11 +181,10 @@ export class Kingdom {
 
   removeFromTop(card: Card, location: CardLocation = CardLocation.SUPPLY) {
     let pile: Card[] | undefined = undefined;
-    if (location === CardLocation.SUPPLY){
+    if (location === CardLocation.SUPPLY) {
       pile = this.supplyPiles.get(card.name);
-    }
-    else if (location === CardLocation.NON_SUPPLY){
-      pile = this.nonSupplyPiles.get(card.name); 
+    } else if (location === CardLocation.NON_SUPPLY) {
+      pile = this.nonSupplyPiles.get(card.name);
     }
     if (!pile || pile.length === 0) {
       throw new Error(`No card ${card.name} to remove`);

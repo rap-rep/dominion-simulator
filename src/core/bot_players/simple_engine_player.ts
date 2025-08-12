@@ -20,7 +20,10 @@ export class SimpleEngineSamplePlayer extends Player {
    */
   gainCardDecision(decision: Decision): string {
     if (decision.decisionType === DecisionType.BUY_CARD) {
-      const toGain = SimpleEngineSamplePlayer.defaultGainDecision(this, this.coins);
+      const toGain = SimpleEngineSamplePlayer.defaultGainDecision(
+        this,
+        this.coins,
+      );
       this.game.gamelog.logBuy(this, toGain);
       return toGain;
     } else if (decision.decisionType == DecisionType.GAIN_CARD_UP_TO) {

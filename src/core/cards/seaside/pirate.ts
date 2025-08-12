@@ -59,7 +59,6 @@ export class Wharf extends Card {
     );
     gainGold.reference.result = Gold.NAME;
 
-
     return graph;
   }
 

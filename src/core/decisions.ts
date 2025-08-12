@@ -30,10 +30,9 @@ export enum DecisionType {
   // Unique to the card decisions
   TOPDECK_VICTORY = "Topdeck victory",
 
-
   // Other types of Decision
   // for when a decision object is expected, but there is no decision needed
-  PLACEHOLDER = "<PLACEHOLDER>", 
+  PLACEHOLDER = "<PLACEHOLDER>",
 }
 
 export class Decision {

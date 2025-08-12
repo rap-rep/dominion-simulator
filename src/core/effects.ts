@@ -48,7 +48,6 @@ export enum EffectType {
   // menagerie
   EXILE_FROM_PLAY = "Exile",
   EXILE_DISCARD = "Discard from exile",
-
 }
 
 export enum EffectPlayer {

@@ -1,5 +1,5 @@
 /* tslint:disable:no-unused-variable */
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import {
   DeprecatedCardHeuristicType,
   InteractionType,
@@ -42,7 +42,7 @@ export class Card {
     return this.name;
   }
 
-  [Symbol.for('nodejs.util.inspect.custom')](): string {
+  [Symbol.for("nodejs.util.inspect.custom")](): string {
     return `${this.name}(${this.objectId})`;
   }
 

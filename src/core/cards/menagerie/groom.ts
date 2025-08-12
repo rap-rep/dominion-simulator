@@ -64,22 +64,22 @@ export class Groom extends Card {
     map.set(CardType.TREASURE, gainSilver);
 
     const gainHorse = new Effect(
-        EffectType.GAIN_FROM_NON_SUPPLY,
-        EffectPlayer.SELF,
-        1,
-        undefined,
-        this,
-      );
-      gainHorse.reference = new Decision(
-        DecisionType.PLACEHOLDER,
-        EffectPlayer.SELF,
-        undefined,
-        this,
-      );
-      gainHorse.reference.result = Horse.NAME;
+      EffectType.GAIN_FROM_NON_SUPPLY,
+      EffectPlayer.SELF,
+      1,
+      undefined,
+      this,
+    );
+    gainHorse.reference = new Decision(
+      DecisionType.PLACEHOLDER,
+      EffectPlayer.SELF,
+      undefined,
+      this,
+    );
+    gainHorse.reference.result = Horse.NAME;
 
-      map.set(CardType.ACTION, gainHorse);
-      return map;
+    map.set(CardType.ACTION, gainHorse);
+    return map;
   }
 
   playGraph(): Graph {

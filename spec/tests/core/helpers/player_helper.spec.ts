@@ -21,7 +21,7 @@ describe("Default action selection", () => {
 
 describe("Default action selection", () => {
   const game = new Game();
-  game.p1.addCardToHand(new Peddler());
+  game.p1.addCard(new Peddler());
   it("Returns an action if one is available", () => {
     expect(PlayerHelper.selectAnyAction(game.p1)?.name).toBe(Peddler.NAME);
   });

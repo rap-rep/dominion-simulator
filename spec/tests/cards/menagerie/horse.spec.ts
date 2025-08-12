@@ -5,7 +5,7 @@ import { PlayerHelper } from "@src/core/helpers/player_helper";
 describe("Horse", () => {
   const game = new Game();
   game.p1.hand = new Map();
-  game.p1.addCardToHand(new Horse());
+  game.p1.addCard(new Horse());
   game.p1.playActionPhase();
   it("draws two cards and an action", () => {
     expect(game.p1.actions).toBe(1);

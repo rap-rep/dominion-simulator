@@ -8,7 +8,7 @@ describe("Fishing Village played normally", () => {
     const game = new Game({logLevel: LogLevel.INFO, logMode: LogMode.SILENT, p1cards: []});
   
     const fvill = new FishingVillage();
-    game.p1.addCardToHand(fvill, true);
+    game.p1.addCard(fvill, true);
   
     game.p1.playActionPhase();
 

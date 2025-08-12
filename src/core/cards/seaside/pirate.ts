@@ -68,7 +68,7 @@ export class Wharf extends Card {
   }
 
   heuristicType(): HeuristicType {
-    return HeuristicType.DRAW;
+    return HeuristicType.PAYLOAD_GAINER;
   }
 
   terminalType(): TerminalType {

@@ -4,7 +4,7 @@ import { Game } from "@src/core/game";
 describe("Workshop", () => {
   const game = new Game();
   game.p1.hand = new Map();
-  game.p1.addCardToHand(new Workshop());
+  game.p1.addCard(new Workshop());
   game.p1.playActionPhase();
   it("gains a card costing up to 4", () => {
     expect(game.p1.discard.length).toEqual(1);

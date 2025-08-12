@@ -7,7 +7,7 @@ import { LogLevel, LogMode } from "@src/core/logging/game_log";
 
 describe("Chapel", () => {
   const game = new Game();
-  game.p1.addCardToHand(new Chapel());
+  game.p1.addCard(new Chapel());
   game.p1.playActionPhase();
   it("trashes 4 cards on t1 conditions", () => {
     expect(game.p1.inPlay.length).toEqual(1);
@@ -26,7 +26,7 @@ describe("Chapel over 12 turns", () => {
     logLevel: LogLevel.INFO,
   });
   const chapel = new Chapel();
-  game.p1.addCardToHand(chapel, true);
+  game.p1.addCard(chapel, true);
 
   game.playGame(12);
 

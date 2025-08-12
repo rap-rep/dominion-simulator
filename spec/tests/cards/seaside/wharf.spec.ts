@@ -8,7 +8,7 @@ import { LogLevel } from "@src/core/logging/game_log";
 describe("Wharf", () => {
   const game = new Game();
   game.p1.hand = new Map();
-  game.p1.addCardToHand(new Wharf());
+  game.p1.addCard(new Wharf());
   game.p1.playActionPhase();
   it("draws two cards and gives a buy", () => {
     expect(game.p1.inPlay?.[0].name).toEqual(Wharf.NAME);
@@ -25,7 +25,7 @@ describe("Wharf", () => {
     game.p1.topdeck(new Copper());
   }
   const originalWharf = new Wharf();
-  game.p1.addCardToHand(originalWharf);
+  game.p1.addCard(originalWharf);
   game.p1.playActionPhase();
   game.p1.playCleanupPhase();
   game.turn++;
@@ -44,7 +44,7 @@ describe("Wharf", () => {
   for (let i = 0; i < 15; i++) {
     game.p1.topdeck(new Copper());
   }
-  game.p1.addCardToHand(new Wharf());
+  game.p1.addCard(new Wharf());
   game.p1.playActionPhase();
   game.p1.playCleanupPhase();
 
@@ -61,7 +61,7 @@ describe("Wharf", () => {
     game.p1.topdeck(new Copper());
   }
   const originalWharf = new Wharf();
-  game.p1.addCardToHand(originalWharf);
+  game.p1.addCard(originalWharf);
   game.p1.playActionPhase();
   game.p1.playCleanupPhase();
   game.turn++;

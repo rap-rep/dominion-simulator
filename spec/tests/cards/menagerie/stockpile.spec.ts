@@ -5,7 +5,7 @@ import { LogLevel, LogMode } from "@src/core/logging/game_log";
 describe("Stockpile", () => {
   const game = new Game({ logLevel: LogLevel.INFO, logMode: LogMode.SILENT });
   game.p1.hand = new Map();
-  game.p1.addCardToHand(new Stockpile());
+  game.p1.addCard(new Stockpile());
   game.p1.playTreasurePhase();
   it("should grant the player three coins and a buy, be exiled", () => {
     expect(game.p1.coins).toEqual(3);

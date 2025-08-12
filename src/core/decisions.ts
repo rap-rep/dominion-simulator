@@ -21,15 +21,19 @@ export enum DecisionType {
   DISCARD_TO = "Discard to",
   DISCARD = "Discard",
 
+  // Less common shared card decisions
+  GUESS_CARD_TO_DRAW = "Guess card to draw",
+
   // Set mechanic based card decisions
   EXILE_DISCARD = "Discard from exile",
 
   // Unique to the card decisions
+  TOPDECK_VICTORY = "Topdeck victory",
 
 
   // Other types of Decision
   // for when a decision object is expected, but there is no decision needed
-  PLACEHOLDER = "Placeholder", 
+  PLACEHOLDER = "<PLACEHOLDER>", 
 }
 
 export class Decision {

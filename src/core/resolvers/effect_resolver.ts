@@ -1,6 +1,6 @@
 import { XOR } from "ts-xor";
 import { Card } from "../card";
-import { Effect, EffectType, EffectPlayer } from "../effects";
+import { Effect, EffectType, EffectPlayer, GainLocation } from "../effects";
 import { NodeType, PlayNode } from "../graph";
 import { Player } from "../player";
 import { Decision, DecisionType } from "../decisions";
@@ -63,7 +63,7 @@ export class EffectResolver {
     }
   }
 
-  gainCard(player: Player, card_name: string, location: CardLocation = CardLocation.SUPPLY): Card | undefined {
+  gainCard(player: Player, card_name: string, location: CardLocation = CardLocation.SUPPLY, gainLocation: GainLocation = GainLocation.DISCARD): Card | undefined {
     // TODO this does not currently support selecting the order that decisions are made in
     // This is a pretty major unimplemented aspect of Dominion; need to add a decision buffer/selector
     // This should allow for multiple Effects/Decisions to be discovered and present a "which of these" decision first
@@ -73,16 +73,23 @@ export class EffectResolver {
     }
     player.game.kingdom.removeFromTop(gainedCard, location);
     player.game.gamelog.logGain(player, gainedCard);
-
     this.whenGainResolver(player, gainedCard);
 
     const handEffectResolution = this.handEffectGainResolver(
       player,
       gainedCard,
     );
-    if (!handEffectResolution) {
+    if (!handEffectResolution){ 
       player.addToAllCards(gainedCard);
-      player.discard.push(gainedCard);
+      if (gainLocation === GainLocation.DISCARD){
+        player.discard.push(gainedCard);
+      }
+      else if(gainLocation === GainLocation.DECK){
+        player.deck.push(gainedCard)
+      }
+      else{
+        throw new Error(`Gaining to ${gainLocation} not implemented`)
+      }
     } else if (handEffectResolution === EffectType.TOPDECK) {
       player.addToAllCards(gainedCard);
     } else if (handEffectResolution === EffectType.TRASH_FROM_HAND) {
@@ -119,8 +126,12 @@ export class EffectResolver {
       this.plusBuyResolver(player, effect);
     } else if (effect.effectType === EffectType.GAIN_FROM_SUPPLY) {
       this.gainFromSupply(player, effect);
+    } else if (effect.effectType === EffectType.GAIN_FROM_SUPPLY_TO_DECK) {
+      this.gainFromSupply(player, effect, GainLocation.DECK);
     } else if (effect.effectType === EffectType.GAIN_FROM_NON_SUPPLY) {
       this.gainFromNonSupply(player, effect);
+    } else if (effect.effectType === EffectType.TOPDECK) {
+      this.topdeck(player, effect);
     } else if (effect.effectType === EffectType.TYPE_BONUSES) {
       this.awardTypeBonuses(player, effect);
     } else if (effect.effectType === EffectType.IN_HAND_FROM_SET_ASIDE) {
@@ -143,9 +154,9 @@ export class EffectResolver {
     player.game.eventlog.logEffect(effect);
   }
 
-  private gainFromSupply(player: Player, effect: Effect) {
+  private gainFromSupply(player: Player, effect: Effect, toLocation: GainLocation = GainLocation.DISCARD) {
     const cardToGain = effect.reference?.result as string;
-    const gainedCard = this.gainCard(player, cardToGain);
+    const gainedCard = this.gainCard(player, cardToGain, CardLocation.SUPPLY, toLocation);
     effect.result = gainedCard;
     effect.affects = gainedCard;
   }
@@ -155,6 +166,19 @@ export class EffectResolver {
     const gainedCard = this.gainCard(player, cardToGain, CardLocation.NON_SUPPLY);
     effect.result = gainedCard;
     effect.affects = gainedCard;
+  }
+
+  private topdeck(player: Player, effect: Effect) {
+    if (effect.effectPlayer === EffectPlayer.OPP && player.opponent){
+      player = player.opponent;
+    }
+
+    const cardsToTopdeck = effect.reference?.result as Card[];
+    for (const card of cardsToTopdeck){
+      player.removeCardFromHand(card);
+      player.deck.push(card);
+      player.game.gamelog.logTopdeck(player, card);
+    }
   }
 
   private awardTypeBonuses(player: Player, effect: Effect) {
@@ -414,7 +438,7 @@ export class EffectResolver {
     const setAsideCards = fromCard.setAsideDecision?.result as Card[];
     effect.affects = setAsideCards;
     for (const setAsideCard of setAsideCards) {
-      player.addCardToHand(setAsideCard);
+      player.addCard(setAsideCard);
     }
     if (fromCard.setAsideDecision) {
       fromCard.setAsideDecision.result = undefined;

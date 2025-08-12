@@ -15,7 +15,7 @@ describe("Game manager with Smithy draw query for a deck with added Smithy", () 
   };
   const gameManager = new GameManager({}, 1, [drawQueryInput], false);
 
-  gameManager.currentGame.currentPlayer.addCardToHand(new Smithy(), true);
+  gameManager.currentGame.currentPlayer.addCard(new Smithy(), true);
   gameManager.playGames();
 
   const eventQueries = gameManager.eventQueryManager.eventQueries;
@@ -42,12 +42,12 @@ describe("Game manager with Smithy & Wharf draw query for all", () => {
   };
   const gameManager = new GameManager({}, 1, [drawQueryInput], false);
 
-  gameManager.currentGame.currentPlayer.addCardToHand(new Smithy(), true);
-  gameManager.currentGame.currentPlayer.opponent?.addCardToHand(
+  gameManager.currentGame.currentPlayer.addCard(new Smithy(), true);
+  gameManager.currentGame.currentPlayer.opponent?.addCard(
     new Wharf(),
     true,
   );
-  gameManager.currentGame.currentPlayer.opponent?.addCardToHand(
+  gameManager.currentGame.currentPlayer.opponent?.addCard(
     new Wharf(),
     true,
   );

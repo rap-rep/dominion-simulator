@@ -4,7 +4,7 @@ import { Copper } from "./cards/basic/copper";
 import { Estate } from "./cards/basic/estate";
 import { CardNameMap } from "./cards/name_map";
 import { Decision, DecisionType } from "./decisions";
-import { EffectPlayer } from "./effects";
+import { EffectPlayer, GainLocation } from "./effects";
 import { Game, Phase } from "./game";
 import { PlayerHelper } from "./helpers/player_helper";
 import { LogLevel } from "./logging/game_log";
@@ -179,28 +179,40 @@ export class Player {
     const cardDrawn = this.deck.pop();
     if (cardDrawn) {
       this.game.gamelog.logDraw(this, cardDrawn);
-      this.addCardToHand(cardDrawn);
+      this.addCard(cardDrawn);
       return cardDrawn;
     }
   }
 
-  addCardToHand(card: Card, addToAllCards: boolean = false) {
+  addCard(card: Card, addToAllCards: boolean = false, to: GainLocation = GainLocation.HAND) {
     if (addToAllCards) {
       this.addToAllCards(card);
     }
-    const in_hand_already = this.hand.get(card.name);
-    if (!in_hand_already) {
-      this.hand.set(card.name, [card]);
-    } else {
-      in_hand_already.push(card);
+    
+    if (to === GainLocation.HAND){
+      const in_hand_already = this.hand.get(card.name);
+      if (!in_hand_already) {
+        this.hand.set(card.name, [card]);
+      } else {
+        in_hand_already.push(card);
+      }
     }
-  }
+    else if (to === GainLocation.DECK) {
+      this.deck.push(card);
+    }
+    else if (to === GainLocation.DISCARD){
+      this.discard.push(card);
+    }
+    else {
+      throw new Error(`${to} GainLocation not handled`)
+    }
+ }
 
   removeCardFromHand(card: Card, removeFromAllCards: boolean = false) {
     const in_hand = this.hand.get(card.name);
     this.game.gamelog.log(`Removing ${card.name} from hand`, LogLevel.EXTREME);
     if (!in_hand) {
-      throw new Error("Attempting to remove card that is not in hand");
+      throw new Error(`Attempting to remove card ${card.name} that is not in hand`);
     } else {
       this.removeCardFromList(card, in_hand);
       if (removeFromAllCards) {

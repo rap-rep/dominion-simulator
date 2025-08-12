@@ -88,6 +88,10 @@ export class GameLog {
     this.log(`${player.name} receives duration effect from ${card.name}`);
   }
 
+  logTopdeck(player: Player, card: Card) {
+    this.log(`${player.name} topdecks ${card.name}`);
+  }
+
   logDiscardFromPlayCleanup(player: Player, card: Card) {
     if (this.level === LogLevel.DEBUG) {
       this.log(`${player.name} discards ${card.name} from play`);

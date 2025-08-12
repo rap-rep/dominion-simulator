@@ -38,7 +38,7 @@ describe("Default action selection", () => {
 
 describe("Default action selection", () => {
   const game = new Game();
-  game.p1.addCardToHand(new Peddler());
+  game.p1.addCard(new Peddler());
   game.currentPlayer.playActionPhase();
   it("plays an action phase with an action by playing it", () => {
     expect(game.currentPlayer.inPlay.length).toEqual(1);
@@ -78,7 +78,7 @@ describe("shuffle deck", () => {
 
 describe("Default treasure selection", () => {
   const game = new Game();
-  game.currentPlayer.addCardToHand(new Peddler());
+  game.currentPlayer.addCard(new Peddler());
   const coppersAtStart = game.currentPlayer.hand.get(Copper.NAME)?.length || 0;
   game.currentPlayer.playTreasurePhase();
   const coppersAfter = game.currentPlayer.hand.get(Copper.NAME)?.length;
@@ -169,7 +169,7 @@ describe("Adding a card to all cards functionality", () => {
   game.p1.allCardsList = [];
 
   const card = new Silver();
-  game.p1.addCardToHand(card);
+  game.p1.addCard(card);
   game.p1.addToAllCards(card);
 
   it("adds a card to the list and map", () => {

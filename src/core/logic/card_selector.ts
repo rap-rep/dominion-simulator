@@ -36,8 +36,9 @@ export class CardSelector {
 
   getCardsFromCriteria(
     searchMap: Map<string, Card[]>,
-    choices: number,
+    choices: number, // optional amount to be selected before selecting any addtl. required
     required: number = 0,
+    pickAnyCardAfterCriteria: boolean = true,
   ): Card[] {
     const selectedCards = new Array();
 
@@ -74,16 +75,18 @@ export class CardSelector {
             selectedCards,
           );
           if (!selectedCard) {
-            selectedCard = this.getAnyCard(searchMap);
+            if (pickAnyCardAfterCriteria){
+              selectedCard = this.getAnyCard(searchMap);
+            }
             if (!selectedCard) {
-              // empty hand
+              // empty hand or otherwise no applicable matches
               break;
             }
           }
         }
       }
       if (!selectedCard) {
-        throw new Error("function should have broken, but did not.");
+        throw new Error("card selector function should have broken, but did not.");
       } else {
         selectedCards.push(selectedCard);
         choices--;
@@ -109,7 +112,7 @@ export class CardSelector {
     for (const criteria of criteriaList) {
       const matchList: Card[] = []; // collect all candidates if criteria.sortFn defined
       for (const cardStack of searchMap.values()) {
-        const logline = `Checking criteria '${criteria.cardName} ${criteria.heuristicType} ${criteria.alwaysSelect} ${criteria.terminalType} ${criteria.actionsGE}' for matching with ${cardStack[0].name}`;
+        const logline = `Checking criteria '${criteria.cardName} ${criteria.heuristicType} ${criteria.alwaysSelect} ${criteria.terminalType} ${criteria.actionsGE} ${criteria.type}' for matching with ${cardStack[0].name}`;
         this.player.game.gamelog.log(logline, LogLevel.EXTREME);
         if (this.matches(cardStack[0], criteria, alreadySelectedCards)) {
           this.player.game.gamelog.log("Match found", LogLevel.EXTREME);
@@ -157,6 +160,12 @@ export class CardSelector {
 
     if (selectionCriteria.cardName) {
       if (selectionCriteria.cardName !== card.name) {
+        return false;
+      }
+    }
+
+    if (selectionCriteria.type) {
+      if (!card.types.includes(selectionCriteria.type)) {
         return false;
       }
     }

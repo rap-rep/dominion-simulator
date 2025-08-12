@@ -8,7 +8,7 @@ import { PlayerHelper } from "@src/core/helpers/player_helper";
 describe("Ironworks gains a treasure", () => {
   const game = new Game();
   game.p1.hand = new Map();
-  game.p1.addCardToHand(new Ironworks());
+  game.p1.addCard(new Ironworks());
   game.p1.playActionPhase();
   it(", a silver with default buy rules", () => {
     expect(game.p1.discard.length).toEqual(1);
@@ -30,7 +30,7 @@ describe("Ironworks gains an Estate", () => {
   const game = new Game();
   game.turn = 20;
   game.p1.hand = new Map();
-  game.p1.addCardToHand(new Ironworks());
+  game.p1.addCard(new Ironworks());
   game.p1.playActionPhase();
   it("successfully", () => {
     expect(game.p1.discard.length).toEqual(1);

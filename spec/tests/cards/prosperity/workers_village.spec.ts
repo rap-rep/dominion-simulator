@@ -6,7 +6,7 @@ import { PlayerHelper } from "@src/core/helpers/player_helper";
 describe("Village", () => {
   const game = new Game();
   game.p1.hand = new Map();
-  game.p1.addCardToHand(new WorkersVillage());
+  game.p1.addCard(new WorkersVillage());
   game.p1.playActionPhase();
   it("gives a card, two actions, a buy", () => {
     expect(game.p1.actions).toBe(2);

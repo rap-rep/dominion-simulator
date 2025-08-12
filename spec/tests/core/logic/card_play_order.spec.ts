@@ -9,8 +9,8 @@ describe("Village and Smithy in hand plays in correct order", () => {
     logMode: LogMode.SILENT,
   });
 
-  game.currentPlayer.addCardToHand(new Village(), true);
-  game.currentPlayer.addCardToHand(new Smithy(), true);
+  game.currentPlayer.addCard(new Village(), true);
+  game.currentPlayer.addCard(new Smithy(), true);
 
   game.currentPlayer.playActionPhase();
 

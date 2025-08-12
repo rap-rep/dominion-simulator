@@ -1,4 +1,4 @@
-import { SimpleEnginePlayer } from "@src/core/bot_players/simple_engine_player";
+import { SimpleEngineSamplePlayer } from "@src/core/bot_players/simple_engine_player";
 import { Province } from "@src/core/cards/basic/province";
 import { Game } from "@src/core/game";
 
@@ -10,7 +10,7 @@ describe("A set of games between a simple engine and a default (money) bot", () 
   const SIMS = 1;
   for (let i = 0; i < SIMS; i++) {
     game = new Game();
-    game.p2 = new SimpleEnginePlayer("SimpleEngine", game);
+    game.p2 = new SimpleEngineSamplePlayer("SimpleEngine", game);
     game.p1.opponent = game.p2;
     game.p2.opponent = game.p1;
     game.playGame();

@@ -1,4 +1,5 @@
 /* tslint:disable:no-unused-variable */
+import { v4 as uuidv4 } from 'uuid';
 import {
   DeprecatedCardHeuristicType,
   InteractionType,
@@ -15,6 +16,7 @@ export const NULL_CARD_NAME = "NULL";
 
 export class Card {
   name: string;
+  objectId: string;
   types: CardType[];
   graph = new Graph();
 
@@ -27,6 +29,7 @@ export class Card {
   constructor(name: string, types: CardType[]) {
     this.name = name;
     this.types = types;
+    this.objectId = uuidv4().substring(0, 4);
 
     this.whenGainedGraph = this.baseWhenGainedGraph();
   }
@@ -40,7 +43,7 @@ export class Card {
   }
 
   [Symbol.for('nodejs.util.inspect.custom')](): string {
-    return this.name;
+    return `${this.name}(${this.objectId})`;
   }
 
   playGraph(): Graph {

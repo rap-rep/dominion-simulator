@@ -1,5 +1,8 @@
-import { Decision } from "../decisions";
-import { CardSelector, HeuristicType } from "../logic/card_selector";
+import { CardType } from "../card_types";
+import { Decision, DecisionType } from "../decisions";
+import { EffectPlayer } from "../effects";
+import { LogLevel } from "../logging/game_log";
+import { CardSelector, CardSelectorCriteria, HeuristicType } from "../logic/card_selector";
 import { DefaultCriteria } from "../logic/default_selection_criteria";
 import { Player } from "../player";
 import { PlayerHelper } from "./player_helper";
@@ -47,6 +50,29 @@ export class SharedDefaultDecisions {
       player.hand,
       0,
       amountToDiscard,
+    );
+  }
+
+  static topdeckDecision(player: Player, decision: Decision) {
+    const amountToTopdeck = decision.amount;
+
+    var selectFromPlayer = player;
+    var criteria: CardSelectorCriteria[] = DefaultCriteria.discardCardsRequired();
+
+    if (decision.decisionType === DecisionType.TOPDECK_VICTORY){
+      criteria = [{type: CardType.VICTORY}];
+    }
+
+    const selector = new CardSelector(
+      selectFromPlayer,
+      [],
+      criteria,
+    );
+    decision.result = selector.getCardsFromCriteria(
+      selectFromPlayer.hand,
+      0,
+      amountToTopdeck,
+      false,
     );
   }
 

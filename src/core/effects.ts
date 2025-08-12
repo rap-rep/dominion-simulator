@@ -25,6 +25,7 @@ export enum EffectType {
   TRASH_FROM_HAND = "Trash",
   DISCARD_FROM_HAND = "Discard",
   GAIN_FROM_SUPPLY = "Gain",
+  GAIN_FROM_SUPPLY_TO_DECK = "Gain to deck",
   GAIN_FROM_NON_SUPPLY = "Gain from non supply",
   TYPE_BONUSES = "Type bonuses",
   RETURN_TO_NON_SUPPLY_PILE = "Returns",
@@ -47,11 +48,18 @@ export enum EffectType {
   // menagerie
   EXILE_FROM_PLAY = "Exile",
   EXILE_DISCARD = "Discard from exile",
+
 }
 
 export enum EffectPlayer {
-  SELF = 1,
-  OPP = 2,
+  SELF = "Self",
+  OPP = "Opponent",
+}
+
+export enum GainLocation {
+  DISCARD = "discard",
+  DECK = "deck",
+  HAND = "hand",
 }
 
 export class Effect {

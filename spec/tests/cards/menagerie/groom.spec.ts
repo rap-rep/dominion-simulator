@@ -1,4 +1,4 @@
-import { SimpleEnginePlayer } from "@src/core/bot_players/simple_engine_player";
+import { SimpleEngineSamplePlayer } from "@src/core/bot_players/simple_engine_player";
 import { Village } from "@src/core/cards/base/village";
 import { Estate } from "@src/core/cards/basic/estate";
 import { Silver } from "@src/core/cards/basic/silver";
@@ -15,7 +15,7 @@ import { Player } from "@src/core/player";
 describe("Groom gains a treasure", () => {
   const game = new Game();
   game.p1.hand = new Map();
-  game.p1.addCardToHand(new Groom());
+  game.p1.addCard(new Groom());
   game.p1.playActionPhase();
   it("a silver with default buy rules gains two silvers", () => {
     expect(game.p1.discard.length).toEqual(2);
@@ -28,7 +28,7 @@ describe("Groom gains an Estate", () => {
     const game = new Game();
     // based on default buy rule for late turn estates
     game.turn = 20;
-    game.p1.addCardToHand(new Groom());
+    game.p1.addCard(new Groom());
     game.p1.playActionPhase();
     it("receives the Estate, card draw & action", () => {
       expect(game.p1.discard.length).toEqual(1);
@@ -66,7 +66,7 @@ describe("Groom gains an Estate", () => {
 
     game.p1 = new Player("Village Idiot", game, conditions);
     // based on buy rule to buy villages if draw in deck
-    game.p1.addCardToHand(new Groom(), true);
+    game.p1.addCard(new Groom(), true);
     game.p1.playActionPhase();
     it("receives the Village and Horse", () => {
       expect(game.p1.discard.length).toEqual(2);

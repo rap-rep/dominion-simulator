@@ -312,7 +312,6 @@ function parseEventQueries() {
     } else if (selectionType === EventQueryType.WINS) {
       byTurnModifier = formElements[1].value;
       byTurn = parseInt(formElements[3].value);
-      console.log(byTurn);
       eventQueries.push(
         new EventQuery(
           selectionType,

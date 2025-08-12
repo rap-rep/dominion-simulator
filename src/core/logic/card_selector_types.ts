@@ -1,4 +1,5 @@
 import { Card } from "../card";
+import { CardType } from "../card_types";
 import { Player } from "../player";
 
 export enum TerminalType {
@@ -32,6 +33,7 @@ export type CardSelectorCriteria = {
 
   alwaysSelect?: boolean | undefined;
   cardName?: string | undefined;
+  type?: CardType | undefined;
   terminalType?: TerminalType | undefined;
   heuristicType?: HeuristicType | undefined;
   actionsGE?: number | undefined;

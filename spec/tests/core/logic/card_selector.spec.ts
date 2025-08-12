@@ -19,7 +19,7 @@ import { DefaultCriteria } from "@src/core/logic/default_selection_criteria";
 describe("A single optional card selector", () => {
   const game = new Game();
   game.currentPlayer.hand = new Map();
-  game.currentPlayer.addCardToHand(new Chapel());
+  game.currentPlayer.addCard(new Chapel());
 
   const criteria: CardSelectorCriteria = {
     cardName: undefined,
@@ -41,7 +41,7 @@ describe("A single optional card selector", () => {
 describe("A single optional card selector", () => {
   const game = new Game();
   game.currentPlayer.hand = new Map();
-  game.currentPlayer.addCardToHand(new Chapel());
+  game.currentPlayer.addCard(new Chapel());
 
   const criteria: CardSelectorCriteria = {
     cardName: undefined,
@@ -64,7 +64,7 @@ describe("A single optional card selector", () => {
   const game = new Game();
   game.currentPlayer.hand = new Map();
   const estate = new Estate();
-  game.currentPlayer.addCardToHand(estate);
+  game.currentPlayer.addCard(estate);
 
   const criteria: CardSelectorCriteria = {
     cardName: Estate.NAME,
@@ -87,8 +87,8 @@ describe("A single optional card selector", () => {
   game.currentPlayer.hand = new Map();
   const estate = new Estate();
   const estate2 = new Estate();
-  game.currentPlayer.addCardToHand(estate);
-  game.currentPlayer.addCardToHand(estate2);
+  game.currentPlayer.addCard(estate);
+  game.currentPlayer.addCard(estate2);
 
   const criteria: CardSelectorCriteria = {
     cardName: Estate.NAME,
@@ -112,8 +112,8 @@ describe("A multiple card selector selects two Estates", () => {
   game.currentPlayer.hand = new Map();
   const estate = new Estate();
   const estate2 = new Estate();
-  game.currentPlayer.addCardToHand(estate);
-  game.currentPlayer.addCardToHand(estate2);
+  game.currentPlayer.addCard(estate);
+  game.currentPlayer.addCard(estate2);
 
   const criteria: CardSelectorCriteria = {
     cardName: Estate.NAME,
@@ -163,7 +163,7 @@ describe("Card selector with default discard logic", () => {
   });
   const forcedEstate = new Estate();
   game.p1.addToAllCards(forcedEstate);
-  game.p1.addCardToHand(forcedEstate);
+  game.p1.addCard(forcedEstate);
 
   const selector = new CardSelector(
     game.currentPlayer,

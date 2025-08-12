@@ -6,7 +6,7 @@ import { PlayerHelper } from "@src/core/helpers/player_helper";
 describe("Ranger", () => {
   const game = new Game();
   game.p1.hand = new Map();
-  game.p1.addCardToHand(new Ranger());
+  game.p1.addCard(new Ranger());
   game.p1.playActionPhase();
   it("draws no cards on the first play", () => {
     expect(game.p1.actions).toBe(0);
@@ -20,7 +20,7 @@ describe("Two ranger plays", () => {
   game.p1.hand = new Map();
   game.p1.actions = 2;
   for (let i = 0; i < 2; i++) {
-    game.p1.addCardToHand(new Ranger());
+    game.p1.addCard(new Ranger());
   }
   game.p1.playActionPhase();
   it("draw five cards", () => {
@@ -41,7 +41,7 @@ describe("Five ranger plays with a large deck and token starting down", () => {
   game.p1.journeyTokenUp = false;
   game.p1.actions = 10;
   for (let i = 0; i < 5; i++) {
-    game.p1.addCardToHand(new Ranger());
+    game.p1.addCard(new Ranger());
   }
 
   game.p1.playActionPhase();

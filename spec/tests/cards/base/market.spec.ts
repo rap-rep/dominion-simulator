@@ -4,7 +4,7 @@ import { PlayerHelper } from "@src/core/helpers/player_helper";
 
 describe("Market", () => {
   const game = new Game();
-  game.p1.addCardToHand(new Market());
+  game.p1.addCard(new Market());
   game.p1.playActionPhase();
   it("Grants a cantrip coin buy", () => {
     expect(game.p1.inPlay.length).toEqual(1);

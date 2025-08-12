@@ -45,6 +45,8 @@ export class DecisionResolver {
       player.makeDecision(decision);
     } else if (decision.decisionType == DecisionType.DISCARD) {
       player.makeDecision(decision);
+    } else if (decision.decisionType == DecisionType.TOPDECK_VICTORY) {
+      player.makeDecision(decision);
     } else if (decision.decisionType == DecisionType.EXILE_DISCARD) {
       player.makeDecision(decision);
     } else {

@@ -14,7 +14,7 @@ describe("Watchtower", () => {
   game.p1.deck.push(new Copper());
   game.p1.deck.push(new Copper());
 
-  game.p1.addCardToHand(new Watchtower());
+  game.p1.addCard(new Watchtower());
   game.p1.playActionPhase();
   it("draws six cards from empty hand", () => {
     expect(game.p1.actions).toBe(0);
@@ -24,13 +24,13 @@ describe("Watchtower", () => {
 
 describe("Watchtower", () => {
   const game = new Game();
-  game.p1.addCardToHand(new Watchtower());
+  game.p1.addCard(new Watchtower());
 
   // Put 7 cards in deck (starts with 5), expecting to draw 6
   game.p1.deck.push(new Copper());
   game.p1.deck.push(new Copper());
 
-  game.p1.addCardToHand(new Watchtower());
+  game.p1.addCard(new Watchtower());
   game.p1.playActionPhase();
   it("draws one card when played from starting hand of 6", () => {
     expect(game.p1.actions).toBe(0);
@@ -40,7 +40,7 @@ describe("Watchtower", () => {
 
 describe("Watchtower", () => {
   const game = new Game();
-  game.p1.addCardToHand(new Watchtower());
+  game.p1.addCard(new Watchtower());
 
   game.p1.effectResolver.gainCard(game.p1, Curse.NAME);
   it("trashes a gained cursed while in hand", () => {

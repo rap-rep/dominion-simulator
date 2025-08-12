@@ -5,7 +5,7 @@ import { PlayerHelper } from "@src/core/helpers/player_helper";
 describe("Peddler", () => {
   const game = new Game();
   game.p1.hand = new Map();
-  game.p1.addCardToHand(new Peddler());
+  game.p1.addCard(new Peddler());
   game.currentPlayer.playActionPhase();
   it("Grants a cantrip and a coin", () => {
     expect(game.currentPlayer.inPlay.length).toEqual(1);
@@ -20,7 +20,7 @@ describe("Peddler cost", () => {
   const game = new Game();
   game.p1.hand = new Map();
   const peddler = new Peddler();
-  game.p1.addCardToHand(peddler);
+  game.p1.addCard(peddler);
   game.currentPlayer.playActionPhase();
   it("is reduced by 2 per action in play during the buy phase", () => {
     expect(peddler.effectiveCost(0, 1)).toBe(6);

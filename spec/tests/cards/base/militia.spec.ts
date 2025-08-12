@@ -5,7 +5,7 @@ import { LogMode } from "@src/core/logging/game_log";
 
 describe("Militia", () => {
   const game = new Game({ logMode: LogMode.SILENT });
-  game.p1.addCardToHand(new Milita());
+  game.p1.addCard(new Milita());
   game.p1.playActionPhase();
   it("results in opponent discarding cards and the other expected effects", () => {
     expect(game.p1.inPlay.length).toEqual(1);

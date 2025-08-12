@@ -13,14 +13,14 @@ import {
 } from "../logic/ordered_condition_gaining";
 import { Player } from "../player";
 
-export class SimpleEnginePlayer extends Player {
+export class SimpleEngineSamplePlayer extends Player {
   /*
    * Extremely basic player that plays only Wharf/Village using gain rules
    * Not intended to be used for anything serious.
    */
   gainCardDecision(decision: Decision): string {
     if (decision.decisionType === DecisionType.BUY_CARD) {
-      const toGain = SimpleEnginePlayer.defaultGainDecision(this, this.coins);
+      const toGain = SimpleEngineSamplePlayer.defaultGainDecision(this, this.coins);
       this.game.gamelog.logBuy(this, toGain);
       return toGain;
     } else if (decision.decisionType == DecisionType.GAIN_CARD_UP_TO) {
@@ -29,7 +29,7 @@ export class SimpleEnginePlayer extends Player {
           "Decision amount required but not provided for gain effect",
         );
       }
-      const decisionResult = SimpleEnginePlayer.defaultGainDecision(
+      const decisionResult = SimpleEngineSamplePlayer.defaultGainDecision(
         this,
         decision.amount,
       );

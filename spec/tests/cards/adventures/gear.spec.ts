@@ -12,7 +12,7 @@ describe("Gear with a standard hand", () => {
   game.p1.deck = new Array();
 
   const gear = new Gear();
-  game.p1.addCardToHand(gear);
+  game.p1.addCard(gear);
 
   game.p1.topdeck(new Copper());
   game.p1.topdeck(new Copper());
@@ -20,8 +20,8 @@ describe("Gear with a standard hand", () => {
   game.p1.topdeck(new Copper());
   game.p1.topdeck(new Copper());
 
-  game.p1.addCardToHand(new Estate());
-  game.p1.addCardToHand(new Estate());
+  game.p1.addCard(new Estate());
+  game.p1.addCard(new Estate());
 
   game.p1.playActionPhase();
 
@@ -42,13 +42,13 @@ describe("Terminal gear", () => {
   game.p1.deck = new Array();
 
   const gear = new Gear();
-  game.p1.addCardToHand(gear);
+  game.p1.addCard(gear);
 
   for (let i = 0; i < 5; i++) {
     game.p1.topdeck(new Copper());
   }
 
-  game.p1.addCardToHand(new Market());
+  game.p1.addCard(new Market());
   game.p1.actions--;
   game.p1.removeCardFromHand(gear);
   game.p1.effectResolver.playCard(game.p1, gear);
@@ -67,7 +67,7 @@ describe("Gear setting aside nothing", () => {
   const game = new Game({logLevel: LogLevel.INFO, logMode: LogMode.SILENT, p1cards: []});
 
   const gear = new Gear();
-  game.p1.addCardToHand(gear, true);
+  game.p1.addCard(gear, true);
 
   game.p1.playActionPhase();
   const resultList: Card[] = gear?.setAsideDecision?.result as Card[];
@@ -87,14 +87,14 @@ describe("Nonterminal gear", () => {
   game.p1.deck = new Array();
 
   const gear = new Gear();
-  game.p1.addCardToHand(gear);
+  game.p1.addCard(gear);
   game.p1.actions = 10;
 
   for (let i = 0; i < 5; i++) {
     game.p1.topdeck(new Copper());
   }
 
-  game.p1.addCardToHand(new Market());
+  game.p1.addCard(new Market());
   game.p1.removeCardFromHand(gear);
   game.p1.effectResolver.playCard(game.p1, gear);
 
@@ -113,13 +113,13 @@ describe("Terminal gear", () => {
   game.p1.deck = new Array();
 
   const gear = new Gear();
-  game.p1.addCardToHand(gear);
+  game.p1.addCard(gear);
 
   for (let i = 0; i < 15; i++) {
     game.p1.topdeck(new Copper());
   }
 
-  game.p1.addCardToHand(new Market());
+  game.p1.addCard(new Market());
   game.p1.actions--;
   game.p1.removeCardFromHand(gear);
   game.p1.effectResolver.playCard(game.p1, gear);
@@ -141,8 +141,8 @@ describe("Gear on the second turn after it is played", () => {
   game.p1.deck = new Array();
 
   const gear = new Gear();
-  game.p1.addCardToHand(gear);
-  game.p1.addCardToHand(new Market());
+  game.p1.addCard(gear);
+  game.p1.addCard(new Market());
 
   for (let i = 0; i < 15; i++) {
     game.p1.topdeck(new Copper());

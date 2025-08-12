@@ -70,6 +70,8 @@ export class PlayerHelper {
       SharedDefaultDecisions.discardToDecision(player, decision);
     } else if (decision.decisionType === DecisionType.DISCARD) {
       SharedDefaultDecisions.discardDecision(player, decision);
+    } else if (decision.decisionType === DecisionType.TOPDECK_VICTORY) {
+      SharedDefaultDecisions.topdeckDecision(player, decision);
     } else if (decision.decisionType === DecisionType.EXILE_DISCARD) {
       SharedDefaultDecisions.exileDiscardDecision(player, decision);
     } else {

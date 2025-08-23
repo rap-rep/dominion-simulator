@@ -4,6 +4,8 @@ Dominion simulator project that does a few things now. More documentation and li
 
 This project was created with [express-generator-typescript](https://github.com/seanpmaxwell/express-generator-typescript).
 
+Backend is express/node, frontend is vanilla javascript (sorry, I was just playing around with this at first!).
+
 ## Local & Integration Scripts
 
 ### `npm run dev`

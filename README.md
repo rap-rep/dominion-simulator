@@ -22,6 +22,10 @@ Run a single unit-test.
 
 Run all unit-tests without hot-reloading.
 
+### npx prettier . --write
+
+Running prettier auto-reformat
+
 ## Production Scripts
 
 ### `npm run build`
@@ -35,10 +39,6 @@ Run the production build (Must be built first).
 ### `npm start -- --env="name of env file" (default is production).`
 
 Run production build with a different env file.
-
-### npx prettier . --write
-
-Running prettier auto-reformat
 
 ## Additional Notes
 

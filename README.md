@@ -8,7 +8,7 @@ This project was created with [express-generator-typescript](https://github.com/
 
 ### `npm run dev`
 
-Run the server locally (in development mode)
+Run the server locally (in development mode). By default this will be available at localhost:3000/
 
 ### `npm test`
 

@@ -2,7 +2,7 @@
 
 Dominion simulator project that does a few things now. More documentation and links to project tracking to come.
 
-Backend is express/node, frontend is vanilla javascript (sorry, I was just playing around with this at first!).
+Backend is express/node TypeScript, frontend is vanilla javascript (sorry, I was just playing around with this at first!).
 
 ## Local & Integration Scripts
 

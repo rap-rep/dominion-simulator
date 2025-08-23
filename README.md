@@ -14,17 +14,17 @@ Run the server locally (in development mode). By default this will be available 
 
 Run all unit-tests with hot-reloading.
 
-### `npm test -- --testFile="name of test file" (i.e. --testFile=workers_village).`
-
-Run a single unit-test.
-
 ### `npm run test:no-reloading`
 
 Run all unit-tests without hot-reloading.
 
+### `npm test -- --testFile="name of test file" (i.e. --testFile=workers_village).`
+
+Run a single unit-test.
+
 ### npx prettier . --write
 
-Running prettier auto-reformat
+Auto-reformat all code
 
 ## Production Scripts
 

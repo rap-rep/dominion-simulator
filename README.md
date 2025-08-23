@@ -1,14 +1,14 @@
 ## About
 
-Dominion simulator project with the ultimate goal of creating a convenient web app for generating simulation results with highly customizable data fetching and flexible automated play decisions.
+Dominion simulator project that does a few things now. More documentation and links to project tracking to come.
 
 This project was created with [express-generator-typescript](https://github.com/seanpmaxwell/express-generator-typescript).
 
-## Available Scripts
+## Local & Integration Scripts
 
 ### `npm run dev`
 
-Run the server in development mode.
+Run the server locally (in development mode)
 
 ### `npm test`
 
@@ -22,9 +22,7 @@ Run a single unit-test.
 
 Run all unit-tests without hot-reloading.
 
-### `npm run lint`
-
-Check for linting errors.
+## Production Scripts
 
 ### `npm run build`
 

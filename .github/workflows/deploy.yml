@@ -24,7 +24,7 @@ jobs:
     
     - name: Run tests
       run: npx ts-node --files -r tsconfig-paths/register ./spec
-
+    
     - name: Build application
       run: npm run build
 
@@ -105,25 +105,24 @@ jobs:
             exit 1
           fi
           
-          # Create or update ecosystem.config.js in the app directory
-          cat > ecosystem.config.js << 'EOF'
-module.exports = {
-  apps: [{
-    name: 'my-express-app',
-    script: 'npm',
-    args: 'start',
-    cwd: '/var/www/my-express-app',
-    env: {
-      NODE_ENV: 'production',
-      PORT: 3000
-    },
-    instances: 1,
-    autorestart: true,
-    watch: false,
-    max_memory_restart: '500M'
-  }]
-};
-EOF
+          # Create ecosystem.config.js in the app directory
+          echo "Creating PM2 ecosystem configuration..."
+          echo "module.exports = {" > ecosystem.config.js
+          echo "  apps: [{" >> ecosystem.config.js
+          echo "    name: 'my-express-app'," >> ecosystem.config.js
+          echo "    script: 'npm'," >> ecosystem.config.js
+          echo "    args: 'start'," >> ecosystem.config.js
+          echo "    cwd: '/var/www/my-express-app'," >> ecosystem.config.js
+          echo "    env: {" >> ecosystem.config.js
+          echo "      NODE_ENV: 'production'," >> ecosystem.config.js
+          echo "      PORT: 3000" >> ecosystem.config.js
+          echo "    }," >> ecosystem.config.js
+          echo "    instances: 1," >> ecosystem.config.js
+          echo "    autorestart: true," >> ecosystem.config.js
+          echo "    watch: false," >> ecosystem.config.js
+          echo "    max_memory_restart: '500M'" >> ecosystem.config.js
+          echo "  }]" >> ecosystem.config.js
+          echo "};" >> ecosystem.config.js
           
           # Start the application
           echo "Starting application with PM2..."

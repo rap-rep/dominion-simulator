@@ -8,8 +8,6 @@ import {
   EventQueryInput,
   EventQueryType,
 } from "@src/core/logging/event_query";
-import { LogMode } from "@src/core/logging/game_log";
-import { ALL } from "dns";
 
 describe("Game manager with Smithy draw query for a deck with added Smithy", () => {
   const drawQueryInput: EventQueryInput = {
@@ -121,20 +119,12 @@ describe("Average number of cards drawn on turn one with Labs", () => {
   };
   const gameManager = new GameManager({
     p1cards: [[Laboratory.NAME, 3], [Copper.NAME, 8]],
-    logMode: LogMode.CONSOLE_LOG,
     turnLimit: 1,
   }, SIM_GAMES, [plusCoinsQueryInput], false);
 
   gameManager.playGames();
 
-  const eventQueries = gameManager.eventQueryManager.eventQueries;
-  let coinRecords = 0;
-  if (eventQueries) {
-    coinRecords = eventQueries[0].effectRecords.get(1)?.length || 0;
-  }
-
   const jsonResults = gameManager.eventQueryManager.getJsonResults(SIM_GAMES);
-  console.log(jsonResults);
 
   it("returns a number that is reasonable (more than 5 but less than all Coppers)", () => {
     expect(jsonResults.length).toEqual(2);

@@ -3,6 +3,7 @@ import { Player } from "../player";
 
 export type LogLine = {
   line: string;
+  indentation: number;
 };
 
 export enum LogMode {
@@ -21,6 +22,7 @@ export class GameLog {
   loglines: LogLine[] = [];
   mode: LogMode;
   level: LogLevel;
+  indentation: number;
 
   constructor(mode?: LogMode | undefined, level?: LogLevel | undefined) {
     if (!mode) {
@@ -33,6 +35,8 @@ export class GameLog {
     } else {
       this.level = level;
     }
+
+    this.indentation = 0;
   }
 
   getBufferedLog(): string[] {
@@ -46,11 +50,26 @@ export class GameLog {
       this.level === LogLevel.EXTREME
     ) {
       if (this.mode === LogMode.CONSOLE_LOG) {
-        console.log(line);
+        console.log(this.getIndentedLine(line, this.indentation));
       } else if (this.mode === LogMode.BUFFER) {
-        this.loglines.push({ line: line });
+        this.loglines.push({ line: line, indentation: this.indentation});
       }
     }
+  }
+
+  indent(){
+    this.indentation += 1;
+  }
+
+  dedent(){
+    if (this.indentation === 0){
+      throw new Error("Trying to dedent log below zero! Logging must be broken, panicking...")
+    }
+    this.indentation -= 1;
+  }
+
+  getIndentedLine(line: string, indentation: number): string {
+    return ' '.repeat(indentation * 2) + line;
   }
 
   logTurn(turn: number, playerName: string) {

@@ -18,6 +18,7 @@ export class EffectResolver {
 
   playCard(player: Player, card: Card) {
     player.game.gamelog.logCardPlay(card, player.name);
+    player.game.gamelog.indent();
     player.inPlay.push(card);
 
     const node = card.playGraph().getStartNode();
@@ -25,6 +26,7 @@ export class EffectResolver {
       this.resolveNode(player, node.node);
       this.playChildrenNodes(player, card, node);
     }
+    player.game.gamelog.dedent();
   }
 
   playDuration(player: Player, card: Card) {

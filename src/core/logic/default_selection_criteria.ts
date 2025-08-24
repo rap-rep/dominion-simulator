@@ -21,13 +21,13 @@ export class DefaultCriteria {
   static playTurnDefault(): CardSelectorCriteria[] {
     return [
       {
+        heuristicType: HeuristicType.FROM_DECK_SIFTER,
+        terminalType: TerminalType.NONTERMINAL,
+      },
+      {
         heuristicType: HeuristicType.DRAW,
         terminalType: TerminalType.NONTERMINAL,
         drawCriteria: { atLeastOne: true },
-      },
-      {
-        heuristicType: HeuristicType.FROM_DECK_SIFTER,
-        terminalType: TerminalType.NONTERMINAL,
       },
       { heuristicType: HeuristicType.VILLAGE },
       { heuristicType: HeuristicType.CANTRIP },

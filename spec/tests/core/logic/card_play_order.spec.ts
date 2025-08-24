@@ -1,3 +1,5 @@
+import { Bureaucrat } from "@src/core/cards/base/bureaucrat";
+import { Laboratory } from "@src/core/cards/base/laboratory";
 import { Smithy } from "@src/core/cards/base/smithy";
 import { Village } from "@src/core/cards/base/village";
 import { Game } from "@src/core/game";
@@ -18,6 +20,24 @@ describe("Village and Smithy in hand plays in correct order", () => {
     expect(game.currentPlayer.inPlay.length).toBe(2);
     expect(game.currentPlayer.inPlay[0]?.name).toBe(Village.NAME);
     expect(game.currentPlayer.inPlay[1]?.name).toBe(Smithy.NAME);
+  });
+});
+
+describe("Laboratory and Burecraut in hand plays in correct order", () => {
+  const game = new Game({
+    logLevel: LogLevel.INFO,
+    logMode: LogMode.SILENT,
+  });
+
+  game.currentPlayer.addCard(new Laboratory(), true);
+  game.currentPlayer.addCard(new Bureaucrat(), true);
+
+  game.currentPlayer.playActionPhase();
+
+  it("by playing Laboratory first", () => {
+    expect(game.currentPlayer.inPlay.length).toBe(2);
+    expect(game.currentPlayer.inPlay[0]?.name).toBe(Laboratory.NAME);
+    expect(game.currentPlayer.inPlay[1]?.name).toBe(Bureaucrat.NAME);
   });
 });
 

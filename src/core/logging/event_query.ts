@@ -126,7 +126,7 @@ export class EventQuery {
       byTurn: this.byTurn || 99,
       average: this.getAverage(numGames),
       playerName: this.playerName,
-      byTurnModifier: this.byTurnModifier,
+      byTurnModifier: this.byTurnModifier || ByTurnModifier.DEFAULT,
     };
   }
 

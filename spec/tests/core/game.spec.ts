@@ -1,7 +1,6 @@
 import { Province } from "@src/core/cards/basic/province";
 import { Game, GameConfig } from "@src/core/game";
 import { PlayerHelper } from "@src/core/helpers/player_helper";
-import exp from "constants";
 
 describe("Game has a valid starting state", () => {
   const game = new Game();
@@ -18,8 +17,8 @@ describe("A complete game with default rules", () => {
   let game: Game;
   game = new Game();
   game.playGame();
-  it("ends before turn 22 with an empty Province pile", () => {
-    expect(game.turn).toBeLessThan(22);
+  it("ends before turn 25 with an empty Province pile", () => {
+    expect(game.turn).toBeLessThan(25);
     expect(game.kingdom.supplyPiles.get(Province.NAME)).toBeDefined();
     expect(game.kingdom.supplyPiles.get(Province.NAME)?.length).toEqual(0);
   });

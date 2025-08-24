@@ -262,11 +262,6 @@ function setupSimListeners() {
     simGame(1000);
   });
 
-  var playButton10000 = document.getElementById("play-game-btn-10000");
-  playButton10000.addEventListener("click", (event) => {
-    event.preventDefault();
-    simGame(10000);
-  });
 }
 
 // Section: event querying parsing for passing to Game creation

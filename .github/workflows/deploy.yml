@@ -78,24 +78,6 @@ jobs:
           echo "Removing dev dependencies after build..."
           npm prune --production
           
-          # Check if build created the expected files
-          echo "Checking build output..."
-          ls -la
-          if [ -d "dist" ]; then
-            echo "✅ dist directory found"
-            echo "Contents of dist directory:"
-            ls -la dist/
-            echo "Looking for main entry files:"
-            find dist/ -name "*.js" | head -10
-          else
-            echo "❌ dist directory not found, checking for other build outputs..."
-            find . -name "*.js" -not -path "./node_modules/*" | head -10
-          fi
-          
-          # Show what the start script is trying to execute
-          echo "Checking package.json start script..."
-          cat package.json | grep -A 5 -B 5 '"start"' || echo "Could not find start script"
-          
           # Stop the application if running
           pm2 stop my-express-app 2>/dev/null || echo "App not currently running"
           pm2 delete my-express-app 2>/dev/null || echo "App not in PM2 list"
@@ -126,14 +108,6 @@ jobs:
             echo "❌ ERROR: package.json still not found in app directory!"
             exit 1
           fi
-          
-          # Show the start script to understand what it's trying to run
-          echo "Checking package.json start script..."
-          cat package.json | grep -A 5 -B 5 '"start"' || echo "Could not find start script"
-          
-          # Try to manually run the start command to see the exact error
-          echo "Testing start command manually..."
-          timeout 10s npm start || echo "Start command test completed (or timed out)"
           
           # Create ecosystem.config.js in the app directory
           echo "Creating PM2 ecosystem configuration..."

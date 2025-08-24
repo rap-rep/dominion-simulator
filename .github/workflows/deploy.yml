@@ -161,6 +161,33 @@ jobs:
           ls -la
           echo "Files in dist directory:"
           ls -la dist/ 2>/dev/null || echo "No dist directory found"
+          # Looking for main entry point in dist and fix start script if needed
+          echo "Looking for main entry point in dist:"
+          find dist/ -name "*.js" | head -10
+          
+          # Check if there's an index.js or main.js in dist
+          if [ -f "dist/index.js" ]; then
+            echo "Found dist/index.js - updating start script to use specific file"
+            # Update package.json to point to the actual file instead of directory
+            sed -i 's|node -r module-alias/register ./dist|node -r module-alias/register ./dist/index.js|g' package.json
+          elif [ -f "dist/server.js" ]; then
+            echo "Found dist/server.js - updating start script to use specific file"
+            sed -i 's|node -r module-alias/register ./dist|node -r module-alias/register ./dist/server.js|g' package.json
+          elif [ -f "dist/app.js" ]; then
+            echo "Found dist/app.js - updating start script to use specific file"
+            sed -i 's|node -r module-alias/register ./dist|node -r module-alias/register ./dist/app.js|g' package.json
+          else
+            echo "Looking for any main JS file in dist:"
+            MAIN_FILE=$(find dist/ -name "*.js" | head -1)
+            if [ ! -z "$MAIN_FILE" ]; then
+              echo "Found main file: $MAIN_FILE - updating start script"
+              sed -i "s|node -r module-alias/register ./dist|node -r module-alias/register ./$MAIN_FILE|g" package.json
+            fi
+          fi
+          
+          # Show the updated start script
+          echo "Updated start script:"
+          cat package.json | grep '"start"'
           echo "Package.json start script:"
           cat package.json | grep '"start"' || echo "No start script found"
           

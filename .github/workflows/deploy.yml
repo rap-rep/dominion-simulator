@@ -83,11 +83,18 @@ jobs:
           ls -la
           if [ -d "dist" ]; then
             echo "✅ dist directory found"
+            echo "Contents of dist directory:"
             ls -la dist/
+            echo "Looking for main entry files:"
+            find dist/ -name "*.js" | head -10
           else
             echo "❌ dist directory not found, checking for other build outputs..."
             find . -name "*.js" -not -path "./node_modules/*" | head -10
           fi
+          
+          # Show what the start script is trying to execute
+          echo "Checking package.json start script..."
+          cat package.json | grep -A 5 -B 5 '"start"' || echo "Could not find start script"
           
           # Stop the application if running
           pm2 stop my-express-app 2>/dev/null || echo "App not currently running"
@@ -122,11 +129,11 @@ jobs:
           
           # Show the start script to understand what it's trying to run
           echo "Checking package.json start script..."
-          if command -v jq >/dev/null 2>&1; then
-            jq -r '.scripts.start' package.json || echo "Could not read start script with jq"
-          else
-            grep -A 1 -B 1 '"start"' package.json || echo "Could not find start script"
-          fi
+          cat package.json | grep -A 5 -B 5 '"start"' || echo "Could not find start script"
+          
+          # Try to manually run the start command to see the exact error
+          echo "Testing start command manually..."
+          timeout 10s npm start || echo "Start command test completed (or timed out)"
           
           # Create ecosystem.config.js in the app directory
           echo "Creating PM2 ecosystem configuration..."
@@ -148,6 +155,15 @@ jobs:
           echo "};" >> ecosystem.config.js
           
           # Start the application
+          echo "Final verification before starting PM2..."
+          echo "Current directory: $(pwd)"
+          echo "Files in current directory:"
+          ls -la
+          echo "Files in dist directory:"
+          ls -la dist/ 2>/dev/null || echo "No dist directory found"
+          echo "Package.json start script:"
+          cat package.json | grep '"start"' || echo "No start script found"
+          
           echo "Starting application with PM2..."
           pm2 start npm --name "my-express-app" -- start
           pm2 save

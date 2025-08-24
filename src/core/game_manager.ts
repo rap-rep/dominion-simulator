@@ -50,7 +50,7 @@ export class GameManager {
       this.writeEndOfGameMetrics();
 
       if (this.includeSampleLog && this.sampleLog === undefined) {
-        this.sampleLog = this.currentGame.gamelog.getBufferedLog();
+        this.sampleLog = this.currentGame.gamelog.getBufferedLogHTML();
       }
 
       if (this.defaultGameConfig.starter === Starter.P1) {

@@ -11,7 +11,7 @@ import { GameManager } from "@src/core/game_manager";
 
 // **** Functions **** //
 
-// TODO Fix this file, currently in testing/play-around mode
+// TODO Fix this file's naming & placement, currently in testing/play-around mode
 async function getGame(_: IReq, res: IRes) {
   const game = new Game();
   game.playGame();

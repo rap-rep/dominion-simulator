@@ -43,6 +43,10 @@ export class GameLog {
     return this.loglines.map((l) => l.line);
   }
 
+  getBufferedLogHTML(): string[] {
+    return this.loglines.map((line) => this.getLineHTML(line));
+  }
+
   log(line: string, level: LogLevel = LogLevel.INFO) {
     if (
       level === LogLevel.INFO ||
@@ -68,8 +72,12 @@ export class GameLog {
     this.indentation -= 1;
   }
 
-  getIndentedLine(line: string, indentation: number): string {
+  private getIndentedLine(line: string, indentation: number): string {
     return ' '.repeat(indentation * 2) + line;
+  }
+
+  private getLineHTML(line: LogLine): string {
+    return '&emsp;'.repeat(line.indentation) + line.line;
   }
 
   logTurn(turn: number, playerName: string) {
@@ -78,23 +86,23 @@ export class GameLog {
   }
 
   logCardPlay(card: Card, playerName: string) {
-    this.log(`${playerName} plays a ${card.name}`);
+    this.log(`${playerName} plays ${card.name}`);
   }
 
   logBuy(player: Player, card: string) {
     if (card === NULL_CARD_NAME) {
       this.log(`${player.name} buys nothing`);
     } else {
-      this.log(`${player.name} buys a ${card}`);
+      this.log(`${player.name} buys ${card}`);
     }
   }
 
   logGain(player: Player, card: Card) {
-    this.log(`${player.name} gains a ${card.name}`);
+    this.log(`${player.name} gains ${card.name}`);
   }
 
   logDraw(player: Player, card: Card) {
-    this.log(`${player.name} draws a ${card.name}`);
+    this.log(`${player.name} draws ${card.name}`);
   }
 
   logShuffle(player: Player) {
@@ -124,7 +132,7 @@ export class GameLog {
   }
 
   logExile(player: Player, card: Card) {
-    this.log(`${player.name} exiles a ${card.name}`);
+    this.log(`${player.name} exiles ${card.name}`);
   }
 
   logExileDiscard(player: Player, card: Card, amount: number) {

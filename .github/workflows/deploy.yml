@@ -68,11 +68,15 @@ jobs:
           
           # Install dependencies in temp directory
           cd $TEMP_DIR
-          echo "Installing dependencies..."
-          npm ci --only=production
+          echo "Installing all dependencies (including dev dependencies for build)..."
+          npm ci
           
           echo "Building application..."
           npm run build
+          
+          # After build, remove dev dependencies to save space
+          echo "Removing dev dependencies after build..."
+          npm prune --production
           
           # Check if build created the expected files
           echo "Checking build output..."

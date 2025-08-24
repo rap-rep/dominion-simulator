@@ -1,4 +1,5 @@
 import { Card, NULL_CARD_NAME } from "../card";
+import { Phase } from "../game";
 import { Player } from "../player";
 
 export type LogLine = {
@@ -87,6 +88,10 @@ export class GameLog {
 
   logCardPlay(card: Card, playerName: string) {
     this.log(`${playerName} plays ${card.name}`);
+  }
+
+  logPhase(name: Phase){
+    this.log(`|- Phase: ${name.valueOf()} -|`);
   }
 
   logBuy(player: Player, card: string) {

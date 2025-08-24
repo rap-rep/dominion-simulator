@@ -180,9 +180,9 @@ export class Game {
 }
 
 export enum Phase {
-  START = "Start",
+  START = "Start Turn",
   ACTION = "Action",
-  TREASURE = "Treasure",
-  BUY = "Buy",
-  CLEAN_UP = "Clean up",
+  TREASURE = "Buy (Play Treasures)",
+  BUY = "Buy (Purchase)",
+  CLEAN_UP = "Cleanup",
 }

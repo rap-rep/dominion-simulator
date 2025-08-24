@@ -73,11 +73,11 @@ export class Player {
     this.journeyTokenUp = true;
 
     this.drawHand();
-    this.playStartTurn();
   }
 
   playStartTurn() {
     this.game.phase = Phase.START;
+    this.game.gamelog.logPhase(Phase.START);
     this.actions = 1;
     this.buys = 1;
     this.coins = 0;
@@ -268,6 +268,7 @@ export class Player {
     const selector = new CardSelector(this, DefaultCriteria.playTurnDefault());
 
     this.game.phase = Phase.ACTION;
+    this.game.gamelog.logPhase(Phase.ACTION);
     let currentlySelectedAction: Card | undefined;
     while (this.actions > 0) {
       currentlySelectedAction = selector.getCardFromCriteria(
@@ -288,6 +289,7 @@ export class Player {
 
   playTreasurePhase() {
     this.game.phase = Phase.TREASURE;
+    this.game.gamelog.logPhase(Phase.TREASURE);
     let currentlySelectedTreasure: Card;
     while (true) {
       currentlySelectedTreasure = PlayerHelper.selectAnyTreasure(this);
@@ -319,6 +321,8 @@ export class Player {
 
   playBuyPhase() {
     this.game.phase = Phase.BUY;
+    this.game.gamelog.logPhase(Phase.BUY);
+
     let currentlySelectedCard: string;
     while (this.buys > 0) {
       currentlySelectedCard = this.gainCardDecision(
@@ -346,6 +350,7 @@ export class Player {
 
   playCleanupPhase() {
     this.game.phase = Phase.CLEAN_UP;
+    this.game.gamelog.logPhase(Phase.CLEAN_UP);
     this.placeInPlayInDiscard();
     this.placeHandInDiscard();
     this.drawHand();

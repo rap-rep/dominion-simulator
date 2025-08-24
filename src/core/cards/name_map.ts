@@ -10,6 +10,7 @@ import { Milita } from "./base/militia";
 import { Smithy } from "./base/smithy";
 import { Village } from "./base/village";
 import { Warehouse } from "./base/warehouse";
+import { Witch } from "./base/witch";
 import { Workshop } from "./base/workshop";
 import { Copper } from "./basic/copper";
 import { Duchy } from "./basic/duchy";
@@ -49,6 +50,7 @@ export class CardNameMap {
     this.nameMap.set(Workshop.NAME, Workshop.factoryGenerator);
     this.nameMap.set(Warehouse.NAME, Warehouse.factoryGenerator);
     this.nameMap.set(Bureaucrat.NAME, Bureaucrat.factoryGenerator);
+    this.nameMap.set(Witch.NAME, Witch.factoryGenerator);
 
 
     this.nameMap.set(Peddler.NAME, Peddler.factoryGenerator);

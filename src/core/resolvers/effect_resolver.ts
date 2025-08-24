@@ -6,7 +6,7 @@ import { Player } from "../player";
 import { Decision, DecisionType } from "../decisions";
 import { DecisionResolver } from "./decision_resolver";
 import { PlayerHelper } from "../helpers/player_helper";
-import { CardType, DurationPhase } from "../card_types";
+import { DurationPhase } from "../card_types";
 import { EventRecordBuilder } from "../logging/event_record_builders";
 import { CardLocation } from "../kingdom";
 

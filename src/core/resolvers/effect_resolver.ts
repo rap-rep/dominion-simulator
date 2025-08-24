@@ -165,6 +165,10 @@ export class EffectResolver {
     toLocation: GainLocation = GainLocation.DISCARD,
   ) {
     const cardToGain = effect.reference?.result as string;
+    if (effect.effectPlayer === EffectPlayer.OPP && player.opponent){
+      player = player.opponent;
+    }
+
     const gainedCard = this.gainCard(
       player,
       cardToGain,
@@ -177,6 +181,10 @@ export class EffectResolver {
 
   private gainFromNonSupply(player: Player, effect: Effect) {
     const cardToGain = effect.reference?.result as string;
+    if (effect.effectPlayer === EffectPlayer.OPP && player.opponent){
+      player = player.opponent;
+    }
+
     const gainedCard = this.gainCard(
       player,
       cardToGain,

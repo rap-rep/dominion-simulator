@@ -128,6 +128,15 @@ body {
   margin-bottom: 10px;
   width: 100%;
 }
+select:disabled {
+  opacity: 1 !important;
+  color: #333 !important;
+  background-color: #989797 !important;
+  background-image: none; /* removes any default disabled styling */
+  border-color: #ccc !important;
+  cursor: default;
+  -webkit-text-fill-color: #333; /* for WebKit browsers */
+}
 
 /* LOADING SPINNER */
 .lds-dual-ring {

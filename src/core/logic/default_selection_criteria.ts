@@ -53,7 +53,9 @@ export class DefaultCriteria {
         terminalType: TerminalType.NONTERMINAL,
       },
       { heuristicType: HeuristicType.FROM_DECK_SIFTER },
-      { heuristicType: HeuristicType.FROM_HAND_SIFTER },
+      { heuristicType: HeuristicType.FROM_HAND_SIFTER,
+        drawCriteria: { atLeastOne: true },
+       },
       { heuristicType: HeuristicType.TRASHER },
       {
         heuristicType: HeuristicType.PAYLOAD_GAINER,

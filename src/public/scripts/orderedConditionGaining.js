@@ -153,6 +153,9 @@ function getDiffIndicatorElement() {
 function addConditionListener(addConditionSelect) {
   addConditionSelect.addEventListener("change", (event) => {
     var isFirstAdded = true;
+    // WARNING: There are breaking issues with adding a change to a current rule
+    // This has been fixed by disabling changes to current rules,
+    // TODO should be revisited to allow this functionality
     var isAChangeToCurrentRule = false;
     if (event.target.parentElement.children.length > 7) {
       isFirstAdded = false;
@@ -208,6 +211,7 @@ function addConditionListener(addConditionSelect) {
     }
     var insertPosition = 1;
     if (isAChangeToCurrentRule) {
+      // TODO this in a way that isn't a messy bug (currently disabled from happening)
       insertPosition = 2;
     }
     event.target.parentElement.insertBefore(
@@ -215,7 +219,7 @@ function addConditionListener(addConditionSelect) {
       event.target.parentElement.children[insertPosition],
     );
 
-    //event.target.disabled = true;
+    event.target.disabled = true;
     if (!isAChangeToCurrentRule) {
       event.target.parentElement.insertBefore(
         getAddConditionElement(),

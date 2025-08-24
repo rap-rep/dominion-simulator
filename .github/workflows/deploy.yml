@@ -76,14 +76,18 @@ jobs:
           
           # Stop the application if running
           pm2 stop my-express-app 2>/dev/null || echo "App not currently running"
+          pm2 delete my-express-app 2>/dev/null || echo "App not in PM2 list"
           
           # Create app directory if it doesn't exist
           sudo mkdir -p $APP_DIR
           sudo chown deploy:deploy $APP_DIR
           
-          # Move files to app directory
+          # Remove old files and move new ones
           echo "Moving files to app directory..."
-          rsync -av --delete $TEMP_DIR/ $APP_DIR/
+          sudo rm -rf $APP_DIR/*
+          sudo rm -rf $APP_DIR/.*  2>/dev/null || true
+          cp -r $TEMP_DIR/* $APP_DIR/
+          cp -r $TEMP_DIR/.* $APP_DIR/ 2>/dev/null || true
           
           # Set correct ownership
           sudo chown -R deploy:deploy $APP_DIR
@@ -91,28 +95,59 @@ jobs:
           # Clean up temp directory
           rm -rf $TEMP_DIR
           
-          # Navigate to app directory
+          # Navigate to app directory and verify files
           cd $APP_DIR
+          echo "Verifying deployment files..."
+          ls -la
           
-          # Start/restart the application
-          if pm2 list | grep -q "my-express-app"; then
-            echo "Restarting application..."
-            pm2 restart my-express-app
-          else
-            echo "Starting application for the first time..."
-            pm2 start ecosystem.config.js
-            pm2 save
+          if [ ! -f "package.json" ]; then
+            echo "❌ ERROR: package.json still not found in app directory!"
+            exit 1
           fi
           
+          # Create or update ecosystem.config.js in the app directory
+          cat > ecosystem.config.js << 'EOF'
+module.exports = {
+  apps: [{
+    name: 'my-express-app',
+    script: 'npm',
+    args: 'start',
+    cwd: '/var/www/my-express-app',
+    env: {
+      NODE_ENV: 'production',
+      PORT: 3000
+    },
+    instances: 1,
+    autorestart: true,
+    watch: false,
+    max_memory_restart: '500M'
+  }]
+};
+EOF
+          
+          # Start the application
+          echo "Starting application with PM2..."
+          pm2 start npm --name "my-express-app" -- start
+          pm2 save
+          
           echo "Waiting for application to start..."
-          sleep 5
+          sleep 10
+          
+          # Check PM2 status
+          pm2 status
           
           # Verify deployment
+          echo "Testing application response..."
           if curl -f http://localhost:3000 > /dev/null 2>&1; then
             echo "✅ Application is responding on port 3000"
           else
             echo "❌ Application is not responding on port 3000"
+            echo "PM2 Status:"
+            pm2 status
+            echo "PM2 Logs:"
             pm2 logs my-express-app --lines 20
+            echo "Checking if package.json exists:"
+            ls -la /var/www/my-express-app/package.json
             exit 1
           fi
           

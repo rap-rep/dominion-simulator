@@ -23,7 +23,7 @@ jobs:
       run: npm ci
     
     - name: Run tests
-      run: npm test:no-reloading --if-present
+      run: npm test:ci
     
     - name: Build application
       run: npm run build

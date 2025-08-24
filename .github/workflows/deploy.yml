@@ -74,6 +74,17 @@ jobs:
           echo "Building application..."
           npm run build
           
+          # Check if build created the expected files
+          echo "Checking build output..."
+          ls -la
+          if [ -d "dist" ]; then
+            echo "✅ dist directory found"
+            ls -la dist/
+          else
+            echo "❌ dist directory not found, checking for other build outputs..."
+            find . -name "*.js" -not -path "./node_modules/*" | head -10
+          fi
+          
           # Stop the application if running
           pm2 stop my-express-app 2>/dev/null || echo "App not currently running"
           pm2 delete my-express-app 2>/dev/null || echo "App not in PM2 list"
@@ -103,6 +114,14 @@ jobs:
           if [ ! -f "package.json" ]; then
             echo "❌ ERROR: package.json still not found in app directory!"
             exit 1
+          fi
+          
+          # Show the start script to understand what it's trying to run
+          echo "Checking package.json start script..."
+          if command -v jq >/dev/null 2>&1; then
+            jq -r '.scripts.start' package.json || echo "Could not read start script with jq"
+          else
+            grep -A 1 -B 1 '"start"' package.json || echo "Could not find start script"
           fi
           
           # Create ecosystem.config.js in the app directory

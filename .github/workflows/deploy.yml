@@ -24,7 +24,7 @@ jobs:
     
     - name: Run tests
       run: npx ts-node --files -r tsconfig-paths/register ./spec
-    
+
     - name: Build application
       run: npm run build
 
@@ -42,11 +42,81 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.PRIVATE_KEY }}
         script: |
-          # Update repository URL in deploy script
-          sed -i 's|REPO_URL=".*"|REPO_URL="${{ github.server_url }}/${{ github.repository }}.git"|g' /home/deploy/deploy.sh
+          # Use a timestamp-based directory for fresh deployments
+          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+          TEMP_DIR="/tmp/deploy_$TIMESTAMP"
+          APP_DIR="/var/www/my-express-app"
+          REPO_URL="${{ github.server_url }}/${{ github.repository }}.git"
           
-          # Run deployment script
-          /home/deploy/deploy.sh
+          echo "Starting fresh deployment..."
+          echo "Repository: $REPO_URL"
+          echo "Temporary directory: $TEMP_DIR"
+          echo "App directory: $APP_DIR"
+          
+          # Clone to temporary directory
+          echo "Cloning repository to temporary location..."
+          git clone $REPO_URL $TEMP_DIR
+          
+          # Verify clone was successful
+          if [ ! -f "$TEMP_DIR/package.json" ]; then
+            echo "❌ ERROR: package.json not found in cloned repository!"
+            ls -la $TEMP_DIR
+            exit 1
+          fi
+          
+          echo "✅ Repository cloned successfully"
+          
+          # Install dependencies in temp directory
+          cd $TEMP_DIR
+          echo "Installing dependencies..."
+          npm ci --only=production
+          
+          echo "Building application..."
+          npm run build
+          
+          # Stop the application if running
+          pm2 stop my-express-app 2>/dev/null || echo "App not currently running"
+          
+          # Create app directory if it doesn't exist
+          sudo mkdir -p $APP_DIR
+          sudo chown deploy:deploy $APP_DIR
+          
+          # Move files to app directory
+          echo "Moving files to app directory..."
+          rsync -av --delete $TEMP_DIR/ $APP_DIR/
+          
+          # Set correct ownership
+          sudo chown -R deploy:deploy $APP_DIR
+          
+          # Clean up temp directory
+          rm -rf $TEMP_DIR
+          
+          # Navigate to app directory
+          cd $APP_DIR
+          
+          # Start/restart the application
+          if pm2 list | grep -q "my-express-app"; then
+            echo "Restarting application..."
+            pm2 restart my-express-app
+          else
+            echo "Starting application for the first time..."
+            pm2 start ecosystem.config.js
+            pm2 save
+          fi
+          
+          echo "Waiting for application to start..."
+          sleep 5
+          
+          # Verify deployment
+          if curl -f http://localhost:3000 > /dev/null 2>&1; then
+            echo "✅ Application is responding on port 3000"
+          else
+            echo "❌ Application is not responding on port 3000"
+            pm2 logs my-express-app --lines 20
+            exit 1
+          fi
+          
+          echo "Deployment completed successfully!"
           
           # Create/update environment variables if they exist
           if [ ! -z "${{ secrets.ENV_VARS }}" ]; then

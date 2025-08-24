@@ -145,7 +145,7 @@ jobs:
           echo "    cwd: '/var/www/my-express-app'," >> ecosystem.config.js
           echo "    env: {" >> ecosystem.config.js
           echo "      NODE_ENV: 'production'," >> ecosystem.config.js
-          echo "      PORT: 3000" >> ecosystem.config.js
+          echo "      PORT: 8081" >> ecosystem.config.js
           echo "    }," >> ecosystem.config.js
           echo "    instances: 1," >> ecosystem.config.js
           echo "    autorestart: true," >> ecosystem.config.js
@@ -174,10 +174,10 @@ jobs:
           
           # Verify deployment
           echo "Testing application response..."
-          if curl -f http://localhost:3000 > /dev/null 2>&1; then
-            echo "✅ Application is responding on port 3000"
+          if curl -f http://localhost:8081 > /dev/null 2>&1; then
+            echo "✅ Application is responding on port 8081"
           else
-            echo "❌ Application is not responding on port 3000"
+            echo "❌ Application is not responding on port 8081"
             echo "PM2 Status:"
             pm2 status
             echo "PM2 Logs:"

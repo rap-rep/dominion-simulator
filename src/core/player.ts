@@ -327,6 +327,7 @@ export class Player {
       if (currentlySelectedCard === NULL_CARD_NAME) {
         break;
       } else {
+        this.game.gamelog.indent();
         this.buys -= 1;
         const gained = this.effectResolver.gainCard(
           this,
@@ -337,6 +338,7 @@ export class Player {
             "Failed to gain selected card in the buy phase for unexpected reasons",
           );
         }
+        this.game.gamelog.dedent();
         this.coins -= MetricHelper.effectiveCostOfCard(this, gained);
       }
     }

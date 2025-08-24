@@ -90,9 +90,7 @@ export class GameLog {
   }
 
   logBuy(player: Player, card: string) {
-    if (card === NULL_CARD_NAME) {
-      this.log(`${player.name} passes on remaining buy(s)`);
-    } else {
+    if (card !== NULL_CARD_NAME) {
       this.log(`${player.name} buys ${card}`);
     }
   }

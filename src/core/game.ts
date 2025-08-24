@@ -140,7 +140,7 @@ export class Game {
   }
 
   private incrementTurn(): void {
-    if (this.currentPlayer === this.p1) {
+    if (this.currentPlayer === this.starter) {
       this.turn++;
     }
     this.gamelog.logTurn(this.turn, this.currentPlayer.name);

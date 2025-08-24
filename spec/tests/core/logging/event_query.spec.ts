@@ -1,3 +1,4 @@
+import { Laboratory } from "@src/core/cards/base/laboratory";
 import { Smithy } from "@src/core/cards/base/smithy";
 import { Copper } from "@src/core/cards/basic/copper";
 import { Wharf } from "@src/core/cards/seaside/wharf";
@@ -7,6 +8,8 @@ import {
   EventQueryInput,
   EventQueryType,
 } from "@src/core/logging/event_query";
+import { LogMode } from "@src/core/logging/game_log";
+import { ALL } from "dns";
 
 describe("Game manager with Smithy draw query for a deck with added Smithy", () => {
   const drawQueryInput: EventQueryInput = {
@@ -103,5 +106,40 @@ describe("A specific turn 'on' query", () => {
     expect(jsonResults[0].average).toBeLessThan(6);
     expect(jsonResults[1].playerName).toEqual("p2");
     expect(jsonResults[1].average).toBeLessThan(6);
+  });
+});
+
+
+describe("Average number of cards drawn on turn one with Labs", () => {
+  const SIM_GAMES = 10
+
+  const plusCoinsQueryInput: EventQueryInput = {
+    type: EventQueryType.PLUS_COINS,
+    fromCard: "All",
+    byTurn: 1,
+    byTurnModifier: ByTurnModifier.ON_TURN,
+  };
+  const gameManager = new GameManager({
+    p1cards: [[Laboratory.NAME, 3], [Copper.NAME, 8]],
+    logMode: LogMode.CONSOLE_LOG,
+    turnLimit: 1,
+  }, SIM_GAMES, [plusCoinsQueryInput], false);
+
+  gameManager.playGames();
+
+  const eventQueries = gameManager.eventQueryManager.eventQueries;
+  let coinRecords = 0;
+  if (eventQueries) {
+    coinRecords = eventQueries[0].effectRecords.get(1)?.length || 0;
+  }
+
+  const jsonResults = gameManager.eventQueryManager.getJsonResults(SIM_GAMES);
+  console.log(jsonResults);
+
+  it("returns a number that is reasonable (more than 5 but less than all Coppers)", () => {
+    expect(jsonResults.length).toEqual(2);
+    expect(jsonResults[0].playerName).toEqual("p1");
+    expect(jsonResults[0].average).toBeGreaterThan(5);
+    expect(jsonResults[0].average).toBeLessThan(8);
   });
 });

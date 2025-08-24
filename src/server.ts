@@ -72,25 +72,7 @@ app.set("views", viewsDir);
 
 // Set static directory (js and css).
 const staticDir = path.join(__dirname, "public");
-app.use(express.static(staticDir, {
-  setHeaders: function (res, path, _stat) {
-    if (path.endsWith('.js')) {
-      res.set('Content-Type', 'text/javascript');
-    } else if (path.endsWith('.css')) {
-      res.set('Content-Type', 'text/css');
-    } else if (path.endsWith('.html')) {
-      res.set('Content-Type', 'text/html');
-    } else if (path.endsWith('.json')) {
-      res.set('Content-Type', 'application/json');
-    } else if (path.endsWith('.png')) {
-      res.set('Content-Type', 'image/png');
-    } else if (path.endsWith('.jpg') || path.endsWith('.jpeg')) {
-      res.set('Content-Type', 'image/jpeg');
-    } else if (path.endsWith('.svg')) {
-      res.set('Content-Type', 'image/svg+xml');
-    }
-  }
-}));
+app.use(express.static(staticDir));
 
 // Nav to users pg by default
 app.get("/", (_: Request, res: Response) => {

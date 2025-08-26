@@ -5,7 +5,7 @@ import { PlayerHelper } from "@src/core/helpers/player_helper";
 import { LogLevel, LogMode } from "@src/core/logging/game_log";
 
 describe("Witch", () => {
-  const game = new Game({logMode: LogMode.CONSOLE_LOG, logLevel: LogLevel.INFO});
+  const game = new Game({logMode: LogMode.SILENT, logLevel: LogLevel.INFO});
   game.p1.hand = new Map();
   game.p1.addCard(new Witch());
   game.p1.playActionPhase();

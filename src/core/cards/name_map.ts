@@ -13,6 +13,7 @@ import { Warehouse } from "./base/warehouse";
 import { Witch } from "./base/witch";
 import { Workshop } from "./base/workshop";
 import { Copper } from "./basic/copper";
+import { Curse } from "./basic/curse";
 import { Duchy } from "./basic/duchy";
 import { Estate } from "./basic/estate";
 import { Gold } from "./basic/gold";
@@ -72,5 +73,6 @@ export class CardNameMap {
     this.nameMap.set(Estate.NAME, Estate.factoryGenerator);
     this.nameMap.set(Duchy.NAME, Duchy.factoryGenerator);
     this.nameMap.set(Province.NAME, Province.factoryGenerator);
+    this.nameMap.set(Curse.NAME, Curse.factoryGenerator);
   }
 }

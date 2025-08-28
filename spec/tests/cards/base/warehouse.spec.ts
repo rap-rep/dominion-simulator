@@ -21,10 +21,11 @@ describe("Warehouse", () => {
   });
 });
 
-
 describe("Warehouse with a drawn deck", () => {
-  const game = new Game({ logMode: LogMode.SILENT, logLevel: LogLevel.INFO,
-    p1cards: [[Copper.NAME, 5]]
+  const game = new Game({
+    logMode: LogMode.SILENT,
+    logLevel: LogLevel.INFO,
+    p1cards: [[Copper.NAME, 5]],
   });
   game.p1.addCard(new Warehouse(), true, GainLocation.HAND);
   game.p1.playActionPhase();

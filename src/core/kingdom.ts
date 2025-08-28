@@ -1,11 +1,12 @@
 import { Card } from "./card";
+import { CardNameMap } from "./cards/name_map";
+
 import { Copper } from "./cards/basic/copper";
 import { Silver } from "./cards/basic/silver";
 import { Gold } from "./cards/basic/gold";
 import { Estate } from "./cards/basic/estate";
 import { Duchy } from "./cards/basic/duchy";
 import { Province } from "./cards/basic/province";
-import { CardNameMap } from "./cards/name_map";
 import { Village } from "./cards/base/village";
 import { Curse } from "./cards/basic/curse";
 import { Market } from "./cards/base/market";
@@ -21,6 +22,15 @@ import { Milita } from "./cards/base/militia";
 import { Stockpile } from "./cards/menagerie/stockpile";
 import { Laboratory } from "./cards/base/laboratory";
 import { Horse } from "./cards/menagerie/horse";
+import { Witch } from "./cards/base/witch";
+import { Bureaucrat } from "./cards/base/bureaucrat";
+import { FishingVillage } from "./cards/seaside/fishing_village";
+import { Groom } from "./cards/menagerie/groom";
+import { Warehouse } from "./cards/base/warehouse";
+import { Dungeon } from "./cards/adventures/dungeon";
+import { Gear } from "./cards/adventures/gear";
+import { Ranger } from "./cards/adventures/ranger";
+import { Moneylender } from "./cards/base/moneylender";
 
 export enum CardLocation {
   SUPPLY = 0,
@@ -49,7 +59,7 @@ export class Kingdom {
   private addSupplyPile(name: string, amount: number = 10) {
     const generatorMethod = this.cardNameMap.nameMap.get(name);
     if (!generatorMethod) {
-      throw new Error(`Could not generator for ${name}`);
+      throw new Error(`Could not find generator for ${name}`);
     }
     if (generatorMethod) {
       if (generatorMethod().name !== name) {
@@ -82,17 +92,31 @@ export class Kingdom {
     // TODO: add dynamic kingdom generation to avoid the need for this
     this.addSupplyPile(Village.NAME);
     this.addSupplyPile(Market.NAME);
-    this.addSupplyPile(Wharf.NAME);
     this.addSupplyPile(Smithy.NAME);
     this.addSupplyPile(Chapel.NAME);
-    this.addSupplyPile(WorkersVillage.NAME);
-    this.addSupplyPile(Ironworks.NAME);
     this.addSupplyPile(Workshop.NAME);
+    this.addSupplyPile(Milita.NAME);
+    this.addSupplyPile(Witch.NAME);
+    this.addSupplyPile(Bureaucrat.NAME);
+    this.addSupplyPile(Laboratory.NAME);
+    this.addSupplyPile(Warehouse.NAME);
+    this.addSupplyPile(Moneylender.NAME);
+
     this.addSupplyPile(Peddler.NAME);
     this.addSupplyPile(Watchtower.NAME);
-    this.addSupplyPile(Milita.NAME);
+    this.addSupplyPile(WorkersVillage.NAME);
+
+    this.addSupplyPile(Ironworks.NAME);
+
+    this.addSupplyPile(Dungeon.NAME);
+    this.addSupplyPile(Gear.NAME);
+    this.addSupplyPile(Ranger.NAME);
+
+    this.addSupplyPile(FishingVillage.NAME);
+    this.addSupplyPile(Wharf.NAME);
+
+    this.addSupplyPile(Groom.NAME);
     this.addSupplyPile(Stockpile.NAME);
-    this.addSupplyPile(Laboratory.NAME);
     this.addNonSupplyPile(Horse.NAME, 30);
   }
 

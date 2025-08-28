@@ -1,4 +1,5 @@
 import { CardType } from "../card_types";
+import { Copper } from "../cards/basic/copper";
 import { Decision, DecisionType } from "../decisions";
 import { EffectPlayer } from "../effects";
 import { LogLevel } from "../logging/game_log";
@@ -55,6 +56,12 @@ export class SharedDefaultDecisions {
       0,
       amountToDiscard,
     );
+  }
+
+  static trashCopper(player: Player, decision: Decision) {
+    // always says yes to trashing one copper
+    const selector = new CardSelector(player, [{ cardName: Copper.NAME }]);
+    decision.result = selector.getCardsFromCriteria(player.hand, 1);
   }
 
   static topdeckDecision(player: Player, decision: Decision) {

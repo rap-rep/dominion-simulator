@@ -211,7 +211,7 @@ export class Player {
 
   removeCardFromHand(card: Card, removeFromAllCards: boolean = false) {
     const in_hand = this.hand.get(card.name);
-    this.game.gamelog.log(`Removing ${card.name} from hand`, LogLevel.EXTREME);
+    this.game.gamelog.log(`removing ${card.name} from hand`, LogLevel.EXTREME);
     if (!in_hand) {
       throw new Error(
         `Attempting to remove card ${card.name} that is not in hand`,

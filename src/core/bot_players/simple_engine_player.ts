@@ -17,7 +17,7 @@ export class SimpleEngineSamplePlayer extends Player {
   /*
    * Extremely basic player that plays only Wharf/Village using gain rules
    * Not intended to be used for anything serious.
-   * 
+   *
    * Should probably get cleaned up (deleted)
    */
   gainCardDecision(decision: Decision): string {

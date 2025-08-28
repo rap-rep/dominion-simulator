@@ -107,9 +107,8 @@ describe("A specific turn 'on' query", () => {
   });
 });
 
-
 describe("Average number of cards drawn on turn one with Labs", () => {
-  const SIM_GAMES = 10
+  const SIM_GAMES = 10;
 
   const plusCoinsQueryInput: EventQueryInput = {
     type: EventQueryType.PLUS_COINS,
@@ -117,10 +116,18 @@ describe("Average number of cards drawn on turn one with Labs", () => {
     byTurn: 1,
     byTurnModifier: ByTurnModifier.ON_TURN,
   };
-  const gameManager = new GameManager({
-    p1cards: [[Laboratory.NAME, 3], [Copper.NAME, 8]],
-    turnLimit: 1,
-  }, SIM_GAMES, [plusCoinsQueryInput], false);
+  const gameManager = new GameManager(
+    {
+      p1cards: [
+        [Laboratory.NAME, 3],
+        [Copper.NAME, 8],
+      ],
+      turnLimit: 1,
+    },
+    SIM_GAMES,
+    [plusCoinsQueryInput],
+    false,
+  );
 
   gameManager.playGames();
 

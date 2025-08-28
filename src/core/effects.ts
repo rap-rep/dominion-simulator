@@ -18,6 +18,7 @@ export enum EffectType {
   // Core game state changes
   PLUS_ACTION = "+ Action",
   PLUS_COIN = "+ Coin",
+  PLUS_COIN_CONDITIONAL = "+ Coin (from condition)",
   PLUS_BUY = "+ Buy",
   DRAW_CARD = "Draw",
   DRAW_TO = "Draw to",

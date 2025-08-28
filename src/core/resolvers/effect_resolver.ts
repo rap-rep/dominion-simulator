@@ -114,6 +114,7 @@ export class EffectResolver {
     }
 
     const effect = effectNode as Effect;
+    player.game.gamelog.logEffect(player, effect.effectType);
     // TODO: make a function map rather than this huge conditional block
     if (effect.effectType == EffectType.PLUS_COIN) {
       this.plusCoinResolver(player, effect);
@@ -137,6 +138,8 @@ export class EffectResolver {
       this.gainFromNonSupply(player, effect);
     } else if (effect.effectType === EffectType.TOPDECK) {
       this.topdeck(player, effect);
+    } else if (effect.effectType === EffectType.PLUS_COIN_CONDITIONAL) {
+      this.plusCoinConditionalResolver(player, effect);
     } else if (effect.effectType === EffectType.TYPE_BONUSES) {
       this.awardTypeBonuses(player, effect);
     } else if (effect.effectType === EffectType.IN_HAND_FROM_SET_ASIDE) {
@@ -165,7 +168,7 @@ export class EffectResolver {
     toLocation: GainLocation = GainLocation.DISCARD,
   ) {
     const cardToGain = effect.reference?.result as string;
-    if (effect.effectPlayer === EffectPlayer.OPP && player.opponent){
+    if (effect.effectPlayer === EffectPlayer.OPP && player.opponent) {
       player = player.opponent;
     }
 
@@ -181,7 +184,7 @@ export class EffectResolver {
 
   private gainFromNonSupply(player: Player, effect: Effect) {
     const cardToGain = effect.reference?.result as string;
-    if (effect.effectPlayer === EffectPlayer.OPP && player.opponent){
+    if (effect.effectPlayer === EffectPlayer.OPP && player.opponent) {
       player = player.opponent;
     }
 
@@ -236,9 +239,16 @@ export class EffectResolver {
 
     if (effect.effectPlayer == EffectPlayer.SELF) {
       player.coins += amount;
+      player.game.gamelog.logCoins(player, amount);
       player.game.eventQueryManager.recordEvent(
         EventRecordBuilder.coins(player, effect.fromCard, amount),
       );
+    }
+  }
+
+  private plusCoinConditionalResolver(player: Player, effect: Effect) {
+    if (effect.reference?.result !== undefined) {
+      this.plusCoinResolver(player, effect);
     }
   }
 
@@ -305,10 +315,15 @@ export class EffectResolver {
       );
     }
 
+    if (toTrash.length > 0) {
+      // just define a result value so that downstream can check if a card was trashed
+      effect.result = toTrash[0];
+    }
+
     for (const card of toTrash) {
       player.removeCardFromHand(card, true);
       player.game.kingdom.trashCard(card);
-      player.game.gamelog.log(`${player.name} trashes a ${card.name}`);
+      player.game.gamelog.logTrash(player, card);
       player.game.eventQueryManager.recordEvent(
         EventRecordBuilder.trash(player, effect.fromCard, card),
       );

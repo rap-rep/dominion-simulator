@@ -23,6 +23,7 @@ export class DecisionResolver {
     }
 
     const decision = decisionNode as Decision;
+    player.game.gamelog.logDecision(player, decision.decisionType);
     if (decision.effectPlayer === EffectPlayer.OPP && player.opponent) {
       player = player.opponent;
     }
@@ -42,6 +43,8 @@ export class DecisionResolver {
         }
       }
     } else if (decision.decisionType == DecisionType.DISCARD_TO) {
+      player.makeDecision(decision);
+    } else if (decision.decisionType == DecisionType.TRASH_COPPER) {
       player.makeDecision(decision);
     } else if (decision.decisionType == DecisionType.DISCARD) {
       player.makeDecision(decision);

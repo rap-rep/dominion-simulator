@@ -261,7 +261,6 @@ function setupSimListeners() {
     event.preventDefault();
     simGame(1000);
   });
-
 }
 
 // Section: event querying parsing for passing to Game creation

@@ -35,6 +35,10 @@ export class Gear extends Card {
     return Name;
   }
 
+  static factoryGenerator(): Gear {
+    return new Gear();
+  }
+
   heuristicType(): HeuristicType {
     return HeuristicType.DRAW;
   }

@@ -27,6 +27,9 @@ export enum DecisionType {
   // Set mechanic based card decisions
   EXILE_DISCARD = "Discard from exile",
 
+  // Limited common decisions
+  TRASH_COPPER = "Trash copper from hand",
+
   // Unique to the card decisions
   TOPDECK_VICTORY = "Topdeck victory",
 

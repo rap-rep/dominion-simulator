@@ -38,7 +38,7 @@ export class CardSelector {
     searchMap: Map<string, Card[]>,
     choices: number, // optional amount to be selected before selecting any addtl. required
     required: number = 0,
-    pickAnyCardAfterCriteria: boolean = true,
+    pickAnyCardAfterCriteria: boolean = true, // if required is set, fill it with random cards if true
   ): Card[] {
     const selectedCards = new Array();
 

@@ -38,9 +38,11 @@ if (EnvVars.NodeEnv === NodeEnvs.Dev.valueOf()) {
 
 // Security
 if (EnvVars.NodeEnv === NodeEnvs.Production.valueOf()) {
-  app.use(helmet({
-    contentSecurityPolicy: false, // Disable CSP temporarily
-  }));
+  app.use(
+    helmet({
+      contentSecurityPolicy: false, // Disable CSP temporarily
+    }),
+  );
 }
 
 // Add APIs, must be after middleware

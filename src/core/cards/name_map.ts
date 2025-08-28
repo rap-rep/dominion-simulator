@@ -7,6 +7,7 @@ import { Chapel } from "./base/chapel";
 import { Laboratory } from "./base/laboratory";
 import { Market } from "./base/market";
 import { Milita } from "./base/militia";
+import { Moneylender } from "./base/moneylender";
 import { Smithy } from "./base/smithy";
 import { Village } from "./base/village";
 import { Warehouse } from "./base/warehouse";
@@ -26,6 +27,7 @@ import { Stockpile } from "./menagerie/stockpile";
 import { Peddler } from "./prosperity/peddler";
 import { Watchtower } from "./prosperity/watchtower";
 import { WorkersVillage } from "./prosperity/workers_village";
+import { FishingVillage } from "./seaside/fishing_village";
 import { Wharf } from "./seaside/wharf";
 
 /*
@@ -52,10 +54,11 @@ export class CardNameMap {
     this.nameMap.set(Warehouse.NAME, Warehouse.factoryGenerator);
     this.nameMap.set(Bureaucrat.NAME, Bureaucrat.factoryGenerator);
     this.nameMap.set(Witch.NAME, Witch.factoryGenerator);
-
+    this.nameMap.set(Moneylender.NAME, Moneylender.factoryGenerator);
 
     this.nameMap.set(Peddler.NAME, Peddler.factoryGenerator);
     this.nameMap.set(Wharf.NAME, Wharf.factoryGenerator);
+    this.nameMap.set(FishingVillage.NAME, FishingVillage.factoryGenerator);
     this.nameMap.set(Stockpile.NAME, Stockpile.factoryGenerator);
     this.nameMap.set(Gear.NAME, Gear.factoryGenerator);
     this.nameMap.set(Dungeon.NAME, Dungeon.factoryGenerator);

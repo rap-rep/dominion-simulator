@@ -2,169 +2,169 @@ name: Deploy to DigitalOcean
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci
-    
-    - name: Run tests
-      run: npx ts-node --files -r tsconfig-paths/register ./spec
-    
-    - name: Build application
-      run: npm run build
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npx ts-node --files -r tsconfig-paths/register ./spec
+
+      - name: Build application
+        run: npm run build
 
   deploy:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: production
-    
+
     steps:
-    - name: Deploy to server
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.PRIVATE_KEY }}
-        script: |
-          # Use a timestamp-based directory for fresh deployments
-          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-          TEMP_DIR="/tmp/deploy_$TIMESTAMP"
-          APP_DIR="/var/www/my-express-app"
-          REPO_URL="${{ github.server_url }}/${{ github.repository }}.git"
-          
-          echo "Starting fresh deployment..."
-          echo "Repository: $REPO_URL"
-          echo "Temporary directory: $TEMP_DIR"
-          echo "App directory: $APP_DIR"
-          
-          # Clone to temporary directory
-          echo "Cloning repository to temporary location..."
-          git clone $REPO_URL $TEMP_DIR
-          
-          # Verify clone was successful
-          if [ ! -f "$TEMP_DIR/package.json" ]; then
-            echo "❌ ERROR: package.json not found in cloned repository!"
-            ls -la $TEMP_DIR
-            exit 1
-          fi
-          
-          echo "✅ Repository cloned successfully"
-          
-          # Install dependencies in temp directory
-          cd $TEMP_DIR
-          echo "Installing all dependencies (including dev dependencies for build)..."
-          npm ci
-          
-          echo "Building application..."
-          npm run build
-          
-          # After build, remove dev dependencies to save space
-          echo "Removing dev dependencies after build..."
-          npm prune --production
-          
-          # Stop the application if running
-          pm2 stop my-express-app 2>/dev/null || echo "App not currently running"
-          pm2 delete my-express-app 2>/dev/null || echo "App not in PM2 list"
-          
-          # Create app directory if it doesn't exist
-          sudo mkdir -p $APP_DIR
-          sudo chown deploy:deploy $APP_DIR
-          
-          # Remove old files and move new ones
-          echo "Moving files to app directory..."
-          sudo rm -rf $APP_DIR/*
-          sudo rm -rf $APP_DIR/.*  2>/dev/null || true
-          cp -r $TEMP_DIR/* $APP_DIR/
-          cp -r $TEMP_DIR/.* $APP_DIR/ 2>/dev/null || true
-          
-          # Set correct ownership
-          sudo chown -R deploy:deploy $APP_DIR
-          
-          # Clean up temp directory
-          rm -rf $TEMP_DIR
-          
-          # Navigate to app directory and verify files
-          cd $APP_DIR
-          echo "Verifying deployment files..."
-          ls -la
-          
-          if [ ! -f "package.json" ]; then
-            echo "❌ ERROR: package.json still not found in app directory!"
-            exit 1
-          fi
-          
-          # Create ecosystem.config.js in the app directory
-          echo "Creating PM2 ecosystem configuration..."
-          echo "module.exports = {" > ecosystem.config.js
-          echo "  apps: [{" >> ecosystem.config.js
-          echo "    name: 'my-express-app'," >> ecosystem.config.js
-          echo "    script: 'npm'," >> ecosystem.config.js
-          echo "    args: 'start'," >> ecosystem.config.js
-          echo "    cwd: '/var/www/my-express-app'," >> ecosystem.config.js
-          echo "    env: {" >> ecosystem.config.js
-          echo "      NODE_ENV: 'production'," >> ecosystem.config.js
-          echo "      PORT: 8081" >> ecosystem.config.js
-          echo "    }," >> ecosystem.config.js
-          echo "    instances: 1," >> ecosystem.config.js
-          echo "    autorestart: true," >> ecosystem.config.js
-          echo "    watch: false," >> ecosystem.config.js
-          echo "    max_memory_restart: '500M'" >> ecosystem.config.js
-          echo "  }]" >> ecosystem.config.js
-          echo "};" >> ecosystem.config.js
-          
-          # Start the application
-          echo "Final verification before starting PM2..."
-          echo "Current directory: $(pwd)"
-          echo "Files in current directory:"
-          ls -la
-          echo "Files in dist directory:"
-          ls -la dist/ 2>/dev/null || echo "No dist directory found"
-          
-          echo "Starting application with PM2..."
-          pm2 start npm --name "my-express-app" -- start
-          pm2 save
-          
-          echo "Waiting for application to start..."
-          sleep 10
-          
-          # Check PM2 status
-          pm2 status
-          
-          # Verify deployment
-          echo "Testing application response..."
-          if curl -f http://localhost:8081 > /dev/null 2>&1; then
-            echo "✅ Application is responding on port 8081"
-          else
-            echo "❌ Application is not responding on port 8081"
-            echo "PM2 Status:"
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            # Use a timestamp-based directory for fresh deployments
+            TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+            TEMP_DIR="/tmp/deploy_$TIMESTAMP"
+            APP_DIR="/var/www/my-express-app"
+            REPO_URL="${{ github.server_url }}/${{ github.repository }}.git"
+
+            echo "Starting fresh deployment..."
+            echo "Repository: $REPO_URL"
+            echo "Temporary directory: $TEMP_DIR"
+            echo "App directory: $APP_DIR"
+
+            # Clone to temporary directory
+            echo "Cloning repository to temporary location..."
+            git clone $REPO_URL $TEMP_DIR
+
+            # Verify clone was successful
+            if [ ! -f "$TEMP_DIR/package.json" ]; then
+              echo "❌ ERROR: package.json not found in cloned repository!"
+              ls -la $TEMP_DIR
+              exit 1
+            fi
+
+            echo "✅ Repository cloned successfully"
+
+            # Install dependencies in temp directory
+            cd $TEMP_DIR
+            echo "Installing all dependencies (including dev dependencies for build)..."
+            npm ci
+
+            echo "Building application..."
+            npm run build
+
+            # After build, remove dev dependencies to save space
+            echo "Removing dev dependencies after build..."
+            npm prune --production
+
+            # Stop the application if running
+            pm2 stop my-express-app 2>/dev/null || echo "App not currently running"
+            pm2 delete my-express-app 2>/dev/null || echo "App not in PM2 list"
+
+            # Create app directory if it doesn't exist
+            sudo mkdir -p $APP_DIR
+            sudo chown deploy:deploy $APP_DIR
+
+            # Remove old files and move new ones
+            echo "Moving files to app directory..."
+            sudo rm -rf $APP_DIR/*
+            sudo rm -rf $APP_DIR/.*  2>/dev/null || true
+            cp -r $TEMP_DIR/* $APP_DIR/
+            cp -r $TEMP_DIR/.* $APP_DIR/ 2>/dev/null || true
+
+            # Set correct ownership
+            sudo chown -R deploy:deploy $APP_DIR
+
+            # Clean up temp directory
+            rm -rf $TEMP_DIR
+
+            # Navigate to app directory and verify files
+            cd $APP_DIR
+            echo "Verifying deployment files..."
+            ls -la
+
+            if [ ! -f "package.json" ]; then
+              echo "❌ ERROR: package.json still not found in app directory!"
+              exit 1
+            fi
+
+            # Create ecosystem.config.js in the app directory
+            echo "Creating PM2 ecosystem configuration..."
+            echo "module.exports = {" > ecosystem.config.js
+            echo "  apps: [{" >> ecosystem.config.js
+            echo "    name: 'my-express-app'," >> ecosystem.config.js
+            echo "    script: 'npm'," >> ecosystem.config.js
+            echo "    args: 'start'," >> ecosystem.config.js
+            echo "    cwd: '/var/www/my-express-app'," >> ecosystem.config.js
+            echo "    env: {" >> ecosystem.config.js
+            echo "      NODE_ENV: 'production'," >> ecosystem.config.js
+            echo "      PORT: 8081" >> ecosystem.config.js
+            echo "    }," >> ecosystem.config.js
+            echo "    instances: 1," >> ecosystem.config.js
+            echo "    autorestart: true," >> ecosystem.config.js
+            echo "    watch: false," >> ecosystem.config.js
+            echo "    max_memory_restart: '500M'" >> ecosystem.config.js
+            echo "  }]" >> ecosystem.config.js
+            echo "};" >> ecosystem.config.js
+
+            # Start the application
+            echo "Final verification before starting PM2..."
+            echo "Current directory: $(pwd)"
+            echo "Files in current directory:"
+            ls -la
+            echo "Files in dist directory:"
+            ls -la dist/ 2>/dev/null || echo "No dist directory found"
+
+            echo "Starting application with PM2..."
+            pm2 start npm --name "my-express-app" -- start
+            pm2 save
+
+            echo "Waiting for application to start..."
+            sleep 10
+
+            # Check PM2 status
             pm2 status
-            echo "PM2 Logs:"
-            pm2 logs my-express-app --lines 20
-            echo "Checking if package.json exists:"
-            ls -la /var/www/my-express-app/package.json
-            exit 1
-          fi
-          
-          echo "Deployment completed successfully!"
-          
-          # Create/update environment variables if they exist
-          if [ ! -z "${{ secrets.ENV_VARS }}" ]; then
-            echo "${{ secrets.ENV_VARS }}" > /var/www/my-express-app/.env
-            pm2 restart my-express-app
-          fi
+
+            # Verify deployment
+            echo "Testing application response..."
+            if curl -f http://localhost:8081 > /dev/null 2>&1; then
+              echo "✅ Application is responding on port 8081"
+            else
+              echo "❌ Application is not responding on port 8081"
+              echo "PM2 Status:"
+              pm2 status
+              echo "PM2 Logs:"
+              pm2 logs my-express-app --lines 20
+              echo "Checking if package.json exists:"
+              ls -la /var/www/my-express-app/package.json
+              exit 1
+            fi
+
+            echo "Deployment completed successfully!"
+
+            # Create/update environment variables if they exist
+            if [ ! -z "${{ secrets.ENV_VARS }}" ]; then
+              echo "${{ secrets.ENV_VARS }}" > /var/www/my-express-app/.env
+              pm2 restart my-express-app
+            fi

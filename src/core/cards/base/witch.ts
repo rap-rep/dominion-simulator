@@ -47,20 +47,20 @@ export class Witch extends Card {
       new Effect(EffectType.DRAW_CARD, EffectPlayer.SELF, 2, undefined, this),
     );
     const gainReference = new Decision(
-        DecisionType.PLACEHOLDER,
+      DecisionType.PLACEHOLDER,
+      EffectPlayer.OPP,
+    );
+    gainReference.result = Curse.NAME;
+
+    const giveCurse = new PlayNode(
+      new Effect(
+        EffectType.GAIN_FROM_SUPPLY,
         EffectPlayer.OPP,
-      );
-      gainReference.result = Curse.NAME;
-  
-      const giveCurse = new PlayNode(
-        new Effect(
-          EffectType.GAIN_FROM_SUPPLY,
-          EffectPlayer.OPP,
-          undefined,
-          gainReference,
-          this,
-        ),
-      );
+        undefined,
+        gainReference,
+        this,
+      ),
+    );
     graph.addNode(draw);
     graph.addNode(giveCurse);
     graph.addEdge(draw, giveCurse);

@@ -1,4 +1,6 @@
 import { Card, NULL_CARD_NAME } from "../card";
+import { DecisionType } from "../decisions";
+import { EffectType } from "../effects";
 import { Phase } from "../game";
 import { Player } from "../player";
 
@@ -15,6 +17,7 @@ export enum LogMode {
 
 export enum LogLevel {
   INFO = "Info",
+  EXTRA = "Extra",
   DEBUG = "Debug",
   EXTREME = "Extreme",
 }
@@ -51,34 +54,38 @@ export class GameLog {
   log(line: string, level: LogLevel = LogLevel.INFO) {
     if (
       level === LogLevel.INFO ||
+      (level === LogLevel.EXTRA &&
+        (this.level === LogLevel.EXTRA || this.level === LogLevel.DEBUG)) ||
       (level === LogLevel.DEBUG && this.level === LogLevel.DEBUG) ||
       this.level === LogLevel.EXTREME
     ) {
       if (this.mode === LogMode.CONSOLE_LOG) {
         console.log(this.getIndentedLine(line, this.indentation));
       } else if (this.mode === LogMode.BUFFER) {
-        this.loglines.push({ line: line, indentation: this.indentation});
+        this.loglines.push({ line: line, indentation: this.indentation });
       }
     }
   }
 
-  indent(){
+  indent() {
     this.indentation += 1;
   }
 
-  dedent(){
-    if (this.indentation === 0){
-      throw new Error("Trying to dedent log below zero! Logging must be broken, panicking...")
+  dedent() {
+    if (this.indentation === 0) {
+      throw new Error(
+        "Trying to dedent log below zero! Logging must be broken, panicking...",
+      );
     }
     this.indentation -= 1;
   }
 
   private getIndentedLine(line: string, indentation: number): string {
-    return ' '.repeat(indentation * 2) + line;
+    return " ".repeat(indentation * 2) + line;
   }
 
   private getLineHTML(line: LogLine): string {
-    return '&emsp;'.repeat(line.indentation) + line.line;
+    return "&emsp;".repeat(line.indentation) + line.line;
   }
 
   logTurn(turn: number, playerName: string) {
@@ -90,7 +97,7 @@ export class GameLog {
     this.log(`${playerName} plays ${card.name}`);
   }
 
-  logPhase(name: Phase){
+  logPhase(name: Phase) {
     this.log(`|- Phase: ${name.valueOf()} -|`);
   }
 
@@ -108,6 +115,26 @@ export class GameLog {
     this.log(`${player.name} draws ${card.name}`);
   }
 
+  logDecision(
+    player: Player,
+    type: DecisionType,
+    level: LogLevel = LogLevel.DEBUG,
+  ) {
+    this.log(`${player.name} makes decision: ${type}`, level);
+  }
+
+  logEffect(
+    player: Player,
+    type: EffectType,
+    level: LogLevel = LogLevel.DEBUG,
+  ) {
+    this.log(`${player.name} activates effect: ${type}`, level);
+  }
+
+  logCoins(player: Player, amount: number, level: LogLevel = LogLevel.EXTRA) {
+    this.log(`${player.name} gets ${amount} coins`, level);
+  }
+
   logShuffle(player: Player) {
     this.log(
       `${player.name} shuffles their deck (${player.discard.length} of ${player.allCardsList.length})`,
@@ -116,6 +143,10 @@ export class GameLog {
 
   logDuration(player: Player, card: Card) {
     this.log(`${player.name} receives duration effect from ${card.name}`);
+  }
+
+  logTrash(player: Player, card: Card) {
+    this.log(`${player.name} trashes ${card.name}`);
   }
 
   logTopdeck(player: Player, card: Card) {

@@ -268,7 +268,7 @@ class EventQuery {
   constructor(
     type, // EventQueryType (string)
     fromCard, // string (optional)
-    byTurn, // number (optional)
+    byTurn, // number (optional), inclusive
     toCard, // string (optional)
     byTurnModifier, // ByTurnModifier (optional)
   ) {

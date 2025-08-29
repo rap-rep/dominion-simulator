@@ -17,7 +17,7 @@ export class GameManager {
     gameConfig: GameConfig,
     totalSims: number,
     eventQueryInput: EventQueryInput[],
-    includeSampleLog: boolean,
+    includeSampleLog: boolean = false,
     p1Name: string = "p1",
     p2Name: string = "p2",
   ) {

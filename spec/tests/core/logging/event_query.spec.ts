@@ -4,10 +4,12 @@ import { Copper } from "@src/core/cards/basic/copper";
 import { Wharf } from "@src/core/cards/seaside/wharf";
 import { GameManager } from "@src/core/game_manager";
 import {
+  ANY_CARD,
   ByTurnModifier,
   EventQueryInput,
   EventQueryType,
 } from "@src/core/logging/event_query";
+import { LogLevel, LogMode } from "@src/core/logging/game_log";
 
 describe("Game manager with Smithy draw query for a deck with added Smithy", () => {
   const drawQueryInput: EventQueryInput = {
@@ -112,7 +114,7 @@ describe("Average number of cards drawn on turn one with Labs", () => {
 
   const plusCoinsQueryInput: EventQueryInput = {
     type: EventQueryType.PLUS_COINS,
-    fromCard: "All",
+    fromCard: ANY_CARD,
     byTurn: 1,
     byTurnModifier: ByTurnModifier.ON_TURN,
   };
@@ -138,5 +140,59 @@ describe("Average number of cards drawn on turn one with Labs", () => {
     expect(jsonResults[0].playerName).toEqual("p1");
     expect(jsonResults[0].average).toBeGreaterThan(5);
     expect(jsonResults[0].average).toBeLessThan(8);
+  });
+});
+
+describe("Cards played", () => {
+  const TURNS = 10
+  const labPlayedQuery: EventQueryInput = {
+    type: EventQueryType.CARD_PLAYED,
+    fromCard: Laboratory.NAME,
+    byTurn: TURNS,
+    byTurnModifier: ByTurnModifier.DEFAULT,
+  };
+  const allPlayedQuery: EventQueryInput = {
+    type: EventQueryType.CARD_PLAYED,
+    fromCard: Smithy.NAME,
+    byTurn: TURNS,
+    byTurnModifier: ByTurnModifier.DEFAULT,
+  };
+  const cardsDrawnQuery: EventQueryInput = {
+    type: EventQueryType.DRAW_CARD,
+    fromCard: ANY_CARD,
+    byTurn: TURNS,
+    byTurnModifier: ByTurnModifier.DEFAULT,
+  };
+  const gameManager = new GameManager(
+    {p1cards: [[Laboratory.NAME, 4], [Smithy.NAME, 1], [Copper.NAME, 16]],
+      logLevel: LogLevel.EXTRA,
+      logMode: LogMode.CONSOLE_LOG,
+      turnLimit: TURNS,
+    },
+    1,
+    [labPlayedQuery, allPlayedQuery, cardsDrawnQuery],
+  );
+
+  gameManager.playGames();
+
+  const eventQueries = gameManager.eventQueryManager.eventQueries;
+  let drawRecords = 0;
+  if (eventQueries) {
+    drawRecords = eventQueries[0].effectRecords.get(1)?.length || 0;
+  }
+
+  const jsonResults = gameManager.eventQueryManager.getJsonResults(1);
+  console.log(jsonResults[0])
+  console.log(jsonResults[1])
+
+  
+  it("reports labs and smithy being played with the correct amount of related draw", () => {
+    expect(jsonResults.length).toEqual(6);
+    expect(jsonResults[0].average).toBeGreaterThan(5)
+    expect(jsonResults[0].average).toBeLessThan(15)
+    expect(jsonResults[1].average).toBeGreaterThan(1)
+    expect(jsonResults[1].average).toBeLessThan(6)
+    expect(jsonResults[1].average).toBeLessThan(jsonResults[0].average)
+    expect(jsonResults[1].average * 3 + jsonResults[0].average * 2).toEqual(jsonResults[2].average)
   });
 });

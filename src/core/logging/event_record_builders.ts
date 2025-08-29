@@ -4,6 +4,18 @@ import { Player } from "../player";
 import { EventQueryType, EventRecord } from "./event_query";
 
 export class EventRecordBuilder {
+  static play(player: Player, fromCard: Card): EventRecord {
+    return {
+      playerName: player.name,
+      type: EventQueryType.CARD_PLAYED,
+      gameNumber: player.game.gameNumber,
+      amount: 1,
+      fromCard: fromCard.name,
+      toCard: undefined,
+      turn: player.game.turn,
+    };
+  }
+
   static draw(player: Player, fromCard: Card, cardDrawn: Card): EventRecord {
     return {
       playerName: player.name,

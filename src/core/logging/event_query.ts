@@ -1,10 +1,10 @@
-const ANY_CARD = "All";
+export const ANY_CARD = "All";
 
 // JSON import type
 export type EventQueryInput = {
   type: EventQueryType;
   fromCard?: string | undefined;
-  byTurn?: number | undefined;
+  byTurn?: number | undefined; // inclusive
   toCard?: string | undefined;
   byTurnModifier?: ByTurnModifier | undefined;
 };
@@ -30,6 +30,7 @@ export enum EventQueryType {
   VP = "vp",
   TRASH = "trash",
   PLUS_COINS = "coins",
+  CARD_PLAYED = "played",
 }
 
 export type EventRecord = {
@@ -97,7 +98,7 @@ export class EventQuery {
   type: EventQueryType;
   fromCard: string | undefined;
   toCard: string | undefined;
-  byTurn: number | undefined;
+  byTurn: number | undefined; // inclusive
   byTurnModifier: ByTurnModifier | undefined;
   playerName: string | undefined;
   effectRecords: Map<number, EventRecord[]>;

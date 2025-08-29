@@ -17,9 +17,12 @@ export class EffectResolver {
   }
 
   playCard(player: Player, card: Card) {
+    player.inPlay.push(card);
     player.game.gamelog.logCardPlay(card, player.name);
     player.game.gamelog.indent();
-    player.inPlay.push(card);
+    player.game.eventQueryManager.recordEvent(
+      EventRecordBuilder.play(player, card),
+    );
 
     const node = card.playGraph().getStartNode();
     if (node) {
